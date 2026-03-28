@@ -696,5 +696,14 @@
         document.getElementById('input-chat').addEventListener('keypress', (e) => { if (e.key === 'Enter') document.getElementById('btn-enviar-msg').click(); });
 
     </script>
+    <script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('sw.js')
+                .then(reg => console.log('Cérebro Offline ativado!', reg.scope))
+                .catch(err => console.log('Falha no Service Worker:', err));
+        });
+    }
+</script>
 </body>
 </html>
