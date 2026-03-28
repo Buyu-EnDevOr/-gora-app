@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ágora - A sua Plataforma Académica</title>
+    <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1a252f">
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            /* A MAGIA DO FUNDO VOLTOU AQUI */
+            background-image: url('fundo.png'); 
+            background-size: cover; 
+            background-position: center; 
+            color: #2c3e50; 
+        }
+        
+        .caixa-login { 
+            background: rgba(255, 255, 255, 0.95); 
+            padding: 40px; 
+            border-radius: 15px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
+            width: 100%; 
+            max-width: 400px; 
+            text-align: center; 
+            backdrop-filter: blur(8px); /* Deixa o fundo levemente desfocado atrás da caixa */
+        }
+        
+        .logo { font-size: 32px; font-weight: 900; color: #8e44ad; margin-bottom: 10px; letter-spacing: 1px; }
+        .subtitulo { color: #7f8c8d; font-size: 14px; margin-bottom: 30px; }
+
+        .grupo-input { margin-bottom: 20px; text-align: left; }
+        .grupo-input label { display: block; font-size: 13px; font-weight: bold; margin-bottom: 5px; color: #34495e; }
+        .grupo-input input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; outline: none; transition: 0.3s; font-size: 14px; background-color: rgba(255,255,255,0.9); }
+        .grupo-input input:focus { border-color: #8e44ad; box-shadow: 0 0 0 3px rgba(142, 68, 173, 0.1); }
+
+        .btn-principal { width: 100%; background: #8e44ad; color: white; border: none; padding: 14px; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        .btn-principal:hover { background: #7d3c98; transform: translateY(-2px); }
+        
+        .btn-secundario { width: 100%; background: transparent; color: #8e44ad; border: 2px solid #8e44ad; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 15px; cursor: pointer; transition: 0.3s; margin-top: 15px; }
+        .btn-secundario:hover { background: #f5f0fa; }
+
+        .link-esqueci { display: block; margin-top: 15px; font-size: 13px; color: #3498db; text-decoration: none; cursor: pointer; }
+        .link-esqueci:hover { text-decoration: underline; }
+
+        .mensagem-erro { color: #e74c3c; font-size: 13px; margin-top: 15px; font-weight: bold; display: none; }
+
+        /* MODAL DE RECUPERAÇÃO DE PALAVRA-PASSE */
+        .fundo-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(3px); }
+        .caixa-modal { background: white; padding: 30px; border-radius: 15px; width: 100%; max-width: 350px; text-align: left; }
+        .caixa-modal h2 { margin-top: 0; color: #2c3e50; font-size: 20px; }
+        .caixa-modal p { color: #7f8c8d; font-size: 14px; line-height: 1.5; margin-bottom: 20px; }
+        .botoes-modal { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+        .btn-cancelar { background: #ecf0f1; color: #2c3e50; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        .btn-enviar-reset { background: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="caixa-login">
+        <div class="logo">Ágora</div>
+        <div class="subtitulo">A sua plataforma de colaboração académica</div>
+
+        <div id="msg-erro" class="mensagem-erro">O e-mail ou palavra-passe estão incorretos.</div>
+
+        <div class="grupo-input">
+            <label>E-mail</label>
+            <input type="email" id="email" placeholder="O seu e-mail da faculdade">
+        </div>
+        
+        <div class="grupo-input">
+            <label>Palavra-passe</label>
+            <input type="password" id="senha" placeholder="A sua palavra-passe">
+        </div>
+
+        <button id="btn-entrar" class="btn-principal">Entrar</button>
+        <button id="btn-criar-conta" class="btn-secundario">Criar Nova Conta</button>
+        
+        <a id="btn-abrir-esqueci" class="link-esqueci">Esqueceu-se da palavra-passe?</a>
+    </div>
+
+    <div class="fundo-modal" id="modal-recuperar">
+        <div class="caixa-modal">
+            <h2>Recuperar Palavra-passe</h2>
+            <p>Escreva o e-mail associado à sua conta. Enviaremos um link seguro (com proteção contra robôs do Google) para redefinir a palavra-passe.</p>
+            
+            <div class="grupo-input" style="margin-bottom: 0;">
+                <input type="email" id="email-recuperacao" placeholder="O seu e-mail">
+            </div>
+
+            <div class="botoes-modal">
+                <button id="btn-fechar-modal" class="btn-cancelar">Cancelar</button>
+                <button id="btn-enviar-email" class="btn-enviar-reset">Enviar Link</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCrO7jKe3ja8XJWeNTfTpv4wwEWwzzcYzo",
+            authDomain: "agora-ea1be.firebaseapp.com",
+            projectId: "agora-ea1be",
+            storageBucket: "agora-ea1be.firebasestorage.app",
+            messagingSenderId: "801313514193",
+            appId: "1:801313514193:web:99621b133ed4ca80e89bf0"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        const inputEmail = document.getElementById('email');
+        const inputSenha = document.getElementById('senha');
+        const msgErro = document.getElementById('msg-erro');
+
+        // LOGIN
+        document.getElementById('btn-entrar').addEventListener('click', () => {
+            const email = inputEmail.value.trim(); const senha = inputSenha.value.trim();
+            if(!email || !senha) { msgErro.innerText = "Preencha todos os campos."; msgErro.style.display = "block"; return; }
+
+            signInWithEmailAndPassword(auth, email, senha)
+                .then(() => { window.location.href = "dashboard.html"; })
+                .catch((error) => { msgErro.innerText = "Erro ao entrar. Verifique os seus dados."; msgErro.style.display = "block"; });
+        });
+
+        // CRIAR CONTA
+        document.getElementById('btn-criar-conta').addEventListener('click', () => {
+            const email = inputEmail.value.trim(); const senha = inputSenha.value.trim();
+            if(!email || !senha) { msgErro.innerText = "Preencha o e-mail e palavra-passe."; msgErro.style.display = "block"; return; }
+            if(senha.length < 6) { msgErro.innerText = "A palavra-passe precisa de 6 ou mais caracteres."; msgErro.style.display = "block"; return; }
+
+            createUserWithEmailAndPassword(auth, email, senha)
+                .then(() => { window.location.href = "dashboard.html"; })
+                .catch((error) => { msgErro.innerText = "Erro ao criar conta. O e-mail já existe?"; msgErro.style.display = "block"; });
+        });
+
+        // RECUPERAÇÃO DE PALAVRA-PASSE
+        const modalRecuperar = document.getElementById('modal-recuperar');
+        const inputEmailRecup = document.getElementById('email-recuperacao');
+
+        document.getElementById('btn-abrir-esqueci').addEventListener('click', () => {
+            modalRecuperar.style.display = 'flex';
+            inputEmailRecup.value = inputEmail.value; 
+        });
+        
+        document.getElementById('btn-fechar-modal').addEventListener('click', () => { modalRecuperar.style.display = 'none'; });
+
+        document.getElementById('btn-enviar-email').addEventListener('click', () => {
+            const emailRecuperacao = inputEmailRecup.value.trim();
+            if(!emailRecuperacao) { alert("Digite o e-mail."); return; }
+
+            document.getElementById('btn-enviar-email').innerText = "A enviar...";
+
+            sendPasswordResetEmail(auth, emailRecuperacao)
+                .then(() => {
+                    alert("E-mail enviado com sucesso! (O link inclui proteção do Google contra robôs).");
+                    modalRecuperar.style.display = 'none';
+                    document.getElementById('btn-enviar-email').innerText = "Enviar Link";
+                })
+                .catch((error) => {
+                    alert("Erro. Verifique se o e-mail está correto.");
+                    document.getElementById('btn-enviar-email').innerText = "Enviar Link";
+                });
+        });
+    </script>
+</body>
+</html>

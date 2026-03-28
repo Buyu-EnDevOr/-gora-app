@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convite - Ágora</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-image: url('fundo.png'); background-size: cover; background-position: center; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .caixa-convite { background-color: rgba(255, 255, 255, 0.95); padding: 40px; border-radius: 15px; box-shadow: 0 8px 30px rgba(0,0,0,0.2); width: 100%; max-width: 400px; text-align: center; backdrop-filter: blur(5px); }
+        h2 { color: #2c3e50; margin-top: 0; }
+        .icone { font-size: 50px; margin-bottom: 10px; }
+        #nome-projeto { color: #8e44ad; font-size: 22px; font-weight: bold; margin: 20px 0; padding: 15px; background: #f5f0fa; border-radius: 8px; }
+        .botao-aceitar { width: 100%; padding: 15px; background-color: #27ae60; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        .botao-aceitar:hover { background-color: #219653; transform: translateY(-2px); }
+        .botao-cancelar { display: block; margin-top: 20px; color: #7f8c8d; text-decoration: none; font-size: 14px; }
+        .botao-cancelar:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+    <div class="caixa-convite">
+        <div class="icone">📩</div>
+        <h2>Convite de Equipa</h2>
+        <p style="color: #7f8c8d;">Foi convidado(a) para colaborar no projeto:</p>
+        
+        <div id="nome-projeto">A procurar projeto...</div>
+        
+        <button id="btn-aceitar" class="botao-aceitar" style="display: none;">Aceitar e Entrar na Sala</button>
+        <a href="dashboard.html" class="botao-cancelar">Voltar ao Painel</a>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+        // Importamos o getDoc para ler apenas uma vez, e o arrayUnion para adicionar à lista VIP
+        import { getFirestore, doc, getDoc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+        // AS SUAS CHAVES DO FIREBASE
+        const firebaseConfig = {
+            apiKey: "AIzaSyCrO7jKe3ja8XJWeNTfTpv4wwEWwzzcYzo",
+            authDomain: "agora-ea1be.firebaseapp.com",
+            projectId: "agora-ea1be",
+            storageBucket: "agora-ea1be.firebasestorage.app",
+            messagingSenderId: "801313514193",
+            appId: "1:801313514193:web:99621b133ed4ca80e89bf0"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        const parametros = new URLSearchParams(window.location.search);
+        const idProjeto = parametros.get('id');
+        let meuEmail = "";
+
+        if (!idProjeto) {
+            alert("Link de convite inválido!");
+            window.location.href = "dashboard.html";
+        }
+
+        // 1. Verificar se a pessoa tem a sessão iniciada (Login)
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                meuEmail = user.email;
+                carregarDadosDoProjeto();
+            } else {
+                alert("Precisa de iniciar sessão no Ágora para aceitar este convite!");
+                window.location.href = "index.html"; // Manda fazer login
+            }
+        });
+
+        const referenciaDoc = doc(db, "projetos", idProjeto);
+
+        async function carregarDadosDoProjeto() {
+            try {
+                const docSnap = await getDoc(referenciaDoc);
+                if (docSnap.exists()) {
+                    document.getElementById('nome-projeto').innerText = docSnap.data().nome;
+                    document.getElementById('btn-aceitar').style.display = 'block';
+                } else {
+                    document.getElementById('nome-projeto').innerText = "Projeto não encontrado ou eliminado.";
+                }
+            } catch (erro) {
+                console.error("Erro ao procurar:", erro);
+            }
+        }
+
+        // 2. Quando clica em Aceitar, adiciona à Lista VIP do Firebase
+        document.getElementById('btn-aceitar').addEventListener('click', async () => {
+            document.getElementById('btn-aceitar').innerText = "A entrar...";
+            
+            try {
+                await updateDoc(referenciaDoc, {
+                    usuarios: arrayUnion(meuEmail),
+                    // Define como "editor" por defeito (para poder mexer no texto)
+                    [`permissoes.${meuEmail}`]: "editor" 
+                });
+                
+                // Redireciona diretamente para a sala de edição!
+                window.location.href = `grupo.html?id=${idProjeto}`;
+                
+            } catch (erro) {
+                alert("Erro ao aceitar convite: " + erro.message);
+            }
+        });
+    </script>
+</body>
+</html>

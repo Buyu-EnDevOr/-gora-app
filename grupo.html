@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trabalho Ativo - Ágora</title>
+    
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; display: flex; background-color: #f4f7f6; height: 100vh; overflow: hidden; transition: 0.3s; }
+        .menu-lateral { width: 250px; background-color: #1a252f; color: white; height: 100vh; padding-top: 20px; flex-shrink: 0; transition: 0.3s; z-index: 10; }
+        .logo { text-align: center; font-size: 24px; font-weight: 800; margin-bottom: 40px; color: #8e44ad; }
+        .menu-lateral a { display: block; color: #bdc3c7; padding: 15px 25px; text-decoration: none; transition: 0.3s; }
+        .menu-lateral a:hover { background-color: #2c3e50; color: white; }
+        
+        .conteudo { flex-grow: 1; display: flex; flex-direction: column; padding: 20px; box-sizing: border-box; overflow: hidden; }
+        .cabecalho-grupo { background-color: white; padding: 15px 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; transition: 0.3s; }
+        .cabecalho-grupo h1 { margin: 0; font-size: 20px; color: #2c3e50; transition: 0.3s; }
+        
+        .btn-gerenciar { display: none; background-color: #3498db; color: white; border: none; padding: 8px 15px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-left: 15px; }
+        .btn-gerenciar:hover { background-color: #2980b9; }
+
+        .status-salvamento { font-size: 14px; font-weight: bold; color: #7f8c8d; display: flex; align-items: center; gap: 15px; }
+        
+        .area-trabalho { display: flex; gap: 20px; height: calc(100vh - 120px); transition: 0.3s; }
+
+        .area-editor { flex: 7; background-color: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); display: flex; flex-direction: column; overflow: hidden; transition: 0.3s; }
+        .barra-ferramentas { background-color: #ecf0f1; padding: 12px 15px; border-bottom: 1px solid #ddd; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; transition: 0.3s; }
+        .divisor-ferramentas { width: 1px; height: 24px; background-color: #ccc; margin: 0 5px; }
+        .caixa-select { padding: 6px; border-radius: 6px; border: 1px solid #ccc; background: white; color: #2c3e50; outline: none; cursor: pointer; font-family: inherit; }
+        .btn-ferramenta { background: transparent; border: 1px solid transparent; padding: 6px; border-radius: 6px; cursor: pointer; color: #2c3e50; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+        .btn-ferramenta:hover { background: #d5dbdb; }
+        .btn-ferramenta.ativo { background-color: #8e44ad; color: white; border-color: #7d3c98; }
+        .material-symbols-outlined { font-size: 20px; font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+
+        .folha-papel-container { background-color: #e2e8f0; padding: 40px; overflow-y: auto; flex-grow: 1; display: flex; justify-content: center; transition: 0.3s; }
+        .folha-papel { background-color: white; width: 100%; max-width: 800px; min-height: 1000px; padding: 80px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); outline: none; font-family: Arial, sans-serif; font-size: 3; line-height: 1.6; transition: 0.3s; }
+        .folha-papel img { max-width: 100%; height: auto; border-radius: 8px; margin: 10px 0; }
+
+        .aviso-leitura { display: none; background-color: #f39c12; color: white; text-align: center; padding: 8px; font-weight: bold; font-size: 14px; }
+
+        .area-chat { flex: 3; background-color: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); display: flex; flex-direction: column; border-top: 5px solid #8e44ad; transition: all 0.4s ease-in-out; position: relative; }
+        .area-chat.escondido { flex: 0; width: 0; border: none; overflow: hidden; opacity: 0; padding: 0; margin-left: -20px; }
+        .btn-toggle-chat { position: absolute; right: 15px; top: 10px; background: #ecf0f1; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #2c3e50; transition: 0.3s; z-index: 5; }
+        .btn-toggle-chat:hover { background: #bdc3c7; }
+        .btn-abrir-chat-fora { display: none; background: #8e44ad; color: white; border: none; padding: 8px 15px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-left: 15px; transition: 0.3s; }
+        .btn-abrir-chat-fora:hover { background: #7d3c98; }
+
+        .cabecalho-chat { padding: 15px; border-bottom: 1px solid #eee; font-weight: bold; color: #2c3e50; text-align: center; transition: 0.3s; }
+        .mensagens { flex-grow: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background-color: #fafbfc; transition: 0.3s; min-width: 250px; }
+        .msg { max-width: 80%; padding: 10px 15px; border-radius: 15px; font-size: 14px; word-wrap: break-word; }
+        .msg-outro { background-color: #ecf0f1; align-self: flex-start; border-bottom-left-radius: 2px; transition: 0.3s; }
+        .msg-minha { background-color: #8e44ad; color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
+        .nome-user { font-size: 11px; color: #7f8c8d; margin-bottom: 3px; display: block; }
+        .msg-minha .nome-user { color: #d1c4e9; }
+        .caixa-digitar { padding: 15px; border-top: 1px solid #eee; display: flex; gap: 10px; transition: 0.3s; min-width: 250px; }
+        .caixa-digitar input { flex-grow: 1; padding: 10px; border: 1px solid #ddd; border-radius: 20px; outline: none; transition: 0.3s; }
+        .btn-enviar { background-color: #8e44ad; color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-weight: bold; }
+
+        /* MODAIS GERAIS */
+        .fundo-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; }
+        .caixa-modal { background: white; padding: 30px; border-radius: 15px; width: 100%; max-width: 450px; transition: 0.3s; }
+        .caixa-modal h2 { margin-top: 0; color: #2c3e50; transition: 0.3s; }
+        .linha-add { display: flex; gap: 10px; margin-top: 15px; margin-bottom: 20px; }
+        .linha-add input, .linha-add select { flex-grow: 1; padding: 10px; border: 1px solid #ddd; border-radius: 8px; transition: 0.3s; }
+        .btn-add { background: #27ae60; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        .btn-fechar-modal { width: 100%; background: #ecf0f1; color: #2c3e50; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .area-link { background: #f5f0fa; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px dashed #8e44ad; transition: 0.3s; }
+
+        /* NOVO DESIGN DO MODAL DE GRÁFICOS (Cartões com Ícones) */
+        .grid-graficos { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 15px 0; }
+        .opcao-grafico { border: 2px solid #ddd; border-radius: 8px; padding: 15px; text-align: center; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; align-items: center; gap: 8px; color: #2c3e50; }
+        .opcao-grafico:hover { border-color: #8e44ad; background-color: #f5f0fa; }
+        .opcao-grafico.ativo { border-color: #8e44ad; background-color: #8e44ad; color: white; }
+        .opcao-grafico .material-symbols-outlined { font-size: 32px; }
+        
+        .area-dados-grafico { display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; }
+        .area-dados-grafico textarea { width: 100%; height: 80px; padding: 10px; border: 1px solid #ddd; border-radius: 8px; resize: none; font-family: monospace; box-sizing: border-box; }
+        .btn-gerar-grafico { background: #8e44ad; color: white; width: 100%; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; margin-bottom: 10px;}
+
+        /* MODO NOTURNO */
+        body.dark-mode { background-color: #121212; color: #e0e0e0; }
+        body.dark-mode .cabecalho-grupo, body.dark-mode .area-editor, body.dark-mode .area-chat, body.dark-mode .caixa-modal { background-color: #1e1e1e; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        body.dark-mode .cabecalho-grupo h1, body.dark-mode .cabecalho-chat, body.dark-mode .caixa-modal h2 { color: #ffffff; }
+        body.dark-mode .folha-papel-container { background-color: #000000; }
+        body.dark-mode .folha-papel { background-color: #242424; color: #e0e0e0; box-shadow: 0 4px 10px rgba(255,255,255,0.05); }
+        body.dark-mode .barra-ferramentas, body.dark-mode .caixa-digitar, body.dark-mode .mensagens, body.dark-mode .area-link { background-color: #1a1a1a; border-color: #333; }
+        body.dark-mode .btn-ferramenta { color: #e0e0e0; }
+        body.dark-mode .btn-ferramenta:hover { background: #333; }
+        body.dark-mode .divisor-ferramentas { background-color: #444; }
+        body.dark-mode .caixa-select { background-color: #333; color: white; border-color: #444; }
+        body.dark-mode .msg-outro { background-color: #333; color: #e0e0e0; }
+        body.dark-mode .caixa-digitar input, body.dark-mode .linha-add input, body.dark-mode .linha-add select, body.dark-mode .area-dados-grafico textarea { background-color: #333; color: white; border-color: #444; }
+        body.dark-mode .btn-fechar-modal, body.dark-mode .btn-toggle-chat { background-color: #333; color: white; }
+        
+        /* Cores modo escuro para os cartões de gráficos */
+        body.dark-mode .opcao-grafico { border-color: #444; color: #e0e0e0; }
+        body.dark-mode .opcao-grafico:hover { border-color: #8e44ad; background-color: #2a2a2a; }
+        body.dark-mode .opcao-grafico.ativo { background-color: #8e44ad; color: white; border-color: #8e44ad; }
+    </style>
+</head>
+<body>
+
+    <div class="menu-lateral">
+        <div class="logo">Ágora</div>
+        <a href="dashboard.html">🏠 Início</a>
+        <a href="conversor.html">📄 Conversor PDF</a>
+        <a href="#" id="btn-tema">🌙 Modo Escuro</a>
+        <hr style="border: 0.5px solid #2c3e50; margin: 20px;">
+        <div style="padding: 10px 25px; font-size: 12px; color: #7f8c8d;">PROJETO ATUAL:</div>
+        <div id="nome-projeto-menu" style="padding: 0 25px; font-weight: bold; color: #8e44ad;">Carregando...</div>
+        <div id="meu-cargo-menu" style="padding: 5px 25px; font-size: 12px; color: #f39c12; font-weight: bold; text-transform: uppercase;">...</div>
+    </div>
+
+    <div class="conteudo">
+        <div class="cabecalho-grupo">
+            <h1 id="titulo-projeto-topo">📄 Carregando Projeto...</h1>
+            <div class="status-salvamento">
+                <button id="btn-reabrir-chat" class="btn-abrir-chat-fora">💬 Abrir Chat</button>
+                <button id="btn-abrir-equipe" class="btn-gerenciar">👥 Gerenciar Equipe</button>
+                <span id="status-nuvem">☁️ Conectando...</span>
+            </div>
+        </div>
+
+        <div class="area-trabalho">
+            <div class="area-editor">
+                <div id="aviso-leitura" class="aviso-leitura">🔒 Você está no modo "Somente Leitura".</div>
+                
+                <div class="barra-ferramentas" id="barra-ferramentas">
+                    <select id="sel-fonte" class="caixa-select" onchange="formatarParam('fontName', this.value)">
+                        <option value="Arial">Arial</option>
+                        <option value="Times New Roman">Times New Roman</option>
+                        <option value="Courier New">Courier</option>
+                        <option value="Verdana">Verdana</option>
+                    </select>
+                    <select id="sel-tamanho" class="caixa-select" onchange="formatarParam('fontSize', this.value)">
+                        <option value="2">Pequeno</option>
+                        <option value="3" selected>Normal</option>
+                        <option value="5">Grande</option>
+                        <option value="6">Gigante</option>
+                    </select>
+                    <input type="color" id="sel-cor" class="caixa-select" style="padding: 0; width: 30px; height: 30px;" onchange="formatarParam('foreColor', this.value)" title="Cor do Texto">
+                    
+                    <div class="divisor-ferramentas"></div>
+                    
+                    <button id="btn-bold" class="btn-ferramenta" title="Negrito"><span class="material-symbols-outlined">format_bold</span></button>
+                    <button id="btn-italic" class="btn-ferramenta" title="Itálico"><span class="material-symbols-outlined">format_italic</span></button>
+                    <button id="btn-underline" class="btn-ferramenta" title="Sublinhado"><span class="material-symbols-outlined">format_underlined</span></button>
+                    
+                    <div class="divisor-ferramentas"></div>
+                    
+                    <button id="btn-justifyLeft" class="btn-ferramenta" title="Alinhar à Esquerda"><span class="material-symbols-outlined">format_align_left</span></button>
+                    <button id="btn-justifyCenter" class="btn-ferramenta" title="Centralizar"><span class="material-symbols-outlined">format_align_center</span></button>
+                    <button id="btn-justifyRight" class="btn-ferramenta" title="Alinhar à Direita"><span class="material-symbols-outlined">format_align_right</span></button>
+                    <button id="btn-justifyFull" class="btn-ferramenta" title="Justificar"><span class="material-symbols-outlined">format_align_justify</span></button>
+                    
+                    <div class="divisor-ferramentas"></div>
+                    
+                    <button id="btn-insertUnorderedList" class="btn-ferramenta" title="Lista de Pontos"><span class="material-symbols-outlined">format_list_bulleted</span></button>
+                    <button id="btn-insertOrderedList" class="btn-ferramenta" title="Lista Numerada"><span class="material-symbols-outlined">format_list_numbered</span></button>
+                    
+                    <div class="divisor-ferramentas"></div>
+                    
+                    <button id="btn-inserir-imagem" class="btn-ferramenta" title="Inserir Imagem do PC"><span class="material-symbols-outlined">image</span></button>
+                    <input type="file" id="input-imagem-pc" accept="image/*" style="display: none;">
+                    
+                    <button id="btn-abrir-modal-grafico" class="btn-ferramenta" title="Gerar Gráfico"><span class="material-symbols-outlined">pie_chart</span></button>
+                </div>
+                
+                <div class="folha-papel-container">
+                    <div id="editor-papel" class="folha-papel" contenteditable="false"></div>
+                </div>
+            </div>
+
+            <div class="area-chat" id="caixa-do-chat">
+                <button id="btn-minimizar-chat" class="btn-toggle-chat" title="Ocultar Chat"><span class="material-symbols-outlined">close_fullscreen</span></button>
+                <div class="cabecalho-chat">💬 Chat da Equipe</div>
+                <div class="mensagens" id="chat-mensagens"></div>
+                <div class="caixa-digitar">
+                    <input type="text" id="input-chat" placeholder="Escreva uma mensagem...">
+                    <button class="btn-enviar" id="btn-enviar-msg"><span class="material-symbols-outlined" style="color:white; font-size: 18px;">send</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="fundo-modal" id="modal-grafico">
+        <div class="caixa-modal">
+            <h2>📊 Criar Gráfico</h2>
+            <p style="font-size: 13px; color: #7f8c8d; margin-top: 5px;">Selecione o estilo do gráfico:</p>
+            
+            <div class="grid-graficos">
+                <div class="opcao-grafico ativo" data-tipo="pie">
+                    <span class="material-symbols-outlined">pie_chart</span>
+                    <span>Pizza</span>
+                </div>
+                <div class="opcao-grafico" data-tipo="doughnut">
+                    <span class="material-symbols-outlined">donut_small</span>
+                    <span>Rosca</span>
+                </div>
+                <div class="opcao-grafico" data-tipo="bar">
+                    <span class="material-symbols-outlined">bar_chart</span>
+                    <span>Barras</span>
+                </div>
+                <div class="opcao-grafico" data-tipo="line">
+                    <span class="material-symbols-outlined">show_chart</span>
+                    <span>Linha</span>
+                </div>
+            </div>
+
+            <p style="font-size: 13px; color: #7f8c8d; margin-bottom: 5px;">Cole os dados (ex: Janeiro: 50):</p>
+            <div class="area-dados-grafico">
+                <textarea id="dados-grafico" placeholder="Janeiro: 50&#10;Fevereiro: 80&#10;Março: 120"></textarea>
+            </div>
+
+            <button id="btn-gerar-grafico-img" class="btn-gerar-grafico">Inserir Gráfico no Trabalho</button>
+            <button class="btn-fechar-modal" id="btn-fechar-grafico">Cancelar</button>
+        </div>
+    </div>
+
+    <div class="fundo-modal" id="modal-equipe">
+        <div class="caixa-modal">
+            <h2>👥 Gerenciar Equipe</h2>
+            <div class="area-link">
+                <p style="font-size: 13px; margin-top: 0; font-weight: bold;">🔗 Link de Convite:</p>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="link-gerado" readonly style="flex-grow: 1; padding: 8px; border-radius: 5px; font-size: 12px;">
+                    <button id="btn-copiar-link" style="background: #8e44ad; color: white; border: none; border-radius: 5px; padding: 0 15px; cursor: pointer; font-weight: bold;">Copiar</button>
+                </div>
+            </div>
+            <div class="linha-add">
+                <input type="email" id="email-convidado" placeholder="E-mail do colega">
+                <select id="cargo-convidado">
+                    <option value="editor">Editor (Escreve)</option>
+                    <option value="leitor">Leitor (Só Olha)</option>
+                    <option value="admin">Admin (Chefe)</option>
+                </select>
+                <button id="btn-add-membro" class="btn-add">Adicionar</button>
+            </div>
+            <div class="lista-membros" id="lista-membros"></div>
+            <button class="btn-fechar-modal" id="btn-fechar-equipe">Fechar Janela</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+        import { getFirestore, doc, onSnapshot, updateDoc, collection, addDoc, query, orderBy, arrayUnion } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+        const firebaseConfig = { apiKey: "AIzaSyCrO7jKe3ja8XJWeNTfTpv4wwEWwzzcYzo", authDomain: "agora-ea1be.firebaseapp.com", projectId: "agora-ea1be", storageBucket: "agora-ea1be.firebasestorage.app", messagingSenderId: "801313514193", appId: "1:801313514193:web:99621b133ed4ca80e89bf0" };
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        // MODO NOTURNO E CHAT RETRÁTIL
+        const btnTema = document.getElementById('btn-tema');
+        if(localStorage.getItem('tema-agora') === 'escuro') { document.body.classList.add('dark-mode'); btnTema.innerText = '☀️ Modo Claro'; }
+        btnTema.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            if(document.body.classList.contains('dark-mode')) { localStorage.setItem('tema-agora', 'escuro'); btnTema.innerText = '☀️ Modo Claro'; } 
+            else { localStorage.setItem('tema-agora', 'claro'); btnTema.innerText = '🌙 Modo Escuro'; }
+        });
+
+        const caixaChat = document.getElementById('caixa-do-chat');
+        const btnMinimizar = document.getElementById('btn-minimizar-chat');
+        const btnReabrir = document.getElementById('btn-reabrir-chat');
+        btnMinimizar.addEventListener('click', () => { caixaChat.classList.add('escondido'); btnReabrir.style.display = 'block'; });
+        btnReabrir.addEventListener('click', () => { caixaChat.classList.remove('escondido'); btnReabrir.style.display = 'none'; });
+
+        // FIREBASE
+        const idProjeto = new URLSearchParams(window.location.search).get('id');
+        if (!idProjeto) window.location.href = "dashboard.html";
+        let meuNome = "Anônimo"; let meuEmail = "";
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) { meuEmail = user.email; meuNome = user.displayName || user.email.split('@')[0]; iniciarSala(); } 
+            else { window.location.href = "index.html"; }
+        });
+
+        function iniciarSala() {
+            const editor = document.getElementById('editor-papel');
+            const referenciaDoc = doc(db, "projetos", idProjeto);
+
+            const linkMágico = `${window.location.origin}/convite.html?id=${idProjeto}`;
+            document.getElementById('link-gerado').value = linkMágico;
+            document.getElementById('btn-copiar-link').addEventListener('click', () => { navigator.clipboard.writeText(linkMágico); document.getElementById('btn-copiar-link').innerText = "Copiado!"; setTimeout(() => document.getElementById('btn-copiar-link').innerText = "Copiar", 2000); });
+
+            onSnapshot(referenciaDoc, (snapshot) => {
+                if (snapshot.exists()) {
+                    const dados = snapshot.data();
+                    document.getElementById('titulo-projeto-topo').innerText = "📄 " + dados.nome;
+                    document.getElementById('nome-projeto-menu').innerText = dados.nome;
+                    const meuCargo = dados.permissoes[meuEmail] || "leitor";
+                    document.getElementById('meu-cargo-menu').innerText = "Cargo: " + meuCargo;
+
+                    if (meuCargo === "admin" || meuCargo === "editor") {
+                        editor.setAttribute('contenteditable', 'true'); document.getElementById('barra-ferramentas').style.display = 'flex'; document.getElementById('aviso-leitura').style.display = 'none';
+                    } else {
+                        editor.setAttribute('contenteditable', 'false'); document.getElementById('barra-ferramentas').style.display = 'none'; document.getElementById('aviso-leitura').style.display = 'block';
+                    }
+                    if (meuCargo === "admin") { document.getElementById('btn-abrir-equipe').style.display = 'block'; atualizarListaNoModal(dados.permissoes); }
+                    if (document.activeElement !== editor) editor.innerHTML = dados.conteudo || "";
+                    document.getElementById('status-nuvem').innerText = "☁️ Sincronizado";
+                }
+            });
+
+            editor.addEventListener('input', () => {
+                document.getElementById('status-nuvem').innerText = "⏳ Salvando...";
+                updateDoc(referenciaDoc, { conteudo: editor.innerHTML }).then(() => document.getElementById('status-nuvem').innerText = "✅ Salvo");
+            });
+
+            // EQUIPE E CHAT
+            document.getElementById('btn-abrir-equipe').addEventListener('click', () => { document.getElementById('modal-equipe').style.display = 'flex'; });
+            document.getElementById('btn-fechar-equipe').addEventListener('click', () => { document.getElementById('modal-equipe').style.display = 'none'; });
+            document.getElementById('btn-add-membro').addEventListener('click', async () => {
+                const emailNovo = document.getElementById('email-convidado').value.trim(); const cargoNovo = document.getElementById('cargo-convidado').value;
+                if (emailNovo === "") return;
+                try { await updateDoc(referenciaDoc, { usuarios: arrayUnion(emailNovo), [`permissoes.${emailNovo}`]: cargoNovo }); document.getElementById('email-convidado').value = ""; } catch (e) { alert("Erro: " + e.message); }
+            });
+            function atualizarListaNoModal(permissoes) {
+                const lista = document.getElementById('lista-membros'); lista.innerHTML = "";
+                for (const [email, cargo] of Object.entries(permissoes)) {
+                    let cor = cargo === "admin" ? "#8e44ad" : (cargo === "editor" ? "#27ae60" : "#7f8c8d");
+                    lista.innerHTML += `<div class="membro-item"><span>${email}</span><span style="color: ${cor}; font-weight: bold; text-transform: uppercase;">${cargo}</span></div>`;
+                }
+            }
+
+            const areaMensagens = document.getElementById('chat-mensagens');
+            const mensagensRef = collection(db, "projetos", idProjeto, "mensagens");
+            onSnapshot(query(mensagensRef, orderBy("hora", "asc")), (snapshot) => {
+                areaMensagens.innerHTML = '';
+                snapshot.forEach((doc) => {
+                    const msg = doc.data(); const div = document.createElement('div');
+                    if (msg.autorEmail === meuEmail) { div.className = 'msg msg-minha'; div.innerHTML = `<span class="nome-user">Você (${msg.autorNome})</span>${msg.texto}`; } 
+                    else { div.className = 'msg msg-outro'; div.innerHTML = `<span class="nome-user">${msg.autorNome}</span>${msg.texto}`; }
+                    areaMensagens.appendChild(div);
+                });
+                areaMensagens.scrollTop = areaMensagens.scrollHeight;
+            });
+            document.getElementById('btn-enviar-msg').addEventListener('click', () => {
+                const input = document.getElementById('input-chat');
+                if (input.value.trim() !== "") { addDoc(mensagensRef, { texto: input.value, autorEmail: meuEmail, autorNome: meuNome, hora: Date.now() }); input.value = ""; }
+            });
+            document.getElementById('input-chat').addEventListener('keypress', (e) => { if (e.key === 'Enter') document.getElementById('btn-enviar-msg').click(); });
+
+            // FORMATAÇÃO E IMAGENS DO PC
+            window.formatar = (cmd) => { document.execCommand(cmd, false, null); editor.focus(); };
+            window.formatarParam = (cmd, valor) => { document.execCommand(cmd, false, valor); editor.focus(); };
+
+            document.getElementById('btn-bold').addEventListener('click', () => formatar('bold'));
+            document.getElementById('btn-italic').addEventListener('click', () => formatar('italic'));
+            document.getElementById('btn-underline').addEventListener('click', () => formatar('underline'));
+            document.getElementById('btn-justifyLeft').addEventListener('click', () => formatar('justifyLeft'));
+            document.getElementById('btn-justifyCenter').addEventListener('click', () => formatar('justifyCenter'));
+            document.getElementById('btn-justifyRight').addEventListener('click', () => formatar('justifyRight'));
+            document.getElementById('btn-justifyFull').addEventListener('click', () => formatar('justifyFull'));
+            document.getElementById('btn-insertUnorderedList').addEventListener('click', () => formatar('insertUnorderedList'));
+            document.getElementById('btn-insertOrderedList').addEventListener('click', () => formatar('insertOrderedList'));
+
+            const btnUpload = document.getElementById('btn-inserir-imagem');
+            const inputUpload = document.getElementById('input-imagem-pc');
+            btnUpload.addEventListener('click', () => { inputUpload.click(); });
+            inputUpload.addEventListener('change', function() {
+                const ficheiro = this.files[0];
+                if (ficheiro) {
+                    const leitor = new FileReader();
+                    leitor.onload = function(e) { formatarParam('insertImage', e.target.result); editor.dispatchEvent(new Event('input')); }
+                    leitor.readAsDataURL(ficheiro);
+                }
+                this.value = '';
+            });
+
+            // ==========================================
+            // LÓGICA ATUALIZADA DO GERADOR DE GRÁFICOS
+            // ==========================================
+            let tipoGraficoSelecionado = 'pie'; // Começa com Pizza selecionada
+            const cartoesGrafico = document.querySelectorAll('.opcao-grafico');
+
+            // Fica "ouvindo" os cliques nos cartões para mudar a cor para roxo e salvar a escolha
+            cartoesGrafico.forEach(cartao => {
+                cartao.addEventListener('click', () => {
+                    cartoesGrafico.forEach(c => c.classList.remove('ativo')); // Tira o roxo de todos
+                    cartao.classList.add('ativo'); // Bota o roxo no que clicou
+                    tipoGraficoSelecionado = cartao.getAttribute('data-tipo'); // Salva o nome do gráfico
+                });
+            });
+
+            document.getElementById('btn-abrir-modal-grafico').addEventListener('click', () => { document.getElementById('modal-grafico').style.display = 'flex'; });
+            document.getElementById('btn-fechar-grafico').addEventListener('click', () => { document.getElementById('modal-grafico').style.display = 'none'; });
+
+            document.getElementById('btn-gerar-grafico-img').addEventListener('click', () => {
+                const dadosTexto = document.getElementById('dados-grafico').value;
+                
+                const linhas = dadosTexto.split('\n');
+                let labels = [];
+                let valores = [];
+
+                linhas.forEach(linha => {
+                    const partes = linha.split(':');
+                    if(partes.length === 2) {
+                        labels.push(partes[0].trim());
+                        valores.push(Number(partes[1].trim()));
+                    }
+                });
+
+                if(labels.length === 0) {
+                    alert("Por favor, digite os dados no formato 'Nome: Valor'");
+                    return;
+                }
+
+                const configGrafico = {
+                    type: tipoGraficoSelecionado, // USA O QUE FOI CLICADO NOS CARTÕES
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Dados',
+                            data: valores,
+                            backgroundColor: ['#8e44ad', '#3498db', '#2ecc71', '#f1c40f', '#e74c3c', '#9b59b6']
+                        }]
+                    }
+                };
+
+                const configJSON = encodeURIComponent(JSON.stringify(configGrafico));
+                const urlImagem = `https://quickchart.io/chart?c=${configJSON}&w=500&h=300`;
+
+                const htmlGrafico = `<br><img src="${urlImagem}" alt="Gráfico" style="display: block; margin: 10px auto; max-width: 100%;"><br>`;
+                
+                editor.innerHTML += htmlGrafico;
+                editor.dispatchEvent(new Event('input')); 
+                editor.scrollTop = editor.scrollHeight;
+
+                document.getElementById('modal-grafico').style.display = 'none';
+                document.getElementById('dados-grafico').value = '';
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro - Ágora</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-image: url('fundo.png'); background-size: cover; background-position: center; background-repeat: no-repeat; background-attachment: fixed; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
+        .caixa-cadastro { background-color: rgba(255, 255, 255, 0.95); padding: 35px 40px; border-radius: 15px; box-shadow: 0 8px 30px rgba(0,0,0,0.2); width: 100%; max-width: 450px; backdrop-filter: blur(5px); }
+        h2 { text-align: center; color: #2c3e50; margin-bottom: 25px; font-weight: 800; }
+        .campo { margin-bottom: 18px; }
+        label { display: block; margin-bottom: 6px; color: #34495e; font-weight: 600; font-size: 14px; }
+        input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 15px; }
+        input:focus, select:focus { border-color: #8e44ad; outline: none; }
+        .botao-cadastrar { width: 100%; padding: 14px; background-color: #8e44ad; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: background 0.3s; margin-top: 10px; }
+        .botao-cadastrar:hover { background-color: #7d3c98; }
+        .links-extras { text-align: center; margin-top: 20px; font-size: 14px; }
+        .links-extras a { color: #8e44ad; text-decoration: none; font-weight: 600; }
+        .links-extras a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="caixa-cadastro">
+        <h2>Criar Nova Conta</h2>
+        
+        <div>
+            <div class="campo">
+                <label for="nome">Nome Completo</label>
+                <input type="text" id="nome" placeholder="Digite seu nome">
+            </div>
+            <div class="campo">
+                <label for="email">E-mail</label>
+                <input type="email" id="email" placeholder="nome@instituicao.edu.br">
+            </div>
+            <div class="campo">
+                <label for="nivel">Nível de Estudo</label>
+                <select id="nivel">
+                    <option value="" disabled selected>Selecione uma opção...</option>
+                    <option value="medio">Ensino Médio</option>
+                    <option value="faculdade">Faculdade / Ensino Superior</option>
+                </select>
+            </div>
+            <div class="campo">
+                <label for="senha">Crie uma Senha</label>
+                <input type="password" id="senha" placeholder="Mínimo de 6 caracteres">
+            </div>
+            <button id="btn-cadastrar" class="botao-cadastrar">Finalizar Cadastro</button>
+        </div>
+        
+        <div class="links-extras">
+            Já tem uma conta? <a href="index.html">Faça Login aqui</a>
+        </div>
+    </div>
+
+    <script type="module">
+        // 1. Importando as ferramentas do Google
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+
+        // =========================================================
+        // 🚨 COPIE E COLE AS SUAS CHAVES AQUI DENTRO (Substitua os textos):
+        const firebaseConfig = {
+            apiKey: "AIzaSyCrO7jKe3ja8XJWeNTfTpv4wwEWwzzcYzo",
+            authDomain: "agora-ea1be.firebaseapp.com",
+            projectId: "agora-ea1be",
+            storageBucket: "agora-ea1be.firebasestorage.app",
+            messagingSenderId: "801313514193",
+            appId: "1:801313514193:web:99621b133ed4ca80e89bf0"
+        };
+        // =========================================================
+
+        // 2. Ligando os motores do Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // 3. O que acontece quando clica no botão
+        document.getElementById('btn-cadastrar').addEventListener('click', function(event) {
+            event.preventDefault(); // Impede a tela de piscar
+
+            const emailDigitado = document.getElementById('email').value;
+            const senhaDigitada = document.getElementById('senha').value;
+
+            // O Firebase exige senhas com pelo menos 6 caracteres
+            if(senhaDigitada.length < 6) {
+                alert("A senha precisa ter pelo menos 6 caracteres!");
+                return;
+            }
+
+            // O comando mágico que cria o usuário lá no Google
+            createUserWithEmailAndPassword(auth, emailDigitado, senhaDigitada)
+            .then((userCredential) => {
+                // Deu certo!
+                alert("CONTA CRIADA COM SUCESSO NO FIREBASE! 🎉");
+                window.location.href = 'index.html'; // Manda pro login
+            })
+            .catch((error) => {
+                // Deu erro (ex: email já existe, email inválido)
+                alert("Erro ao criar conta: " + error.message);
+            });
+        });
+    </script>
+</body>
+</html>
