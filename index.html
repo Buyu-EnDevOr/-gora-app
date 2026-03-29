@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ágora - A sua Plataforma Académica</title>
     <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#1a252f">
+    <meta name="theme-color" content="#1a252f">
     <style>
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
@@ -14,7 +14,6 @@
             justify-content: center; 
             align-items: center; 
             height: 100vh; 
-            /* A MAGIA DO FUNDO VOLTOU AQUI */
             background-image: url('fundo.png'); 
             background-size: cover; 
             background-position: center; 
@@ -29,7 +28,8 @@
             width: 100%; 
             max-width: 400px; 
             text-align: center; 
-            backdrop-filter: blur(8px); /* Deixa o fundo levemente desfocado atrás da caixa */
+            backdrop-filter: blur(8px); 
+            box-sizing: border-box; /* Garante que o padding não aumente o tamanho da caixa */
         }
         
         .logo { font-size: 32px; font-weight: 900; color: #8e44ad; margin-bottom: 10px; letter-spacing: 1px; }
@@ -40,10 +40,10 @@
         .grupo-input input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; outline: none; transition: 0.3s; font-size: 14px; background-color: rgba(255,255,255,0.9); }
         .grupo-input input:focus { border-color: #8e44ad; box-shadow: 0 0 0 3px rgba(142, 68, 173, 0.1); }
 
-        .btn-principal { width: 100%; background: #8e44ad; color: white; border: none; padding: 14px; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        .btn-principal { width: 100%; background: #8e44ad; color: white; border: none; padding: 14px; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.3s; margin-top: 10px; box-sizing: border-box; }
         .btn-principal:hover { background: #7d3c98; transform: translateY(-2px); }
         
-        .btn-secundario { width: 100%; background: transparent; color: #8e44ad; border: 2px solid #8e44ad; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 15px; cursor: pointer; transition: 0.3s; margin-top: 15px; }
+        .btn-secundario { width: 100%; background: transparent; color: #8e44ad; border: 2px solid #8e44ad; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 15px; cursor: pointer; transition: 0.3s; margin-top: 15px; box-sizing: border-box; }
         .btn-secundario:hover { background: #f5f0fa; }
 
         .link-esqueci { display: block; margin-top: 15px; font-size: 13px; color: #3498db; text-decoration: none; cursor: pointer; }
@@ -53,12 +53,43 @@
 
         /* MODAL DE RECUPERAÇÃO DE PALAVRA-PASSE */
         .fundo-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(3px); }
-        .caixa-modal { background: white; padding: 30px; border-radius: 15px; width: 100%; max-width: 350px; text-align: left; }
+        .caixa-modal { background: white; padding: 30px; border-radius: 15px; width: 100%; max-width: 350px; text-align: left; box-sizing: border-box; }
         .caixa-modal h2 { margin-top: 0; color: #2c3e50; font-size: 20px; }
         .caixa-modal p { color: #7f8c8d; font-size: 14px; line-height: 1.5; margin-bottom: 20px; }
         .botoes-modal { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
         .btn-cancelar { background: #ecf0f1; color: #2c3e50; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; }
         .btn-enviar-reset { background: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+
+        /* ========================================= */
+        /* 📱 MODO CELULAR (Telas menores que 768px) */
+        /* ========================================= */
+        @media (max-width: 768px) {
+            .caixa-login {
+                width: 90%; /* Deixa uma bordinha nas laterais do celular */
+                padding: 25px; /* Reduz o espaço em branco dentro da caixa */
+            }
+            .logo { 
+                font-size: 28px; /* Logo um pouco mais discreta */
+            }
+            .grupo-input input { 
+                font-size: 16px; /* Evita o zoom automático da tela ao digitar */
+                padding: 14px; 
+            }
+            .btn-principal, .btn-secundario {
+                padding: 15px; /* Botões mais fáceis de clicar */
+            }
+            .caixa-modal {
+                width: 90%;
+                padding: 20px;
+            }
+            .botoes-modal {
+                flex-direction: column; /* Empilha os botões no modal para não espremer */
+                gap: 15px;
+            }
+            .btn-cancelar, .btn-enviar-reset {
+                width: 100%; /* Estica os botões do modal */
+            }
+        }
     </style>
 </head>
 <body>
