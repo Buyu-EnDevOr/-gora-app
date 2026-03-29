@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Documento Pro - Ágora</title>
+    <title>Editor de Textos Pro - Ágora</title>
     
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
-    
     <script src="https://meet.jit.si/external_api.js"></script>
 
     <style>
@@ -18,19 +17,26 @@
         /* ========================================== */
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; display: flex; flex-direction: column; background-color: #e2e8f0; height: 100vh; overflow: hidden; transition: 0.3s; }
         
-        .barra-superior { background-color: #111827; height: 60px; display: flex; justify-content: space-between; align-items: center; padding: 0 15px; border-bottom: 1px solid #1f2937; z-index: 100; transition: 0.3s; flex-shrink: 0; }
-        .area-info { display: flex; align-items: center; gap: 10px; width: 220px; flex-shrink: 0;}
-        .area-info h1 { margin: 0; font-size: 16px; color: #f8fafc; display: flex; align-items: center; gap: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        /* O SISTEMA DE BARRAS DINÂMICAS */
+        .container-barras { position: relative; width: 100%; height: 60px; background-color: #111827; border-bottom: 1px solid #1f2937; z-index: 100; flex-shrink: 0; }
+        .barra-superior { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; justify-content: space-between; align-items: center; padding: 0 15px; box-sizing: border-box; transition: opacity 0.3s, transform 0.3s; opacity: 1; transform: translateY(0); pointer-events: auto; }
+        .barra-superior.escondida { opacity: 0; transform: translateY(-10px); pointer-events: none; }
+        
+        .area-info { display: flex; align-items: center; gap: 10px; min-width: 200px; flex-shrink: 0;}
+        .area-info h1 { margin: 0; font-size: 16px; color: #f8fafc; display: flex; align-items: center; gap: 5px; white-space: nowrap; }
         .status-nuvem { font-size: 11px; color: #94a3b8; font-weight: bold; }
         
-        .area-menus { display: flex; gap: 10px; align-items: center; flex-grow: 1; justify-content: flex-start; }
+        .area-menus { display: flex; gap: 5px; align-items: center; flex-grow: 1; justify-content: flex-start; overflow-x: auto;}
+        .area-menus::-webkit-scrollbar { display: none; }
         .area-acoes { display: flex; gap: 8px; align-items: center; justify-content: flex-end; flex-shrink: 0;}
+        
+        .divisor-vertical { width: 1px; height: 25px; background-color: #334155; margin: 0 10px; }
 
-        /* BOTÕES DA BARRA SUPERIOR */
-        .btn-solto { background: transparent; border: none; color: #cbd5e1; padding: 8px 12px; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 4px; transition: 0.2s; }
+        /* ESTILOS DE BOTÕES DA BARRA (Copiados do seu Slides) */
+        .btn-solto { background: transparent; border: none; color: #cbd5e1; padding: 8px 12px; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 4px; transition: 0.2s; white-space: nowrap;}
         .btn-solto:hover { background: #1e293b; color: white; }
         .btn-solto.ativo { background: #8e44ad; color: white; }
-
+        
         .btn-icone { background: transparent; border: none; color: #cbd5e1; cursor: pointer; border-radius: 6px; padding: 6px; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
         .btn-icone:hover { background-color: #334155; color: white; }
         .btn-texto { background: #334155; border: none; color: white; padding: 6px 12px; border-radius: 6px; font-weight: bold; font-size: 12px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 4px; }
@@ -38,45 +44,15 @@
         .btn-acao-destaque { background: #8e44ad; color: white; }
         .btn-acao-destaque:hover { background: #7d3c98; }
 
-        /* ========================================== */
-        /* ÁREA DE EDIÇÃO DE TEXTO (QUILL)            */
-        /* ========================================== */
-        .area-trabalho { flex-grow: 1; display: flex; position: relative; overflow: hidden; background-color: #e2e8f0; flex-direction: column;}
-        
-        /* Modificando a Toolbar nativa do Quill para ficar Escura e Integrada */
-        .ql-toolbar.ql-snow {
-            background-color: #1e293b;
-            border: none;
-            border-bottom: 1px solid #0f172a;
-            padding: 10px;
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            z-index: 50;
-        }
-        /* Colorindo ícones do Quill para branco no tema escuro */
-        .ql-snow .ql-stroke { stroke: #cbd5e1; }
-        .ql-snow .ql-fill { fill: #cbd5e1; }
-        .ql-snow .ql-picker { color: #cbd5e1; }
-        .ql-snow .ql-picker-options { background-color: #1e293b; border-color: #334155; color: white; }
-        .ql-toolbar.ql-snow button:hover, .ql-toolbar.ql-snow button:focus, .ql-toolbar.ql-snow button.ql-active,
-        .ql-toolbar.ql-snow .ql-picker-label:hover, .ql-toolbar.ql-snow .ql-picker-label.ql-active,
-        .ql-toolbar.ql-snow .ql-picker-item:hover, .ql-toolbar.ql-snow .ql-picker-item.ql-selected {
-            color: #c084fc;
-        }
-        .ql-toolbar.ql-snow button:hover .ql-stroke, .ql-toolbar.ql-snow button.ql-active .ql-stroke,
-        .ql-toolbar.ql-snow .ql-picker-label:hover .ql-stroke, .ql-toolbar.ql-snow .ql-picker-label.ql-active .ql-stroke {
-            stroke: #c084fc;
-        }
-        .ql-toolbar.ql-snow button:hover .ql-fill, .ql-toolbar.ql-snow button.ql-active .ql-fill,
-        .ql-toolbar.ql-snow .ql-picker-label:hover .ql-fill, .ql-toolbar.ql-snow .ql-picker-label.ql-active .ql-fill {
-            fill: #c084fc;
-        }
+        .caixa-select { padding: 6px; border-radius: 6px; border: 1px solid #475569; background: #0f172a; color: white; outline: none; cursor: pointer; font-size: 12px; }
+        .entrada-cor { border: none; padding: 0; width: 24px; height: 24px; cursor: pointer; background: transparent; border-radius: 50%; overflow: hidden; }
 
+        /* ========================================== */
+        /* ÁREA DE EDIÇÃO (A FOLHA DE PAPEL)          */
+        /* ========================================== */
+        .area-trabalho { flex-grow: 1; display: flex; position: relative; overflow: hidden; background-color: #e2e8f0;}
         .container-editor-scroll { flex-grow: 1; overflow-y: auto; display: flex; justify-content: center; padding: 40px 20px; transition: 0.3s;}
         
-        /* A "Folha de Papel" */
         #editor-container { 
             background: white; 
             width: 100%; 
@@ -84,14 +60,13 @@
             min-height: 1000px; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
             border: none !important; 
-            border-radius: 4px;
             transition: background 0.3s, color 0.3s;
         }
         .ql-container { font-size: 16px; font-family: 'Arial', sans-serif; border: none !important;}
         .ql-editor { padding: 60px 80px; line-height: 1.6; min-height: 1000px; color: #2c3e50;}
 
         /* ========================================== */
-        /* GAVETAS LATERAIS (CHAT)                    */
+        /* CHAT LATERAL E VÍDEO (Do seu Slides)       */
         /* ========================================== */
         .gaveta-lateral { width: 320px; background-color: white; box-shadow: -5px 0 25px rgba(0,0,0,0.05); display: flex; flex-direction: column; transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); position: absolute; right: 0; top: 0; height: 100%; z-index: 90; border-left: 1px solid #eee; transform: translateX(100%); }
         .gaveta-lateral.aberto { transform: translateX(0); }
@@ -103,17 +78,14 @@
         .mensagem-linha.minha { flex-direction: row-reverse; }
         .foto-perfil-chat { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; border: 1px solid #ddd; }
         .msg { padding: 10px 15px; border-radius: 15px; font-size: 13px; word-wrap: break-word; max-width: 80%; margin: 0;}
-        .msg-outro { background-color: #ecf0f1; border-bottom-left-radius: 2px; color: #2c3e50;}
-        .msg-minha { background-color: #8e44ad; color: white; border-bottom-right-radius: 2px; }
+        .msg-outro { background-color: #ecf0f1; color: #2c3e50;}
+        .msg-minha { background-color: #8e44ad; color: white; }
         .nome-user { font-size: 10px; color: #7f8c8d; margin-bottom: 3px; display: block; }
         .mensagem-linha.minha .nome-user { text-align: right; }
         .caixa-digitar { padding: 15px; border-top: 1px solid #eee; display: flex; gap: 10px; background: white; }
         .caixa-digitar input { flex-grow: 1; padding: 10px 15px; border-radius: 20px; border: 1px solid #ddd; outline: none; font-size: 13px; }
         .btn-enviar { background: #8e44ad; color: white; border: none; width: 38px; height: 38px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;}
 
-        /* ========================================== */
-        /* CÂMERA DE VÍDEO FLUTUANTE                  */
-        /* ========================================== */
         .container-video { position: fixed; bottom: 20px; left: 20px; width: 350px; height: 400px; background: white; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); display: flex; flex-direction: column; overflow: hidden; z-index: 9999; border: 1px solid #ddd; transition: height 0.3s, width 0.3s; }
         .container-video.escondido { display: none; }
         .container-video.minimizado { height: 45px !important; }
@@ -124,10 +96,10 @@
         /* ========================================== */
         /* MODO NOTURNO (Dark Mode "Folha Preta")     */
         /* ========================================== */
+        body.dark-mode { background-color: #121212; }
         body.dark-mode .container-editor-scroll { background-color: #121212; }
-        body.dark-mode #editor-container { background: #1e1e1e; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        body.dark-mode .ql-editor { color: #f8fafc; } /* Letras Brancas */
-        body.dark-mode .ql-editor::before { color: #64748b; } /* Placeholder */
+        body.dark-mode #editor-container { background: #1e1e1e; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+        body.dark-mode .ql-editor { color: #f8fafc; } /* Tinta Branca */
         
         body.dark-mode .gaveta-lateral, body.dark-mode .caixa-digitar { background-color: #1e1e1e; border-color: #333;}
         body.dark-mode .mensagens { background-color: #121212; }
@@ -136,7 +108,7 @@
         body.dark-mode .titulo-gaveta { color: white; }
 
         /* ========================================== */
-        /* MODAIS E RESPONSIVIDADE                    */
+        /* MODAIS                                     */
         /* ========================================== */
         .fundo-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 5000; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; backdrop-filter: blur(5px);}
         .caixa-modal { background: white; padding: 30px; border-radius: 15px; width: 100%; max-width: 450px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 50px rgba(0,0,0,0.2);}
@@ -146,59 +118,112 @@
         .btn-add { background: #27ae60; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; }
         .lista-membros { max-height: 150px; overflow-y: auto; border: 1px solid #eee; border-radius: 8px; padding: 10px; margin-bottom: 20px; }
         .membro-item { display: flex; justify-content: space-between; padding: 8px; border-bottom: 1px solid #f5f5f5; font-size: 14px; }
-        
-        .grid-modelos { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 15px; }
-        .cartao-modelo { border: 2px solid #ecf0f1; border-radius: 8px; padding: 15px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 15px; }
-        .cartao-modelo:hover { border-color: #8e44ad; background: #fdfafb; transform: translateY(-2px); }
-        .texto-modelo h3 { margin: 0 0 5px 0; font-size: 15px; color: #2c3e50; }
-        .texto-modelo p { margin: 0; font-size: 12px; color: #7f8c8d; }
-
         .btn-fechar-modal { width: 100%; background: #ecf0f1; color: #2c3e50; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s;}
         
         body.dark-mode .caixa-modal { background: #1e293b; color: white; }
         body.dark-mode .linha-add input, body.dark-mode .linha-add select { background: #0f172a; border-color: #334155; color: white;}
         body.dark-mode .btn-fechar-modal { background: #334155; color: white; }
-        body.dark-mode .cartao-modelo { border-color: #334155; }
-        body.dark-mode .cartao-modelo:hover { background: #0f172a; border-color: #8e44ad;}
-        body.dark-mode .texto-modelo h3 { color: white; }
-
-        @media (max-width: 768px) {
-            .barra-superior { height: auto; flex-direction: column; align-items: stretch; gap: 10px; padding: 10px; }
-            .area-info { width: 100%; justify-content: space-between; }
-            .status-nuvem { display: block; }
-            .area-menus { flex-wrap: wrap; justify-content: space-between; width: 100%;}
-            .area-acoes { width: 100%; justify-content: space-between; }
-            .ql-editor { padding: 20px; }
-            .gaveta-lateral { width: 85%; } 
-            .container-video { width: 90%; left: 5%; bottom: 10px; height: 350px; }
-        }
     </style>
 </head>
 <body>
 
-    <div class="barra-superior">
-        <div class="area-info">
-            <span class="material-symbols-outlined" style="color: #8e44ad;">description</span>
-            <h1 id="titulo-projeto-topo">Carregando...</h1>
-            <span id="status-nuvem" class="status-nuvem">☁️</span>
-        </div>
-
-        <div class="area-menus">
-            <button class="btn-solto" id="btn-abrir-modelos"><span class="material-symbols-outlined" style="font-size:16px;">auto_awesome</span> Modelos Prontos</button>
-            <button class="btn-solto" id="btn-tema-quadro" title="Trocar fundo do papel"><span class="material-symbols-outlined" style="font-size:16px;">dark_mode</span> Modo Escuro</button>
-            <button class="btn-solto" onclick="window.print()" title="Salvar em PDF ou Imprimir"><span class="material-symbols-outlined" style="font-size:16px;">print</span> Imprimir / PDF</button>
-        </div>
-
-        <div class="area-acoes">
-            <button id="btn-abrir-equipe" class="btn-icone" title="Gerenciar Equipe"><span class="material-symbols-outlined">group</span></button>
-            <button id="btn-reabrir-chat" class="btn-texto btn-acao-destaque"><span class="material-symbols-outlined" style="font-size:16px;">forum</span> Chat</button>
-            <button id="btn-sair-esc" class="btn-texto btn-sair" title="Sair do Projeto"><span class="material-symbols-outlined" style="font-size:16px;">close</span></button>
-        </div>
-    </div>
-
-    <div class="area-trabalho">
+    <div class="container-barras">
         
-        <div id="editor-toolbar"></div>
+        <div class="barra-superior" id="barra-principal">
+            <div class="area-info">
+                <span class="material-symbols-outlined" style="color: #8e44ad;">description</span>
+                <h1 id="titulo-projeto-topo">Carregando...</h1>
+                <span id="status-nuvem" class="status-nuvem">☁️</span>
+            </div>
+            
+            <div class="area-menus">
+                <button class="btn-solto" onclick="mostrarBarra('barra-texto')"><span class="material-symbols-outlined">text_format</span> Formatar Texto</button>
+                <button class="btn-solto" onclick="mostrarBarra('barra-paragrafo')"><span class="material-symbols-outlined">format_align_left</span> Parágrafo & Listas</button>
+                <button class="btn-solto" onclick="mostrarBarra('barra-inserir')"><span class="material-symbols-outlined">add_circle</span> Inserir Mídia</button>
+                <button class="btn-solto" onclick="document.getElementById('modal-modelos').style.display='flex'"><span class="material-symbols-outlined">auto_awesome</span> Modelos</button>
+                <button class="btn-solto" id="btn-tema-quadro"><span class="material-symbols-outlined">dark_mode</span> Modo Escuro</button>
+            </div>
+
+            <div class="area-acoes">
+                <button class="btn-texto" onclick="window.print()"><span class="material-symbols-outlined" style="font-size:16px;">print</span> Salvar PDF</button>
+                <button id="btn-abrir-equipe" class="btn-icone" title="Gerenciar Equipe"><span class="material-symbols-outlined">group</span></button>
+                <button id="btn-reabrir-chat" class="btn-texto btn-acao-destaque"><span class="material-symbols-outlined" style="font-size:16px;">forum</span> Chat</button>
+                <button id="btn-sair-esc" class="btn-texto btn-sair" title="Sair do Projeto"><span class="material-symbols-outlined" style="font-size:16px;">close</span></button>
+            </div>
+        </div>
+
+        <div class="barra-superior escondida" id="barra-texto">
+            <div class="area-menus">
+                <button class="btn-solto" onclick="mostrarBarra('barra-principal')"><span class="material-symbols-outlined">arrow_back</span> Voltar</button>
+                <div class="divisor-vertical"></div>
+                
+                <select class="caixa-select" onchange="aplicarFormato('header', this.value)">
+                    <option value="">Normal</option>
+                    <option value="1">Título 1 (Gigante)</option>
+                    <option value="2">Título 2</option>
+                    <option value="3">Título 3</option>
+                </select>
+                <select class="caixa-select" onchange="aplicarFormato('font', this.value)">
+                    <option value="">Fonte Padrão</option>
+                    <option value="serif">Serif (Times)</option>
+                    <option value="monospace">Monospace (Código)</option>
+                </select>
+                <div class="divisor-vertical"></div>
+                
+                <button class="btn-icone" onclick="aplicarFormato('bold')" title="Negrito"><span class="material-symbols-outlined">format_bold</span></button>
+                <button class="btn-icone" onclick="aplicarFormato('italic')" title="Itálico"><span class="material-symbols-outlined">format_italic</span></button>
+                <button class="btn-icone" onclick="aplicarFormato('underline')" title="Sublinhado"><span class="material-symbols-outlined">format_underlined</span></button>
+                <button class="btn-icone" onclick="aplicarFormato('strike')" title="Riscado"><span class="material-symbols-outlined">strikethrough_s</span></button>
+                <div class="divisor-vertical"></div>
+                
+                <span style="color:#cbd5e1; font-size: 12px;">Cor:</span>
+                <input type="color" class="entrada-cor" onchange="aplicarFormato('color', this.value)" title="Cor da Letra">
+                <span style="color:#cbd5e1; font-size: 12px; margin-left: 10px;">Fundo:</span>
+                <input type="color" class="entrada-cor" onchange="aplicarFormato('background', this.value)" title="Cor de Fundo">
+            </div>
+            <div class="area-acoes">
+                <button class="btn-texto" onclick="quill.history.undo()"><span class="material-symbols-outlined" style="font-size:16px;">undo</span> Desfazer</button>
+                <button class="btn-texto" onclick="quill.history.redo()"><span class="material-symbols-outlined" style="font-size:16px;">redo</span> Refazer</button>
+            </div>
+        </div>
+
+        <div class="barra-superior escondida" id="barra-paragrafo">
+            <div class="area-menus">
+                <button class="btn-solto" onclick="mostrarBarra('barra-principal')"><span class="material-symbols-outlined">arrow_back</span> Voltar</button>
+                <div class="divisor-vertical"></div>
+                
+                <button class="btn-icone" onclick="aplicarFormato('align', '')" title="Esquerda"><span class="material-symbols-outlined">format_align_left</span></button>
+                <button class="btn-icone" onclick="aplicarFormato('align', 'center')" title="Centro"><span class="material-symbols-outlined">format_align_center</span></button>
+                <button class="btn-icone" onclick="aplicarFormato('align', 'right')" title="Direita"><span class="material-symbols-outlined">format_align_right</span></button>
+                <button class="btn-icone" onclick="aplicarFormato('align', 'justify')" title="Justificado"><span class="material-symbols-outlined">format_align_justify</span></button>
+                <div class="divisor-vertical"></div>
+                
+                <button class="btn-icone" onclick="aplicarFormato('list', 'ordered')" title="Lista Numerada"><span class="material-symbols-outlined">format_list_numbered</span></button>
+                <button class="btn-icone" onclick="aplicarFormato('list', 'bullet')" title="Lista de Pontos"><span class="material-symbols-outlined">format_list_bulleted</span></button>
+                <div class="divisor-vertical"></div>
+                
+                <button class="btn-icone" onclick="quill.format('indent', '-1')" title="Diminuir Recuo"><span class="material-symbols-outlined">format_indent_decrease</span></button>
+                <button class="btn-icone" onclick="quill.format('indent', '+1')" title="Aumentar Recuo"><span class="material-symbols-outlined">format_indent_increase</span></button>
+                <div class="divisor-vertical"></div>
+                
+                <button class="btn-icone" onclick="aplicarFormato('blockquote')" title="Citação"><span class="material-symbols-outlined">format_quote</span></button>
+                <button class="btn-icone" onclick="aplicarFormato('code-block')" title="Bloco de Código"><span class="material-symbols-outlined">code</span></button>
+            </div>
+        </div>
+
+        <div class="barra-superior escondida" id="barra-inserir">
+            <div class="area-menus">
+                <button class="btn-solto" onclick="mostrarBarra('barra-principal')"><span class="material-symbols-outlined">arrow_back</span> Voltar</button>
+                <div class="divisor-vertical"></div>
+                
+                <button class="btn-solto" onclick="inserirLink()"><span class="material-symbols-outlined">link</span> Link (URL)</button>
+                <button class="btn-solto" id="btn-upload-imagem"><span class="material-symbols-outlined">image</span> Inserir Imagem</button>
+                <input type="file" id="input-imagem-firebase" accept="image/*" style="display: none;">
+                <button class="btn-solto" onclick="inserirVideo()"><span class="material-symbols-outlined">smart_display</span> Inserir Vídeo (YouTube)</button>
+            </div>
+        </div>
+
+    </div> <div class="area-trabalho">
         
         <div class="container-editor-scroll">
             <div id="editor-container"></div>
@@ -237,45 +262,24 @@
             <h2 style="margin-top:0;"><span class="material-symbols-outlined" style="vertical-align: middle;">group</span> Equipe do Projeto</h2>
             <div class="linha-add">
                 <input type="email" id="email-convidado" placeholder="E-mail do colega">
-                <select id="cargo-convidado">
-                    <option value="editor">Editor</option>
-                    <option value="leitor">Leitor</option>
-                    <option value="admin">Admin</option>
-                </select>
+                <select id="cargo-convidado"><option value="editor">Editor</option><option value="leitor">Leitor</option><option value="admin">Admin</option></select>
                 <button id="btn-add-membro" class="btn-add">Convidar</button>
             </div>
             <p style="font-size: 12px; font-weight: bold; color:#7f8c8d; border-bottom: 1px solid #eee; padding-bottom: 5px;">MEMBROS ATUAIS</p>
             <div class="lista-membros" id="lista-membros"></div>
-            
             <input type="text" id="link-gerado" readonly style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 12px;">
             <button id="btn-copiar-link" class="btn-add" style="width: 100%; background: #3498db; margin-bottom: 20px;">Copiar Link da Sala</button>
-
             <button class="btn-fechar-modal" onclick="document.getElementById('modal-equipe').style.display='none'">Fechar</button>
         </div>
     </div>
 
     <div class="fundo-modal" id="modal-modelos">
         <div class="caixa-modal">
-            <h2 style="margin-top:0;"><span class="material-symbols-outlined" style="vertical-align: middle;">auto_awesome</span> Injetar Modelo Prontos</h2>
-            <p style="font-size: 13px; color: #7f8c8d; margin-top: -5px;">Aviso: Ao clicar em um modelo, o texto atual será substituído.</p>
-            
+            <h2 style="margin-top:0;"><span class="material-symbols-outlined" style="vertical-align: middle;">auto_awesome</span> Modelos Prontos</h2>
             <div class="grid-modelos">
-                <div class="cartao-modelo" onclick="aplicarModelo('ata')">
-                    <div style="background: #f5f0fa; color: #8e44ad; padding: 10px; border-radius: 8px;"><span class="material-symbols-outlined">groups</span></div>
-                    <div class="texto-modelo">
-                        <h3>Ata de Reunião</h3>
-                        <p>Estrutura para registrar discussões.</p>
-                    </div>
-                </div>
-                <div class="cartao-modelo" onclick="aplicarModelo('abnt')">
-                    <div style="background: #f5f0fa; color: #8e44ad; padding: 10px; border-radius: 8px;"><span class="material-symbols-outlined">format_align_justify</span></div>
-                    <div class="texto-modelo">
-                        <h3>Capa Padrão (ABNT)</h3>
-                        <p>Modelo simples de capa universitária.</p>
-                    </div>
-                </div>
+                <div class="cartao-modelo" onclick="aplicarModeloPronto('ata')">Ata de Reunião</div>
+                <div class="cartao-modelo" onclick="aplicarModeloPronto('abnt')">Capa ABNT</div>
             </div>
-            
             <button class="btn-fechar-modal" style="margin-top: 20px;" onclick="document.getElementById('modal-modelos').style.display='none'">Cancelar</button>
         </div>
     </div>
@@ -286,133 +290,139 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
         import { getFirestore, doc, onSnapshot, updateDoc, collection, addDoc, query, orderBy, arrayUnion } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-storage.js";
 
         const firebaseConfig = { apiKey: "AIzaSyCrO7jKe3ja8XJWeNTfTpv4wwEWwzzcYzo", authDomain: "agora-ea1be.firebaseapp.com", projectId: "agora-ea1be", storageBucket: "agora-ea1be.firebasestorage.app", messagingSenderId: "801313514193", appId: "1:801313514193:web:99621b133ed4ca80e89bf0" };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
+        const storage = getStorage(app);
 
         const idProjeto = new URLSearchParams(window.location.search).get('id');
-        if (!idProjeto) { alert("Erro de sala!"); window.location.href = "dashboard.html"; }
+        if (!idProjeto) { window.location.href = "dashboard.html"; }
 
         let meuNome = "Anônimo", meuEmail = "", minhaFoto = "", meuCargo = "leitor";
         let carregamentoInicial = true, isAtualizandoPelaNuvem = false, timeoutSalvar;
 
-        // INICIALIZA O QUILL COM TODAS AS OPÇÕES POSSÍVEIS
-        var quill = new Quill('#editor-container', {
+        // SISTEMA DE TROCA DE BARRAS DINÂMICA
+        window.mostrarBarra = function(idBarra) {
+            document.querySelectorAll('.container-barras .barra-superior').forEach(b => b.classList.add('escondida'));
+            document.getElementById(idBarra).classList.remove('escondida');
+        }
+
+        // INICIALIZA O QUILL (Sem a barra nativa!)
+        window.quill = new Quill('#editor-container', {
             theme: 'snow',
             placeholder: 'Comece a digitar o documento da sua equipe...',
-            modules: {
-                toolbar: [
-                    [{ 'font': [] }, { 'size': ['small', false, 'large', 'huge'] }], // Fontes e Tamanhos
-                    [{ 'header': [1, 2, 3, 4, 5, 6, false] }], // Títulos
-                    ['bold', 'italic', 'underline', 'strike'], // Estilos básicos
-                    [{ 'color': [] }, { 'background': [] }], // Cores
-                    [{ 'script': 'sub'}, { 'script': 'super' }], // Subscrito e Sobrescrito
-                    [{ 'header': 1 }, { 'header': 2 }, 'blockquote', 'code-block'], // Blocos
-                    [{ 'list': 'ordered'}, { 'list': 'bullet' }], // Listas
-                    [{ 'indent': '-1'}, { 'indent': '+1' }], // Indentação
-                    [{ 'direction': 'rtl' }, { 'align': [] }], // Alinhamento e Direção
-                    ['link', 'image', 'video', 'formula'], // Mídia
-                    ['clean'] // Limpar Formatação
-                ]
-            }
+            modules: { toolbar: false, history: { delay: 1000, maxStack: 500, userOnly: true } }
         });
 
-        // AÇÕES DA BARRA SUPERIOR E GAVETAS
+        // APLICAR FORMATOS CUSTOMIZADOS NA FOLHA
+        window.aplicarFormato = function(formato, valor = null) {
+            if(meuCargo === 'leitor') return;
+            const formatoAtual = quill.getFormat()[formato];
+            if(valor === null) {
+                quill.format(formato, !formatoAtual); // Liga/Desliga (Ex: Negrito)
+            } else {
+                quill.format(formato, formatoAtual === valor ? false : valor); // Aplica cor/fonte
+            }
+        }
+
+        // UPLOAD DE IMAGEM PARA O FIREBASE DIRETO NO TEXTO
+        document.getElementById('btn-upload-imagem').addEventListener('click', () => document.getElementById('input-imagem-firebase').click());
+        document.getElementById('input-imagem-firebase').addEventListener('change', async function(e) {
+            const file = e.target.files[0]; if (!file || meuCargo === 'leitor') return;
+            document.getElementById('btn-upload-imagem').innerHTML = "⏳ Enviando...";
+            const storageRef = ref(storage, `projetos/${idProjeto}/imagens_texto/${Date.now()}_${file.name}`);
+            try { 
+                await uploadBytes(storageRef, file); 
+                const url = await getDownloadURL(storageRef); 
+                const range = quill.getSelection(true);
+                quill.insertEmbed(range.index, 'image', url);
+                document.getElementById('btn-upload-imagem').innerHTML = '<span class="material-symbols-outlined">image</span> Inserir Imagem'; 
+            } catch (error) { alert("Erro ao enviar imagem."); }
+            this.value = ''; 
+        });
+
+        window.inserirLink = function() {
+            let url = prompt("Cole o link aqui:");
+            if (url) quill.format('link', url);
+        }
+        window.inserirVideo = function() {
+            let url = prompt("Cole o link do YouTube:");
+            if (url) { const range = quill.getSelection(true); quill.insertEmbed(range.index, 'video', url); }
+        }
+
+        // ==========================================
+        // LÓGICA DO RESTO DO SISTEMA (Firebase, Chat, Tema)
+        // ==========================================
         document.getElementById('btn-sair-esc').addEventListener('click', () => { window.location.href = "dashboard.html"; });
         
         const caixaChat = document.getElementById('caixa-do-chat');
         document.getElementById('btn-reabrir-chat').addEventListener('click', () => { caixaChat.classList.add('aberto'); });
         document.getElementById('btn-minimizar-chat').addEventListener('click', () => { caixaChat.classList.remove('aberto'); });
         
-        // LÓGICA DO MODO ESCURO
         const btnTema = document.getElementById('btn-tema-quadro');
         let isDark = localStorage.getItem('tema-agora') === 'escuro';
         if(isDark) document.body.classList.add('dark-mode');
         
         btnTema.addEventListener('click', () => {
             isDark = !isDark;
-            if(isDark) {
-                document.body.classList.add('dark-mode');
-                localStorage.setItem('tema-agora', 'escuro');
-            } else {
-                document.body.classList.remove('dark-mode');
-                localStorage.setItem('tema-agora', 'claro');
-            }
+            if(isDark) { document.body.classList.add('dark-mode'); localStorage.setItem('tema-agora', 'escuro'); } 
+            else { document.body.classList.remove('dark-mode'); localStorage.setItem('tema-agora', 'claro'); }
         });
 
-        // CÂMERA JITSI
+        // VÍDEO E ARRASTAR
         let apiJitsi = null; const containerVideo = document.getElementById('container-video');
         document.getElementById('btn-iniciar-chamada').addEventListener('click', () => { containerVideo.classList.remove('escondido'); if(!apiJitsi) { apiJitsi = new JitsiMeetExternalAPI('meet.jit.si', { roomName: 'agora-' + idProjeto, width: '100%', height: '100%', parentNode: document.querySelector('#jitsi-iframe'), userInfo: { displayName: meuNome, avatarURL: minhaFoto } }); } });
         document.getElementById('btn-fechar-video').addEventListener('click', () => { containerVideo.classList.add('escondido'); if(apiJitsi) { apiJitsi.dispose(); apiJitsi = null; } });
         document.getElementById('btn-minimizar-video').addEventListener('click', () => containerVideo.classList.toggle('minimizado'));
         document.getElementById('btn-expandir-video').addEventListener('click', () => containerVideo.classList.toggle('tela-cheia'));
         
-        // Arrastar Câmera
         const cabecalhoDrag = document.getElementById('cabecalho-drag'); let isDraggingVid = false, offsetXVid, offsetYVid;
-        const startDragVid = (e) => { if(e.target.tagName === 'BUTTON' || e.target.closest('button')) return; isDraggingVid = true; const ref = e.touches ? e.touches[0] : e; offsetXVid = ref.clientX - containerVideo.getBoundingClientRect().left; offsetYVid = ref.clientY - containerVideo.getBoundingClientRect().top; };
-        const moveDragVid = (e) => { if(!isDraggingVid) return; const ref = e.touches ? e.touches[0] : e; containerVideo.style.left = (ref.clientX - offsetXVid) + 'px'; containerVideo.style.top = (ref.clientY - offsetYVid) + 'px'; containerVideo.style.bottom = 'auto'; };
-        cabecalhoDrag.addEventListener('mousedown', startDragVid); cabecalhoDrag.addEventListener('touchstart', startDragVid, {passive: true}); document.addEventListener('mousemove', moveDragVid); document.addEventListener('touchmove', moveDragVid, {passive: true}); document.addEventListener('mouseup', () => { isDraggingVid = false; }); document.addEventListener('touchend', () => { isDraggingVid = false; });
+        cabecalhoDrag.addEventListener('mousedown', (e) => { if(e.target.tagName === 'BUTTON') return; isDraggingVid = true; offsetXVid = e.clientX - containerVideo.getBoundingClientRect().left; offsetYVid = e.clientY - containerVideo.getBoundingClientRect().top; });
+        document.addEventListener('mousemove', (e) => { if(isDraggingVid) { containerVideo.style.left = (e.clientX - offsetXVid) + 'px'; containerVideo.style.top = (e.clientY - offsetYVid) + 'px'; containerVideo.style.bottom = 'auto'; }});
+        document.addEventListener('mouseup', () => isDraggingVid = false);
 
-        // FIREBASE - NÚCLEO DO SISTEMA
+        // FIREBASE CORE
         onAuthStateChanged(auth, (user) => { 
-            if (user) { 
-                meuEmail = user.email; meuNome = user.displayName || user.email.split('@')[0]; minhaFoto = user.photoURL || `https://ui-avatars.com/api/?name=${meuNome}&background=ecf0f1&color=8e44ad`; 
-                iniciarSala(); 
-            } else { window.location.href = "index.html"; } 
+            if (user) { meuEmail = user.email; meuNome = user.displayName || user.email.split('@')[0]; minhaFoto = user.photoURL || `https://ui-avatars.com/api/?name=${meuNome}&background=ecf0f1&color=8e44ad`; iniciarSala(); } 
+            else { window.location.href = "index.html"; } 
         });
 
         function iniciarSala() {
-            // Convites
             const linkMágico = `${window.location.origin}/convite.html?id=${idProjeto}`; document.getElementById('link-gerado').value = linkMágico;
-            document.getElementById('btn-copiar-link').addEventListener('click', () => { navigator.clipboard.writeText(linkMágico); alert("Link Copiado!"); });
-            document.getElementById('btn-abrir-equipe').addEventListener('click', () => { document.getElementById('modal-equipe').style.display = 'flex'; });
+            document.getElementById('btn-copiar-link').addEventListener('click', () => navigator.clipboard.writeText(linkMágico));
+            document.getElementById('btn-abrir-equipe').addEventListener('click', () => document.getElementById('modal-equipe').style.display = 'flex');
             document.getElementById('btn-add-membro').addEventListener('click', async () => { const e = document.getElementById('email-convidado').value.trim(); const c = document.getElementById('cargo-convidado').value; if(e) { await updateDoc(doc(db, "projetos", idProjeto), { usuarios: arrayUnion(e), [`permissoes.${e}`]: c }); document.getElementById('email-convidado').value = ""; } });
 
-            // Documento Sincronizado
             const docRef = doc(db, "projetos", idProjeto);
             onSnapshot(docRef, (snap) => {
                 if (!snap.exists()) return;
                 const dados = snap.data();
                 document.getElementById('titulo-projeto-topo').innerText = dados.nome;
                 
-                // Controle de Permissões
                 meuCargo = dados.permissoes[meuEmail] || "leitor";
-                if (meuCargo === "leitor") { quill.disable(); document.querySelector('.ql-toolbar').style.display = 'none'; } 
-                else { quill.enable(); document.querySelector('.ql-toolbar').style.display = 'flex'; }
-                if(meuCargo !== "admin") { document.getElementById('btn-abrir-equipe').style.display = 'none'; }
+                if (meuCargo === "leitor") quill.disable(); else quill.enable();
+                if(meuCargo !== "admin") document.getElementById('btn-abrir-equipe').style.display = 'none';
 
-                // Lista de Equipe
                 const areaMembros = document.getElementById('lista-membros'); areaMembros.innerHTML = '';
-                dados.usuarios.forEach(u => { const c = dados.permissoes[u] || "membro"; areaMembros.innerHTML += `<div class="membro-item"><span>${u}</span> <strong style="color:#8e44ad;">${c.toUpperCase()}</strong></div>`; });
+                dados.usuarios.forEach(u => areaMembros.innerHTML += `<div class="membro-item"><span>${u}</span> <strong style="color:#8e44ad;">${(dados.permissoes[u] || "membro").toUpperCase()}</strong></div>`);
 
-                // Carrega o Texto
                 if (carregamentoInicial && dados.conteudo) {
-                    isAtualizandoPelaNuvem = true;
-                    quill.root.innerHTML = dados.conteudo;
-                    carregamentoInicial = false;
-                    setTimeout(() => isAtualizandoPelaNuvem = false, 500); // Libera o lock após aplicar
+                    isAtualizandoPelaNuvem = true; quill.root.innerHTML = dados.conteudo; carregamentoInicial = false; setTimeout(() => isAtualizandoPelaNuvem = false, 500);
                 } else if (!carregamentoInicial && dados.conteudo && !quill.hasFocus()) {
-                    // Se alguém mudou, e você não está com o cursor no texto, atualiza a tela
-                    isAtualizandoPelaNuvem = true;
-                    quill.root.innerHTML = dados.conteudo;
-                    setTimeout(() => isAtualizandoPelaNuvem = false, 500);
+                    isAtualizandoPelaNuvem = true; quill.root.innerHTML = dados.conteudo; setTimeout(() => isAtualizandoPelaNuvem = false, 500);
                 }
             });
 
-            // Chat Sincronizado
             onSnapshot(query(collection(db, "projetos", idProjeto, "mensagens"), orderBy("hora", "asc")), (snap) => {
                 const area = document.getElementById('chat-mensagens'); area.innerHTML = '';
-                snap.forEach(d => { 
-                    const m = d.data(); const isMinha = m.autorEmail === meuEmail; const fotoExibicao = m.autorFoto || `https://ui-avatars.com/api/?name=${m.autorNome}&background=ecf0f1&color=8e44ad`; 
-                    area.innerHTML += `<div class="mensagem-linha ${isMinha ? 'minha' : ''}"><img src="${fotoExibicao}" class="foto-perfil-chat"><div class="area-texto-chat"><span class="nome-user">${isMinha ? 'Você' : m.autorNome}</span><div class="msg ${isMinha ? 'msg-minha' : 'msg-outro'}">${m.texto}</div></div></div>`; 
-                }); 
+                snap.forEach(d => { const m = d.data(); const isMinha = m.autorEmail === meuEmail; const f = m.autorFoto || `https://ui-avatars.com/api/?name=${m.autorNome}&background=ecf0f1&color=8e44ad`; area.innerHTML += `<div class="mensagem-linha ${isMinha ? 'minha' : ''}"><img src="${f}" class="foto-perfil-chat"><div class="area-texto-chat"><span class="nome-user">${isMinha ? 'Você' : m.autorNome}</span><div class="msg ${isMinha ? 'msg-minha' : 'msg-outro'}">${m.texto}</div></div></div>`; }); 
                 area.scrollTop = area.scrollHeight;
             });
         }
 
-        // SALVAR TEXTO NA NUVEM AO DIGITAR
         quill.on('text-change', function(delta, oldDelta, source) {
             if (source == 'user' && !isAtualizandoPelaNuvem && meuCargo !== "leitor") {
                 document.getElementById('status-nuvem').innerText = "⏳ A Salvar...";
@@ -424,26 +434,20 @@
             }
         });
 
-        // ENVIAR MENSAGENS NO CHAT
         document.getElementById('btn-enviar-msg').addEventListener('click', () => { const i = document.getElementById('input-chat'); if(i.value.trim()){ addDoc(collection(db, "projetos", idProjeto, "mensagens"), { texto: i.value, autorEmail: meuEmail, autorNome: meuNome, autorFoto: minhaFoto, hora: Date.now() }); i.value = ''; } });
         document.getElementById('input-chat').addEventListener('keypress', (e) => { if (e.key === 'Enter') document.getElementById('btn-enviar-msg').click(); });
 
-        // LÓGICA DE MODELOS PRONTOS
-        const modalModelos = document.getElementById('modal-modelos');
-        document.getElementById('btn-abrir-modelos').addEventListener('click', () => { modalModelos.style.display = 'flex'; });
-
-        const modelosHTML = {
-            'ata': `<h2 style="text-align: center;">Ata de Reunião</h2><p><strong>Data:</strong> __/__/____ &nbsp;&nbsp;&nbsp; <strong>Horário:</strong> __:__</p><p><strong>Local:</strong> _________________________</p><p><strong>Participantes:</strong></p><ul><li></li></ul><br><h3>1. Pautas Discutidas</h3><p><br></p><h3>2. Decisões Tomadas</h3><p><br></p>`,
-            'abnt': `<br><br><br><h2 style="text-align: center; text-transform: uppercase;">NOME DA UNIVERSIDADE</h2><br><br><br><br><h3 style="text-align: center;">SEU NOME COMPLETO</h3><br><br><br><br><h1 style="text-align: center; text-transform: uppercase;">TÍTULO DO TRABALHO</h1><br><br><br><br><p style="text-align: right; padding-left: 50%;">Trabalho apresentado à disciplina...</p><br><br><br><br><h3 style="text-align: center;">Cidade<br>Ano</h3>`
-        };
-
-        window.aplicarModelo = async function(tipo) {
-            if(meuCargo === "leitor") { alert("Leitores não podem editar!"); return; }
-            if(confirm("Isso apagará o texto atual. Continuar?")) {
+        window.aplicarModeloPronto = async function(tipo) {
+            if(meuCargo === "leitor") return;
+            const textos = {
+                'ata': `<h2 style="text-align: center;">Ata de Reunião</h2><p><strong>Data:</strong> __/__/____</p><ul><li></li></ul>`,
+                'abnt': `<br><br><br><h2 style="text-align: center;">UNIVERSIDADE</h2><br><br><br><h1 style="text-align: center;">TÍTULO</h1>`
+            };
+            if(confirm("Substituir o texto pelo modelo?")) {
                 isAtualizandoPelaNuvem = true;
-                quill.root.innerHTML = modelosHTML[tipo];
-                await updateDoc(doc(db, "projetos", idProjeto), { conteudo: modelosHTML[tipo] });
-                modalModelos.style.display = 'none';
+                quill.root.innerHTML = textos[tipo];
+                await updateDoc(doc(db, "projetos", idProjeto), { conteudo: textos[tipo] });
+                document.getElementById('modal-modelos').style.display = 'none';
                 setTimeout(() => isAtualizandoPelaNuvem = false, 500);
             }
         }
