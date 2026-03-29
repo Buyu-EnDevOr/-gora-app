@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "app.netlify.agorastudio.twa",
+        "sha256_cert_fingerprints": ["3E:AC:0B:1A:7B:2B:91:72:CB:E8:79:41:14:76:42:6D:5D:91:A3:60:62:C8:E3:AA:F0:4A:32:99:CD:0B:69:EF"]
+      }
+    }]
