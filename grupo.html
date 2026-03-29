@@ -346,7 +346,7 @@
         const LineHeightStyle = new Parchment.Attributor.Style('lineHeight', 'line-height', { scope: Parchment.Scope.BLOCK, whitelist: ['1.0', '1.15', '1.5', '2.0'] }); Quill.register(LineHeightStyle, true);
         const MarginBottomStyle = new Parchment.Attributor.Style('marginBottom', 'margin-bottom', { scope: Parchment.Scope.BLOCK, whitelist: ['0px', '6px', '12px', '24px'] }); Quill.register(MarginBottomStyle, true);
 
-        window.quill = new Quill('#editor-container', { theme: 'snow', placeholder: 'Comece a digitar...', modules: { toolbar: false, history: { delay: 1000, maxStack: 500, userOnly: true } } });
+        window.quill = new Quill('#editor-container', { theme: 'snow', placeholder: 'A tela está em branco. Comece a digitar ou injete um modelo pelo menu superior...', modules: { toolbar: false, history: { delay: 1000, maxStack: 500, userOnly: true } } });
 
         window.mostrarBarra = function(idBarra) { document.querySelectorAll('.container-barras .barra-superior').forEach(b => b.classList.add('escondida')); document.getElementById(idBarra).classList.remove('escondida'); }
         
@@ -394,7 +394,7 @@
         document.getElementById('btn-enviar-msg').addEventListener('click', () => { const i = document.getElementById('input-chat'); if(i.value.trim()){ addDoc(collection(db, "projetos", idProjeto, "mensagens"), { texto: i.value, autorEmail: meuEmail, autorNome: meuNome, autorFoto: minhaFoto, hora: Date.now() }); i.value = ''; } }); document.getElementById('input-chat').addEventListener('keypress', (e) => { if (e.key === 'Enter') document.getElementById('btn-enviar-msg').click(); });
 
         // ==========================================
-        // GERADOR ACADÊMICO
+        // GERADOR ACADÊMICO (OS MODELOS REAIS)
         // ==========================================
         window.fecharTodosModais = function() {
             document.querySelectorAll('.fundo-modal').forEach(m => m.style.display = 'none');
@@ -409,55 +409,157 @@
             document.getElementById(idPaisnel).style.display = 'flex';
         }
 
+        // === MODELOS DIRETOS (Resumo, Resenha, Relatório) ===
         window.aplicarTemplateDireto = async function(tipo) {
             if(meuCargo === "leitor") return;
             const templates = {
-                'resumo': `<h2 style="text-align: center;">RESUMO</h2><p style="text-align: justify; text-indent: 0; line-height: 1.5;">O resumo é uma apresentação concisa de todos os pontos relevantes de um texto. Escreva aqui em parágrafo único, sem recuo na primeira linha, contendo de 150 a 500 palavras. Deve apresentar o tema, o objetivo, o método, os resultados e as conclusões do trabalho.</p><br><p style="text-align: justify; font-weight: bold;">Palavras-chave: Palavra 1. Palavra 2. Palavra 3.</p>`,
-                'resenha': `<h2 style="text-align: center;">RESENHA CRÍTICA</h2><p style="text-align: center;"><strong>Referência da Obra:</strong> SOBRENOME, Nome. Título da obra. Cidade: Editora, Ano.</p><br><h3>1. Credenciais do Autor</h3><p style="text-indent: 2em; text-align: justify;">Quem é o autor da obra? (Formação, obras anteriores, contexto).</p><h3>2. Resumo da Obra</h3><p style="text-indent: 2em; text-align: justify;">Do que trata o livro/artigo? Quais as ideias principais?</p><h3>3. Análise Crítica</h3><p style="text-indent: 2em; text-align: justify;">Apresente sua avaliação sobre o texto. É coerente? Atual? Para quem é indicado?</p>`,
-                'relatorio': `<h2 style="text-align: center; text-transform: uppercase;">RELATÓRIO TÉCNICO DE ATIVIDADES</h2><br><h3>1. INTRODUÇÃO</h3><p style="text-indent: 2em; text-align: justify;">Apresentação do contexto e objetivo do relatório.</p><h3>2. DESENVOLVIMENTO</h3><p style="text-indent: 2em; text-align: justify;">Descrição detalhada das atividades realizadas, métodos utilizados e dados coletados.</p><h3>3. CONCLUSÃO</h3><p style="text-indent: 2em; text-align: justify;">Considerações finais e resultados alcançados.</p>`
+                'resumo': `
+                    <div style="font-family: Arial, sans-serif; font-size: 12pt; line-height: 1.5;">
+                        <h2 style="text-align: center; font-weight: bold; text-transform: uppercase;">RESUMO</h2><br>
+                        <p style="text-align: justify; text-indent: 0;">O resumo é uma apresentação concisa de todos os pontos relevantes de um documento. De acordo com a ABNT NBR 6028, o resumo de trabalhos acadêmicos deve ter de 150 a 500 palavras. Deve ser escrito em parágrafo único, sem recuo na primeira linha, em voz ativa e na terceira pessoa do singular. O texto deve apresentar, de forma sequencial, o tema tratado, o problema de pesquisa, os objetivos, a metodologia utilizada (como a pesquisa foi feita), os principais resultados alcançados e as conclusões do trabalho. Evite o uso de citações diretas ou siglas não conhecidas no resumo.</p>
+                        <br><p style="text-align: justify; font-weight: bold;">Palavras-chave: Palavra 1. Palavra 2. Palavra 3. Palavra 4.</p>
+                    </div>`,
+                'resenha': `
+                    <div style="font-family: Arial, sans-serif; font-size: 12pt; line-height: 1.5;">
+                        <h2 style="text-align: center; font-weight: bold;">RESENHA CRÍTICA</h2><br>
+                        <p style="text-align: center; font-weight: bold; font-size: 10pt;">REFERÊNCIA BIBLIOGRÁFICA</p>
+                        <p style="text-align: center; font-size: 10pt;">SOBRENOME, Nome do Autor. <strong>Título da Obra em Negrito:</strong> subtítulo sem negrito. Cidade de Publicação: Editora, Ano de Publicação. Total de páginas.</p>
+                        <br><h3 style="font-weight: bold; font-size: 12pt;">1. INFORMAÇÕES SOBRE O AUTOR</h3>
+                        <p style="text-indent: 1.25cm; text-align: justify;">Apresente brevemente quem é o autor da obra. Qual a sua formação académica? Quais são suas principais influências e em qual contexto histórico ou social ele está inserido? Isso ajuda o leitor a entender o ponto de vista defendido no texto.</p>
+                        <br><h3 style="font-weight: bold; font-size: 12pt;">2. RESUMO DA OBRA (SÍNTESE)</h3>
+                        <p style="text-indent: 1.25cm; text-align: justify;">Descreva detalhadamente do que trata o livro ou artigo. Quais são as ideias principais? Faça um apanhado geral dos capítulos, explicando os conceitos fundamentais que o autor tentou transmitir, mas sem ainda colocar a sua opinião pessoal.</p>
+                        <br><h3 style="font-weight: bold; font-size: 12pt;">3. ANÁLISE CRÍTICA (APRECIAÇÃO)</h3>
+                        <p style="text-indent: 1.25cm; text-align: justify;">Este é o núcleo da resenha. Apresente sua avaliação sobre o texto. O autor conseguiu provar sua tese? Os argumentos são válidos, coerentes e bem fundamentados? A linguagem é acessível ou muito técnica? Compare a obra com outras do mesmo tema, se possível.</p>
+                        <br><h3 style="font-weight: bold; font-size: 12pt;">4. INDICAÇÃO DA OBRA</h3>
+                        <p style="text-indent: 1.25cm; text-align: justify;">Para quem você recomenda esta obra? Estudantes de graduação, pesquisadores da área de humanas, ou público em geral? Justifique sua recomendação com base na análise crítica que você acabou de realizar.</p>
+                    </div>`,
+                'relatorio': `
+                    <div style="font-family: Arial, sans-serif; font-size: 12pt; line-height: 1.5;">
+                        <h2 style="text-align: center; font-weight: bold; text-transform: uppercase;">RELATÓRIO TÉCNICO DE ATIVIDADES</h2><br>
+                        <br><h3 style="font-weight: bold; font-size: 12pt;">1. INTRODUÇÃO</h3>
+                        <p style="text-indent: 1.25cm; text-align: justify;">Nesta seção, você deve apresentar o contexto que motivou a realização deste relatório. Descreva o ambiente (laboratório, estágio, setor da empresa) e indique o período em que as atividades foram realizadas. Deixe claro qual é o objetivo central do documento.</p>
+                        <br><h3 style="font-weight: bold; font-size: 12pt;">2. DESENVOLVIMENTO (MÉTODOS E MATERIAIS)</h3>
+                        <p style="text-indent: 1.25cm; text-align: justify;">Descreva de maneira minuciosa as atividades que foram executadas. Responda: O que foi feito? Como foi feito? Quais materiais, ferramentas ou softwares foram utilizados? Se houve alguma dificuldade ou desafio durante a execução técnica, relate aqui e explique como o problema foi solucionado pela equipe.</p>
+                        <br><h3 style="font-weight: bold; font-size: 12pt;">3. RESULTADOS OBTIDOS</h3>
+                        <p style="text-indent: 1.25cm; text-align: justify;">Apresente os dados coletados. O que a execução das atividades descritas gerou de concreto? Você pode citar números, melhorias de processo, ou produtos desenvolvidos. Seja objetivo e analítico.</p>
+                        <br><h3 style="font-weight: bold; font-size: 12pt;">4. CONCLUSÃO</h3>
+                        <p style="text-indent: 1.25cm; text-align: justify;">Faça as considerações finais. Os objetivos iniciais foram atingidos? Qual o aprendizado ou retorno técnico adquirido durante o período relatado? Sugira, se houver, passos futuros para a continuação do projeto.</p>
+                    </div>`
             };
-            if(confirm("Substituir o texto por este modelo?")) { isAtualizandoPelaNuvem = true; quill.root.innerHTML = templates[tipo]; await salvarNaNuvemManual(); fecharTodosModais(); setTimeout(() => isAtualizandoPelaNuvem = false, 500); }
+            if(confirm("Substituir o texto por este modelo profissional?")) { isAtualizandoPelaNuvem = true; quill.root.innerHTML = templates[tipo]; await salvarNaNuvemManual(); fecharTodosModais(); setTimeout(() => isAtualizandoPelaNuvem = false, 500); }
         }
 
+        // === MODELOS COMPLEXOS (TCC, Artigo, Pesquisa) ===
         window.gerarDocumentoComplexo = async function(tipo) {
             if(meuCargo === "leitor") return;
             if(!confirm("Gerar o documento apagará todo o texto atual. Tem certeza?")) return;
 
             let htmlDoc = "";
             let forcarABNT = false;
-            const quebra = `<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>`;
+            const quebra = `<div style="page-break-after: always;"><br><br><br><br><br></div>`;
             
+            // 1. TCC / MONOGRAFIA
             if(tipo === 'tcc') {
                 forcarABNT = document.getElementById('tcc-abnt').checked;
                 let estilo = forcarABNT ? `style="font-family: Arial, sans-serif; font-size: 12pt; line-height: 1.5;"` : ``;
                 let tBold = forcarABNT ? `style="font-weight: bold; text-transform: uppercase; text-align: center;"` : `style="text-align: center;"`;
                 
-                if(document.getElementById('tcc-capa').checked) htmlDoc += `<div ${estilo}><p style="text-align: center; font-weight: bold; text-transform: uppercase;">NOME DA INSTITUIÇÃO<br>CURSO</p><br><br><br><br><br><br><p style="text-align: center; font-weight: bold; text-transform: uppercase;">NOME DO ALUNO</p><br><br><br><br><br><br><h2 ${tBold}>TÍTULO DO TRABALHO</h2><br><br><br><br><br><br><br><br><br><br><br><br><p style="text-align: center; font-weight: bold;">CIDADE<br>ANO</p></div>${quebra}`;
-                if(document.getElementById('tcc-folha').checked) htmlDoc += `<div ${estilo}><p style="text-align: center; font-weight: bold; text-transform: uppercase;">NOME DO ALUNO</p><br><br><br><br><br><br><h2 ${tBold}>TÍTULO DO TRABALHO</h2><br><br><br><p style="text-align: right; margin-left: 45%; font-size: 10pt;">Trabalho apresentado como requisito...<br><br>Orientador(a): Prof. Nome</p><br><br><br><br><br><br><br><br><p style="text-align: center; font-weight: bold;">CIDADE<br>ANO</p></div>${quebra}`;
-                if(document.getElementById('tcc-resumo').checked) htmlDoc += `<div ${estilo}><h2 ${tBold}>RESUMO</h2><br><p style="text-align: justify; text-indent: 0;">O resumo deve conter de 150 a 500 palavras...</p><br><p style="font-weight: bold;">Palavras-chave: P1. P2. P3.</p></div>${quebra}`;
-                if(document.getElementById('tcc-sumario').checked) htmlDoc += `<div ${estilo}><h2 ${tBold}>SUMÁRIO</h2><br><p><b>1 INTRODUÇÃO .................... 5</b></p><p><b>2 DESENVOLVIMENTO ......... 7</b></p></div>${quebra}`;
-                if(document.getElementById('tcc-desenv').checked) htmlDoc += `<div ${estilo}><h3 style="font-weight: bold;">1 INTRODUÇÃO</h3><p style="text-align: justify; text-indent: 1.25cm;">Apresente o tema...</p><br><h3 style="font-weight: bold;">2 REVISÃO DE LITERATURA</h3><p style="text-align: justify; text-indent: 1.25cm;">Capítulos teóricos...</p><br><h3 style="font-weight: bold;">REFERÊNCIAS</h3><p>SOBRENOME, Nome. Título. Editora, Ano.</p></div>`;
+                if(document.getElementById('tcc-capa').checked) htmlDoc += `
+                    <div ${estilo}>
+                        <p style="text-align: center; font-weight: bold; text-transform: uppercase; font-size: 14pt;">NOME DA UNIVERSIDADE / INSTITUIÇÃO<br>NOME DA FACULDADE OU DEPARTAMENTO<br>NOME DO CURSO</p>
+                        <br><br><br><br><br><br>
+                        <p style="text-align: center; font-weight: bold; text-transform: uppercase; font-size: 12pt;">NOME COMPLETO DO ALUNO</p>
+                        <br><br><br><br><br><br><br>
+                        <h2 ${tBold}>TÍTULO DO TRABALHO: SUBTÍTULO (SE HOUVER)</h2>
+                        <br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+                        <p style="text-align: center; font-weight: bold; font-size: 12pt;">CIDADE - UF<br>ANO DE ENTREGA</p>
+                    </div>${quebra}`;
+                    
+                if(document.getElementById('tcc-folha').checked) htmlDoc += `
+                    <div ${estilo}>
+                        <p style="text-align: center; font-weight: bold; text-transform: uppercase; font-size: 12pt;">NOME COMPLETO DO ALUNO</p>
+                        <br><br><br><br><br><br><br>
+                        <h2 ${tBold}>TÍTULO DO TRABALHO: SUBTÍTULO (SE HOUVER)</h2>
+                        <br><br><br><br>
+                        <p style="text-align: justify; margin-left: 40%; font-size: 10pt; line-height: 1.0;">Trabalho de Conclusão de Curso apresentado ao curso de [Nome do Curso] da [Nome da Instituição], como requisito parcial para a obtenção do título de Bacharel / Licenciado em [Área de Formação].<br><br>Orientador(a): Prof. / Profa. [Titulação e Nome do Orientador].</p>
+                        <br><br><br><br><br><br><br><br><br><br><br><br>
+                        <p style="text-align: center; font-weight: bold; font-size: 12pt;">CIDADE - UF<br>ANO DE ENTREGA</p>
+                    </div>${quebra}`;
+                    
+                if(document.getElementById('tcc-resumo').checked) htmlDoc += `
+                    <div ${estilo}>
+                        <h2 ${tBold}>RESUMO</h2><br>
+                        <p style="text-align: justify; text-indent: 0;">O resumo deve conter de 150 a 500 palavras, redigido em parágrafo único e sem recuo. Apresente o problema de pesquisa, os objetivos gerais, a metodologia empregada e as principais conclusões obtidas pela monografia.</p>
+                        <br><p style="text-align: justify; font-weight: bold;">Palavras-chave: Palavra 1. Palavra 2. Palavra 3. Palavra 4.</p>
+                    </div>${quebra}`;
+                    
+                if(document.getElementById('tcc-sumario').checked) htmlDoc += `
+                    <div ${estilo}>
+                        <h2 ${tBold}>SUMÁRIO</h2><br>
+                        <p style="text-transform: uppercase; font-weight: bold; line-height: 2.0;">1 INTRODUÇÃO ............................................................................ 5</p>
+                        <p style="text-transform: uppercase; font-weight: bold; line-height: 2.0;">2 FUNDAMENTAÇÃO TEÓRICA ................................................... 7</p>
+                        <p style="padding-left: 20px; line-height: 2.0;">2.1 Conceitos Principais .............................................................. 8</p>
+                        <p style="text-transform: uppercase; font-weight: bold; line-height: 2.0;">3 METODOLOGIA ......................................................................... 15</p>
+                        <p style="text-transform: uppercase; font-weight: bold; line-height: 2.0;">4 RESULTADOS E DISCUSSÕES ............................................... 18</p>
+                        <p style="text-transform: uppercase; font-weight: bold; line-height: 2.0;">5 CONCLUSÃO ............................................................................. 25</p>
+                        <p style="text-transform: uppercase; font-weight: bold; line-height: 2.0;">REFERÊNCIAS ............................................................................. 27</p>
+                    </div>${quebra}`;
+                    
+                if(document.getElementById('tcc-desenv').checked) htmlDoc += `
+                    <div ${estilo}>
+                        <h3 style="font-weight: bold; text-transform: uppercase;">1 INTRODUÇÃO</h3>
+                        <p style="text-align: justify; text-indent: 1.25cm;">A introdução é o cartão de visita do seu TCC. Apresente o tema de forma clara, delimitando o problema de pesquisa (a pergunta que o seu trabalho quer responder). Em seguida, escreva a justificativa: por que esta pesquisa é importante para a sociedade ou para o meio académico? Finalize o capítulo listando o Objetivo Geral e os Objetivos Específicos.</p>
+                        <br><h3 style="font-weight: bold; text-transform: uppercase;">2 FUNDAMENTAÇÃO TEÓRICA</h3>
+                        <p style="text-align: justify; text-indent: 1.25cm;">Este é o embasamento do seu trabalho. Quais autores, livros e artigos sustentam a sua pesquisa? Lembre-se das regras de citação. Citações curtas (até 3 linhas) ficam dentro do parágrafo, com aspas. Citações longas exigem um tratamento especial: recuo de 4cm da margem esquerda, fonte tamanho 10 e espaçamento simples entre linhas.</p>
+                        <br><h3 style="font-weight: bold; text-transform: uppercase;">3 METODOLOGIA</h3>
+                        <p style="text-align: justify; text-indent: 1.25cm;">Como você fez a pesquisa? Foi uma pesquisa bibliográfica, estudo de caso, ou pesquisa de campo? Descreva a natureza do estudo (qualitativa ou quantitativa), quem foram os participantes (se houver), e como os dados foram coletados e analisados.</p>
+                        <br><h3 style="font-weight: bold; text-transform: uppercase;">4 CONCLUSÃO</h3>
+                        <p style="text-align: justify; text-indent: 1.25cm;">Momento de fechar o trabalho. Responda claramente à pergunta problema formulada na introdução. Verifique se os objetivos propostos foram alcançados. Seja honesto e aponte as limitações da sua pesquisa, sugerindo novos caminhos para estudantes que quiserem continuar o seu estudo no futuro.</p>
+                        ${quebra}
+                        <h2 style="text-align: center; font-weight: bold; text-transform: uppercase;">REFERÊNCIAS</h2><br>
+                        <p style="text-align: left; margin-bottom: 12px;">SOBRENOME, Nome do Autor. <strong>Título do Livro em Negrito</strong>: subtítulo sem negrito. Edição. Cidade: Editora, Ano.</p>
+                        <p style="text-align: left; margin-bottom: 12px;">SOBRENOME, Nome. Título do artigo científico. <strong>Nome da Revista em Negrito</strong>, Cidade, v. X, n. Y, p. inicial-final, Mês. Ano.</p>
+                        <p style="text-align: left; margin-bottom: 12px;">SOBRENOME, Nome. Título da matéria. <strong>Nome do Site</strong>. Ano. Disponível em: &lt;http://www.site.com.br&gt;. Acesso em: 10 out. 2026.</p>
+                    </div>`;
             } 
+            
+            // 2. ARTIGO CIENTÍFICO
             else if(tipo === 'artigo') {
                 forcarABNT = document.getElementById('art-abnt').checked;
                 let estilo = forcarABNT ? `style="font-family: Arial, sans-serif; font-size: 12pt; line-height: 1.5;"` : ``;
                 let tBold = forcarABNT ? `style="font-weight: bold; text-transform: uppercase; text-align: center;"` : `style="text-align: center;"`;
                 
-                if(document.getElementById('art-cabecalho').checked) htmlDoc += `<div ${estilo}><h2 ${tBold}>TÍTULO DO ARTIGO EM MAIÚSCULAS</h2><p style="text-align: center;"><em>Nome do Autor 1, Nome do Autor 2</em></p><br></div>`;
-                if(document.getElementById('art-resumo').checked) htmlDoc += `<div ${estilo}><h4 style="text-align: center;">Resumo</h4><p style="text-align: justify; font-size: 10pt;">Breve resumo em parágrafo único...</p><p style="font-weight: bold; font-size: 10pt;">Palavras-chave: P1. P2.</p><br></div>`;
-                if(document.getElementById('art-intro').checked) htmlDoc += `<div ${estilo}><h3 style="font-weight: bold;">1. Introdução</h3><p style="text-align: justify; text-indent: 1.25cm;">Contexto do artigo...</p><br></div>`;
-                if(document.getElementById('art-metodo').checked) htmlDoc += `<div ${estilo}><h3 style="font-weight: bold;">2. Metodologia</h3><p style="text-align: justify; text-indent: 1.25cm;">Materiais e métodos...</p><br></div>`;
-                if(document.getElementById('art-result').checked) htmlDoc += `<div ${estilo}><h3 style="font-weight: bold;">3. Resultados e Conclusões</h3><p style="text-align: justify; text-indent: 1.25cm;">Discussão dos dados...</p><br><h3 style="font-weight: bold;">Referências</h3><p>Lista de referências...</p></div>`;
+                if(document.getElementById('art-cabecalho').checked) htmlDoc += `
+                    <div ${estilo}>
+                        <h2 ${tBold}>TÍTULO DO ARTIGO EM CAIXA ALTA E NEGRITO: SUBTÍTULO SE HOUVER</h2>
+                        <p style="text-align: center; font-style: italic;">Title of the article in English (optional)</p>
+                        <br><p style="text-align: right; font-size: 10pt;">Nome Completo do Autor 1 (Titulação / Instituição)<br>Nome Completo do Autor 2 (Titulação / Instituição)<br>Email: autor@faculdade.com</p>
+                        <br><br>
+                    </div>`;
+                if(document.getElementById('art-resumo').checked) htmlDoc += `
+                    <div ${estilo}>
+                        <h4 style="text-align: left; font-weight: bold;">RESUMO</h4>
+                        <p style="text-align: justify; font-size: 10pt; line-height: 1.0; text-indent: 0;">O resumo do artigo científico deve ser um texto contínuo, de 100 a 250 palavras, contendo objetivo, método, resultados e conclusões, formatado em espaço simples.</p>
+                        <p style="font-weight: bold; font-size: 10pt;">Palavras-chave: Termo 1. Termo 2. Termo 3.</p><br>
+                        <h4 style="text-align: left; font-weight: bold;">ABSTRACT</h4>
+                        <p style="text-align: justify; font-size: 10pt; line-height: 1.0; text-indent: 0;">Abstract is the translation of the abstract into English, following the exact same rules and structure.</p>
+                        <p style="font-weight: bold; font-size: 10pt;">Keywords: Term 1. Term 2. Term 3.</p><br><br>
+                    </div>`;
+                if(document.getElementById('art-intro').checked) htmlDoc += `<div ${estilo}><h3 style="font-weight: bold;">1. INTRODUÇÃO</h3><p style="text-align: justify; text-indent: 1.25cm;">Apresente de forma direta o problema de pesquisa, a relevância do tema e os objetivos do artigo. O artigo científico é um formato condensado, logo, vá direto ao ponto e não prolongue demasiado a fundamentação inicial.</p><br></div>`;
+                if(document.getElementById('art-metodo').checked) htmlDoc += `<div ${estilo}><h3 style="font-weight: bold;">2. PROCEDIMENTOS METODOLÓGICOS</h3><p style="text-align: justify; text-indent: 1.25cm;">Descreva detalhadamente como o estudo foi conduzido. Informe o tipo de pesquisa, os instrumentos utilizados (questionários, softwares, equipamentos) e o perfil da amostra analisada.</p><br></div>`;
+                if(document.getElementById('art-result').checked) htmlDoc += `<div ${estilo}><h3 style="font-weight: bold;">3. RESULTADOS E DISCUSSÕES</h3><p style="text-align: justify; text-indent: 1.25cm;">Apresente os dados brutos e confronte-os imediatamente com a teoria bibliográfica. Insira tabelas e gráficos se necessário.</p><br><h3 style="font-weight: bold;">4. CONSIDERAÇÕES FINAIS</h3><p style="text-align: justify; text-indent: 1.25cm;">Conclua se o objetivo principal do artigo foi validado ou refutado pelas evidências. Evite citações de novos autores nesta seção.</p><br><h3 style="text-align: center; font-weight: bold;">REFERÊNCIAS</h3><p style="text-align: left; font-size: 10pt;">SOBRENOME, N. Título do Livro. Cidade: Editora, Ano.</p></div>`;
             }
+            
+            // 3. PROJETO DE PESQUISA
             else if(tipo === 'pesquisa') {
                 forcarABNT = document.getElementById('pesq-abnt').checked;
                 let estilo = forcarABNT ? `style="font-family: Arial, sans-serif; font-size: 12pt; line-height: 1.5;"` : ``;
                 
-                htmlDoc += `<h2 style="text-align: center;">PROJETO DE PESQUISA</h2><br>`;
-                if(document.getElementById('pesq-tema').checked) htmlDoc += `<div ${estilo}><h3 style="font-weight: bold;">1. TEMA E PROBLEMA</h3><p style="text-align: justify; text-indent: 1.25cm;">Qual a pergunta a ser respondida?</p><br></div>`;
-                if(document.getElementById('pesq-just').checked) htmlDoc += `<div ${estilo}><h3 style="font-weight: bold;">2. JUSTIFICATIVA</h3><p style="text-align: justify; text-indent: 1.25cm;">Por que pesquisar isso?</p><br></div>`;
-                if(document.getElementById('pesq-obj').checked) htmlDoc += `<div ${estilo}><h3 style="font-weight: bold;">3. OBJETIVOS</h3><p style="text-align: justify;"><strong>Geral:</strong><br><strong>Específicos:</strong></p><br></div>`;
-                if(document.getElementById('pesq-metodo').checked) htmlDoc += `<div ${estilo}><h3 style="font-weight: bold;">4. METODOLOGIA E CRONOGRAMA</h3><p style="text-align: justify; text-indent: 1.25cm;">Como a pesquisa será feita?</p><br></div>`;
+                htmlDoc += `<h2 style="text-align: center; font-weight: bold;">PROJETO DE PESQUISA ACADÉMICA</h2><br><br>`;
+                if(document.getElementById('pesq-tema').checked) htmlDoc += `<div ${estilo}><h3 style="font-weight: bold;">1. TEMA E PROBLEMA DE PESQUISA</h3><p style="text-align: justify; text-indent: 1.25cm;"><strong>Tema:</strong> A grande área de estudo onde seu projeto se encaixa.</p><p style="text-align: justify; text-indent: 1.25cm;"><strong>Problema:</strong> Qual a dúvida exata que seu trabalho quer resolver? Formule na estrutura de uma pergunta clara e objetiva.</p><br></div>`;
+                if(document.getElementById('pesq-just').checked) htmlDoc += `<div ${estilo}><h3 style="font-weight: bold;">2. JUSTIFICATIVA E HIPÓTESE</h3><p style="text-align: justify; text-indent: 1.25cm;">Venda o seu "peixe". Explique para a banca examinadora o porquê de esta pesquisa precisar de ser feita. Que lacuna ela preenche? Apresente também a <strong>Hipótese</strong>: qual a resposta provisória que você acredita que irá confirmar ao fim da pesquisa?</p><br></div>`;
+                if(document.getElementById('pesq-obj').checked) htmlDoc += `<div ${estilo}><h3 style="font-weight: bold;">3. OBJETIVOS</h3><p style="text-align: justify; margin-left: 1.25cm;"><strong>Objetivo Geral:</strong> (Use verbos no infinitivo: Analisar, Compreender, Desenvolver...).</p><p style="text-align: justify; margin-left: 1.25cm;"><strong>Objetivos Específicos:</strong><br>- Levantar dados teóricos sobre X;<br>- Aplicar questionário com Y;<br>- Comparar os resultados de X e Y.</p><br></div>`;
+                if(document.getElementById('pesq-metodo').checked) htmlDoc += `<div ${estilo}><h3 style="font-weight: bold;">4. METODOLOGIA E CRONOGRAMA DE EXECUÇÃO</h3><p style="text-align: justify; text-indent: 1.25cm;">Defina o roteiro. Onde a pesquisa será feita? Haverá coleta de dados de campo? Apresente também as etapas em formato de cronograma (Ex: Mês 1 - Revisão Teórica; Mês 2 - Aplicação de Entrevistas; Mês 3 - Análise de Dados; Mês 4 - Entrega do Texto Final).</p><br></div>`;
             }
 
             isAtualizandoPelaNuvem = true; quill.root.innerHTML = htmlDoc;
