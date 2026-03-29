@@ -13,8 +13,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto&family=Open+Sans&family=Lato&family=Montserrat&family=Oswald&family=Source+Sans+Pro&family=Raleway&family=PT+Sans&family=Merriweather&family=Nunito&family=Playfair+Display&family=Lora&family=Rubik&family=Work+Sans&family=Fira+Sans&family=Quicksand&family=Barlow&family=Inconsolata&family=Ubuntu&family=Poppins&family=Dancing+Script&display=swap" rel="stylesheet">
 
     <style>
-        /* RESET E LAYOUT */
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; display: flex; flex-direction: column; background-color: #e2e8f0; height: 100vh; overflow: hidden; }
+        /* ========================================== */
+        /* RESET, FONTES E LAYOUT PRINCIPAL           */
+        /* ========================================== */
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; display: flex; flex-direction: column; background-color: #e2e8f0; height: 100vh; overflow: hidden; counter-reset: pagina_editor; }
         
         .ql-font-roboto { font-family: 'Roboto', sans-serif; } .ql-font-open-sans { font-family: 'Open Sans', sans-serif; } .ql-font-lato { font-family: 'Lato', sans-serif; } .ql-font-montserrat { font-family: 'Montserrat', sans-serif; } .ql-font-oswald { font-family: 'Oswald', sans-serif; } .ql-font-merriweather { font-family: 'Merriweather', serif; } .ql-font-nunito { font-family: 'Nunito', sans-serif; } .ql-font-poppins { font-family: 'Poppins', sans-serif; } .ql-font-dancing { font-family: 'Dancing Script', cursive; }
 
@@ -40,29 +42,52 @@
         .btn-texto:hover { background: #475569; }
         .btn-acao-destaque { background: #8e44ad; color: white; }
         .btn-acao-destaque:hover { background: #7d3c98; }
-        
         .caixa-select { padding: 6px; border-radius: 6px; border: 1px solid #475569; background: #0f172a; color: white; outline: none; cursor: pointer; font-size: 12px;}
         .entrada-cor { border: none; padding: 0; width: 24px; height: 24px; cursor: pointer; background: transparent; border-radius: 50%; }
-        .input-medida { padding: 6px; border-radius: 6px; border: 1px solid #475569; background: #0f172a; color: white; width: 60px; font-size: 12px; text-align: center;}
 
         /* ========================================== */
-        /* ÁREA DE EDIÇÃO CENTRAL                     */
+        /* ÁREA CENTRAL E ILUSÃO DE PÁGINAS A4        */
         /* ========================================== */
         .workspace { display: flex; flex-grow: 1; height: calc(100vh - 60px); position: relative; overflow: hidden;}
-        .container-editor-scroll { flex-grow: 1; overflow-y: auto; display: flex; justify-content: center; padding: 40px 20px; transition: 0.3s; scroll-behavior: smooth;}
         
-        #editor-container { background: white; width: 100%; max-width: 850px; min-height: 1050px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: none !important; transition: background 0.3s, color 0.3s; margin-bottom: 50px;}
+        /* A Falsa Régua (Visual) */
+        .regua-topo { position: absolute; top: 0; left: 250px; right: 0; height: 20px; background: #f8fafc url('data:image/svg+xml;utf8,<svg width="37.79" height="20" xmlns="http://www.w3.org/2000/svg"><line x1="0" y1="15" x2="0" y2="20" stroke="%2394a3b8" stroke-width="1"/><line x1="18.89" y1="17" x2="18.89" y2="20" stroke="%2394a3b8" stroke-width="1"/></svg>') repeat-x; border-bottom: 1px solid #cbd5e1; z-index: 10; font-size: 10px; color: #64748b; line-height: 20px; text-indent: 10px; transition: 0.3s;}
+        .regua-esquerda { position: absolute; top: 20px; left: 250px; bottom: 0; width: 20px; background: #f8fafc url('data:image/svg+xml;utf8,<svg width="20" height="37.79" xmlns="http://www.w3.org/2000/svg"><line x1="15" y1="0" x2="20" y2="0" stroke="%2394a3b8" stroke-width="1"/><line x1="17" y1="18.89" x2="20" y2="18.89" stroke="%2394a3b8" stroke-width="1"/></svg>') repeat-y; border-right: 1px solid #cbd5e1; z-index: 10; transition: 0.3s;}
+        
+        .gaveta-esquerda.fechada ~ .regua-topo, .gaveta-esquerda.fechada ~ .regua-esquerda { left: 0; }
+
+        .container-editor-scroll { flex-grow: 1; overflow-y: auto; display: flex; justify-content: center; padding: 60px 20px 40px 40px; transition: 0.3s; scroll-behavior: smooth; position: relative;}
+        
+        #editor-container { width: 100%; max-width: 850px; border: none !important; margin-bottom: 50px;}
         .ql-container { font-family: 'Arial', sans-serif; border: none !important;}
-        .ql-editor { padding: 3cm 2cm 2cm 3cm; line-height: 1.5; min-height: 1050px; color: #2c3e50; font-size: 12pt;}
         
-        /* A Mágica da Quebra de Página Virtual */
-        .quebra-de-pagina { display: block; border: 0; border-top: 2px dashed #cbd5e1; margin: 40px 0; position: relative; text-align: center; }
-        .quebra-de-pagina::after { content: "Quebra de Página"; position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: #f8fafc; padding: 0 10px; color: #94a3b8; font-size: 10px; font-weight: bold; border-radius: 10px;}
+        /* A Folha de Papel (O Editor) */
+        .ql-editor { background: white; box-shadow: 0 5px 15px rgba(0,0,0,0.1); padding: 3cm 2cm 2cm 3cm; line-height: 1.5; min-height: 29.7cm; color: #2c3e50; font-size: 12pt;}
+        
+        /* A MAGIA: Quebra de Página com Numeração na Edição */
+        .quebra-de-pagina { 
+            display: block; 
+            height: 40px; /* Cria o buraco cinza entre as folhas brancas */
+            background-color: #e2e8f0; 
+            border: none; 
+            margin: 2cm -3cm 3cm -3cm; /* Compensa o padding da folha para vazar até as bordas */
+            position: relative; 
+            box-shadow: inset 0 5px 5px -5px rgba(0,0,0,0.1), inset 0 -5px 5px -5px rgba(0,0,0,0.1);
+            counter-increment: pagina_editor; /* Conta as páginas na edição! */
+        }
+        .quebra-de-pagina::after { 
+            content: "Página " counter(pagina_editor); /* Mostra o número no meio do buraco */
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+            background: #cbd5e1; color: white; padding: 2px 10px; font-size: 11px; font-weight: bold; border-radius: 10px;
+        }
+        .ql-editor::before { /* A Primeira página */
+            content: "Página 1"; position: absolute; top: -20px; right: 0; color: #94a3b8; font-size: 11px; font-weight: bold;
+        }
 
         /* ========================================== */
-        /* MAPA DO DOCUMENTO (GAVETA ESQUERDA)        */
+        /* MAPA DO DOCUMENTO E GAVETAS                */
         /* ========================================== */
-        .gaveta-esquerda { width: 250px; background-color: #f8fafc; border-right: 1px solid #e2e8f0; display: flex; flex-direction: column; transition: 0.3s; transform: translateX(0); z-index: 90;}
+        .gaveta-esquerda { width: 250px; background-color: #f8fafc; border-right: 1px solid #cbd5e1; display: flex; flex-direction: column; transition: 0.3s; transform: translateX(0); z-index: 90;}
         .gaveta-esquerda.fechada { transform: translateX(-250px); margin-right: -250px; }
         .cabecalho-mapa { padding: 15px; border-bottom: 1px solid #e2e8f0; font-weight: bold; color: #334155; display: flex; justify-content: space-between; align-items: center;}
         .lista-mapa { padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;}
@@ -70,11 +95,7 @@
         .item-mapa:hover { color: #8e44ad; padding-left: 3px;}
         .item-mapa.h1 { font-weight: bold; }
         .item-mapa.h2 { margin-left: 15px; }
-        .item-mapa.h3 { margin-left: 30px; font-size: 12px; }
 
-        /* ========================================== */
-        /* GAVETAS LATERAIS (DIREITA)                 */
-        /* ========================================== */
         .gaveta-lateral { width: 320px; background-color: white; box-shadow: -5px 0 25px rgba(0,0,0,0.05); display: flex; flex-direction: column; transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); position: absolute; right: 0; top: 0; height: 100%; z-index: 90; border-left: 1px solid #eee; transform: translateX(100%); }
         .gaveta-lateral.aberto { transform: translateX(0); }
         .cabecalho-gaveta { padding: 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; font-weight: bold; color: #2c3e50;}
@@ -99,7 +120,7 @@
         #jitsi-iframe { flex-grow: 1; background: #000; width: 100%; height: 100%; }
 
         /* ========================================== */
-        /* MODAIS E PAINÉIS                           */
+        /* MODAIS E GERADOR ACADÊMICO                 */
         /* ========================================== */
         .fundo-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 5000; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; backdrop-filter: blur(5px);}
         .caixa-modal { background: white; padding: 30px; border-radius: 15px; width: 100%; max-width: 650px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 50px rgba(0,0,0,0.2);}
@@ -112,7 +133,7 @@
         
         .grid-modelos { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-top: 15px; }
         .cartao-modelo { border: 2px solid #ecf0f1; border-radius: 8px; padding: 15px; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; }
-        .cartao-modelo:hover { border-color: #8e44ad; background: #fdfafb; }
+        .cartao-modelo:hover, .cartao-modelo.ativo { border-color: #8e44ad; background: #fdfafb; }
         .texto-modelo h3 { margin: 0; font-size: 14px; color: #2c3e50; }
         .texto-modelo p { margin: 0; font-size: 11px; color: #7f8c8d; }
         .btn-fechar-modal { width: 100%; background: #ecf0f1; color: #2c3e50; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s; margin-top: 15px;}
@@ -121,11 +142,12 @@
         .tcc-opcao { display: flex; align-items: center; gap: 10px; font-size: 13px; color: #2c3e50;}
 
         /* ========================================== */
-        /* MODO NOTURNO (Dark Mode)                   */
+        /* MODO NOTURNO                               */
         /* ========================================== */
-        body.dark-mode .container-editor-scroll, body.dark-mode .gaveta-esquerda { background-color: #121212; border-color: #333;}
-        body.dark-mode #editor-container { background: #1e1e1e; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
-        body.dark-mode .ql-editor { color: #f8fafc; }
+        body.dark-mode, body.dark-mode .container-editor-scroll, body.dark-mode .gaveta-esquerda { background-color: #121212; border-color: #333;}
+        body.dark-mode .ql-editor { background: #1e1e1e; box-shadow: 0 10px 30px rgba(0,0,0,0.8); color: #f8fafc; }
+        body.dark-mode .quebra-de-pagina { background-color: #121212; }
+        body.dark-mode .regua-topo, body.dark-mode .regua-esquerda { background-color: #121212; border-color: #333;}
         body.dark-mode .cabecalho-mapa, body.dark-mode .item-mapa { color: #cbd5e1; }
         body.dark-mode .gaveta-lateral, body.dark-mode .caixa-digitar, body.dark-mode .caixa-modal { background-color: #1e1e1e; border-color: #333; color: white;}
         body.dark-mode .mensagens { background-color: #121212; }
@@ -136,18 +158,20 @@
         body.dark-mode .texto-modelo h3, body.dark-mode .tcc-opcao { color: white; }
 
         /* ========================================== */
-        /* CSS PARA IMPRESSÃO (PDF) - O Segredo da Numeração */
+        /* IMPRESSÃO ABNT (PDF) E NUMERAÇÃO DE PÁGINA */
         /* ========================================== */
         @media print {
             body { background: white; }
-            .container-barras, .gaveta-esquerda, .gaveta-lateral, .container-video { display: none !important; }
+            .container-barras, .gaveta-esquerda, .gaveta-lateral, .container-video, .regua-topo, .regua-esquerda { display: none !important; }
             .container-editor-scroll { padding: 0; overflow: visible; display: block; }
-            #editor-container { box-shadow: none; max-width: none; }
-            .ql-editor { padding: 0 !important; }
-            .quebra-de-pagina { border: none; page-break-after: always; height: 0; margin: 0; }
+            #editor-container { box-shadow: none; max-width: none; margin: 0;}
+            .ql-editor { padding: 0 !important; box-shadow: none; }
+            
+            /* Transforma o buraco cinza em uma quebra de página real para o PDF */
+            .quebra-de-pagina { border: none; page-break-after: always; height: 0; margin: 0; background: transparent; }
             .quebra-de-pagina::after { content: ""; }
             
-            /* Contador de Páginas do CSS */
+            /* Numeração Real no Canto Superior Direito no PDF! */
             @page { margin: 3cm 2cm 2cm 3cm; counter-increment: page; 
                 @top-right { content: counter(page); font-family: Arial; font-size: 10pt; }
             }
@@ -164,12 +188,12 @@
                 <div class="divisor-vertical"></div>
                 <button class="btn-solto" onclick="mostrarBarra('barra-texto')"><span class="material-symbols-outlined">text_format</span> Fonte e Texto</button>
                 <button class="btn-solto" onclick="mostrarBarra('barra-paragrafo')"><span class="material-symbols-outlined">format_align_left</span> Parágrafo</button>
-                <button class="btn-solto" onclick="mostrarBarra('barra-inserir')"><span class="material-symbols-outlined">add_circle</span> Inserir</button>
+                <button class="btn-solto" onclick="mostrarBarra('barra-inserir')"><span class="material-symbols-outlined">add_circle</span> Inserir Elementos</button>
                 <button class="btn-solto" onclick="document.getElementById('modal-modelos').style.display='flex'"><span class="material-symbols-outlined">auto_awesome</span> Gerador Académico</button>
                 <button class="btn-solto" id="btn-tema-quadro"><span class="material-symbols-outlined">dark_mode</span> Modo Escuro</button>
             </div>
             <div class="area-acoes">
-                <button class="btn-texto" onclick="window.print()" title="Salva o documento com as quebras de página e numeração no topo"><span class="material-symbols-outlined" style="font-size:16px;">print</span> Imprimir / PDF</button>
+                <button class="btn-texto" onclick="window.print()" title="Gera o PDF com Numeração de Página ABNT"><span class="material-symbols-outlined" style="font-size:16px;">print</span> Salvar PDF</button>
                 <button id="btn-abrir-equipe" class="btn-icone" title="Gerenciar Equipe"><span class="material-symbols-outlined">group</span></button>
                 <button id="btn-reabrir-chat" class="btn-texto btn-acao-destaque"><span class="material-symbols-outlined" style="font-size:16px;">forum</span> Chat</button>
                 <button id="btn-sair-esc" class="btn-texto btn-sair"><span class="material-symbols-outlined" style="font-size:16px;">close</span></button>
@@ -184,23 +208,21 @@
                     <option value="">Padrão (Arial)</option>
                     <option value="roboto">Roboto</option><option value="open-sans">Open Sans</option><option value="lato">Lato</option>
                     <option value="montserrat">Montserrat</option><option value="oswald">Oswald</option>
-                    <option value="merriweather">Merriweather (Serif)</option><option value="poppins">Poppins</option><option value="dancing">Dancing Script</option>
+                    <option value="merriweather">Merriweather</option><option value="poppins">Poppins</option><option value="dancing">Dancing Script</option>
                 </select>
                 <span style="color:#cbd5e1; font-size: 12px; margin-left:5px;">Tamanho:</span>
                 <select class="caixa-select" style="width: 70px;" onchange="aplicarFormato('size', this.value)">
-                    <option value="10px">10px</option><option value="12px">12px</option><option value="16px" selected>16px</option><option value="20px">20px</option><option value="24px">24px</option><option value="32px">32px</option>
+                    <option value="10px">10px</option><option value="12px">12px</option><option value="16px" selected>16px</option><option value="20px">20px</option><option value="24px">24px</option>
                 </select>
                 <div class="divisor-vertical"></div>
-                <button class="btn-icone" onclick="aplicarFormato('header', '1')" title="Título 1"><span class="material-symbols-outlined">format_h1</span></button>
-                <button class="btn-icone" onclick="aplicarFormato('header', '2')" title="Título 2"><span class="material-symbols-outlined">format_h2</span></button>
+                <button class="btn-icone" onclick="aplicarFormato('header', '1')" title="Título 1 (Capítulo)"><span class="material-symbols-outlined">format_h1</span></button>
+                <button class="btn-icone" onclick="aplicarFormato('header', '2')" title="Título 2 (Subcapítulo)"><span class="material-symbols-outlined">format_h2</span></button>
                 <div class="divisor-vertical"></div>
                 <button class="btn-icone" onclick="aplicarFormato('bold')" title="Negrito"><span class="material-symbols-outlined">format_bold</span></button>
                 <button class="btn-icone" onclick="aplicarFormato('italic')" title="Itálico"><span class="material-symbols-outlined">format_italic</span></button>
                 <button class="btn-icone" onclick="aplicarFormato('underline')" title="Sublinhado"><span class="material-symbols-outlined">format_underlined</span></button>
-                <div class="divisor-vertical"></div>
-                <span style="color:#cbd5e1; font-size: 12px;">Letra:</span><input type="color" class="entrada-cor" onchange="aplicarFormato('color', this.value)">
             </div>
-            <div class="area-acoes"><button class="btn-texto" onclick="quill.history.undo()"><span class="material-symbols-outlined" style="font-size:16px;">undo</span></button></div>
+            <div class="area-acoes"><button class="btn-texto" onclick="quill.history.undo()"><span class="material-symbols-outlined">undo</span> Desfazer</button></div>
         </div>
 
         <div class="barra-superior escondida" id="barra-paragrafo">
@@ -213,13 +235,8 @@
                 <div class="divisor-vertical"></div>
                 <span style="color:#cbd5e1; font-size: 12px;">Espaço Linhas:</span>
                 <select class="caixa-select" style="width: 70px;" onchange="aplicarFormato('lineHeight', this.value)">
-                    <option value="1.0">1.0</option><option value="1.5">1.5</option><option value="2.0">2.0</option>
+                    <option value="1.0">1.0</option><option value="1.5" selected>1.5</option><option value="2.0">2.0</option>
                 </select>
-                <div class="divisor-vertical"></div>
-                <span style="color:#cbd5e1; font-size: 12px;">Margens da Folha:</span>
-                <input type="text" id="margem-topo" class="input-medida" placeholder="Sup (3cm)">
-                <input type="text" id="margem-esq" class="input-medida" placeholder="Esq (3cm)">
-                <button class="btn-texto" onclick="aplicarMargensGlobais()">Aplicar</button>
             </div>
         </div>
 
@@ -227,7 +244,7 @@
             <div class="area-menus">
                 <button class="btn-solto" onclick="mostrarBarra('barra-principal')"><span class="material-symbols-outlined">arrow_back</span> Voltar</button><div class="divisor-vertical"></div>
                 
-                <button class="btn-solto" style="color: #c084fc;" onclick="inserirQuebraDePagina()"><span class="material-symbols-outlined">horizontal_rule</span> Quebra de Página</button>
+                <button class="btn-solto" style="color: #c084fc; border: 1px solid #c084fc;" onclick="inserirQuebraDePagina()"><span class="material-symbols-outlined">horizontal_rule</span> Adicionar Nova Página</button>
                 <div class="divisor-vertical"></div>
 
                 <button class="btn-solto" onclick="inserirLinkVisivel()"><span class="material-symbols-outlined">link</span> Link</button>
@@ -241,11 +258,14 @@
     <div class="workspace">
         
         <div class="gaveta-esquerda" id="gaveta-mapa">
-            <div class="cabecalho-mapa"><span style="display: flex; align-items: center; gap: 5px;"><span class="material-symbols-outlined" style="font-size: 18px;">toc</span> Índice</span></div>
+            <div class="cabecalho-mapa"><span><span class="material-symbols-outlined" style="vertical-align: middle;">toc</span> Índice</span></div>
             <div class="lista-mapa" id="lista-mapa">
-                <p style="font-size: 12px; color: #94a3b8; text-align: center;">Escreva títulos no documento para eles aparecerem aqui.</p>
+                <p style="font-size: 12px; color: #94a3b8; text-align: center;">Escreva Títulos (H1, H2) para eles aparecerem aqui.</p>
             </div>
         </div>
+
+        <div class="regua-topo">1cm &nbsp; 2cm &nbsp; 3cm &nbsp; 4cm &nbsp; 5cm &nbsp; 6cm &nbsp; 7cm &nbsp; 8cm &nbsp; 9cm &nbsp; 10cm &nbsp; 11cm &nbsp; 12cm &nbsp; 13cm &nbsp; 14cm &nbsp; 15cm &nbsp; 16cm</div>
+        <div class="regua-esquerda"></div>
 
         <div class="container-editor-scroll">
             <div id="editor-container"></div>
@@ -260,40 +280,38 @@
 
     <div id="container-video" class="container-video escondido"><div class="cabecalho-video" id="cabecalho-drag"><span>Reunião</span><div style="display:flex;"><button id="btn-minimizar-video" class="btn-icone" style="color:white;"><span class="material-symbols-outlined">remove</span></button><button id="btn-fechar-video" class="btn-icone" style="color:white;"><span class="material-symbols-outlined">close</span></button></div></div><div id="jitsi-iframe" style="flex:1;"></div></div>
 
-    <div class="fundo-modal" id="modal-equipe"><div class="caixa-modal"><h2>Equipe do Projeto</h2><div class="linha-add"><input type="email" id="email-convidado" placeholder="E-mail"><select id="cargo-convidado"><option value="editor">Editor</option><option value="leitor">Leitor</option><option value="admin">Admin</option></select><button id="btn-add-membro" class="btn-add">Convidar</button></div><div class="lista-membros" id="lista-membros"></div><button id="btn-copiar-link" class="btn-add" style="width: 100%; background: #3498db; margin-bottom: 10px;">Copiar Link da Sala</button><input type="text" id="link-gerado" readonly style="display:none;"><button class="btn-fechar-modal" onclick="document.getElementById('modal-equipe').style.display='none'">Fechar</button></div></div>
+    <div class="fundo-modal" id="modal-equipe"><div class="caixa-modal"><h2>Equipe</h2><div class="linha-add"><input type="email" id="email-convidado" placeholder="E-mail"><select id="cargo-convidado"><option value="editor">Editor</option><option value="leitor">Leitor</option><option value="admin">Admin</option></select><button id="btn-add-membro" class="btn-add">Convidar</button></div><div class="lista-membros" id="lista-membros"></div><input type="text" id="link-gerado" readonly style="display:none;"><button class="btn-fechar-modal" onclick="document.getElementById('modal-equipe').style.display='none'">Fechar</button></div></div>
 
     <div class="fundo-modal" id="modal-modelos">
-        <div class="caixa-modal" style="max-width: 750px;">
+        <div class="caixa-modal" style="max-width: 800px;">
             <h2 style="margin-top:0;"><span class="material-symbols-outlined" style="vertical-align: middle;">school</span> Central Académica Ágora</h2>
             <p style="font-size: 13px; color: #e74c3c; font-weight: bold;">Injetar um documento substituirá todo o texto da tela.</p>
             
             <div class="grid-modelos">
-                <div class="cartao-modelo" onclick="abrirPainelGenerico(this, 'painel-tcc')">
-                    <div style="background: #f5f0fa; color: #8e44ad; padding: 10px; border-radius: 8px;"><span class="material-symbols-outlined">menu_book</span></div>
-                    <div class="texto-modelo"><h3>TCC / Monografia</h3><p>Estrutura ABNT.</p></div>
-                </div>
-                <div class="cartao-modelo" onclick="abrirPainelGenerico(this, 'painel-artigo')">
-                    <div style="background: #f5f0fa; color: #8e44ad; padding: 10px; border-radius: 8px;"><span class="material-symbols-outlined">article</span></div>
-                    <div class="texto-modelo"><h3>Artigo Científico</h3><p>Revistas e Congressos.</p></div>
-                </div>
-                <div class="cartao-modelo" onclick="aplicarTemplateDireto('resumo')">
-                    <div style="background: #f5f0fa; color: #8e44ad; padding: 10px; border-radius: 8px;"><span class="material-symbols-outlined">short_text</span></div>
-                    <div class="texto-modelo"><h3>Resumo (Abstract)</h3><p>Resumo Simples.</p></div>
-                </div>
+                <div class="cartao-modelo" onclick="abrirPainelGenerico(this, 'painel-tcc')"><div style="background: #f5f0fa; color: #8e44ad; padding: 10px; border-radius: 8px;"><span class="material-symbols-outlined">menu_book</span></div><div class="texto-modelo"><h3>TCC / Monografia</h3><p>Estrutura ABNT Completa.</p></div></div>
+                <div class="cartao-modelo" onclick="abrirPainelGenerico(this, 'painel-artigo')"><div style="background: #f5f0fa; color: #8e44ad; padding: 10px; border-radius: 8px;"><span class="material-symbols-outlined">article</span></div><div class="texto-modelo"><h3>Artigo Científico</h3><p>Com até 20 páginas.</p></div></div>
+                <div class="cartao-modelo" onclick="abrirPainelGenerico(this, 'painel-pesquisa')"><div style="background: #f5f0fa; color: #8e44ad; padding: 10px; border-radius: 8px;"><span class="material-symbols-outlined">biotech</span></div><div class="texto-modelo"><h3>Projeto de Pesquisa</h3><p>Qualificação.</p></div></div>
+                <div class="cartao-modelo" onclick="aplicarTemplateDireto('resumo')"><div style="background: #f5f0fa; color: #8e44ad; padding: 10px; border-radius: 8px;"><span class="material-symbols-outlined">short_text</span></div><div class="texto-modelo"><h3>Resumo (Abstract)</h3><p>Modelo ABNT.</p></div></div>
+                <div class="cartao-modelo" onclick="aplicarTemplateDireto('resenha')"><div style="background: #f5f0fa; color: #8e44ad; padding: 10px; border-radius: 8px;"><span class="material-symbols-outlined">rate_review</span></div><div class="texto-modelo"><h3>Resenha Crítica</h3><p>Análise de Obras.</p></div></div>
+                <div class="cartao-modelo" onclick="aplicarTemplateDireto('relatorio')"><div style="background: #f5f0fa; color: #8e44ad; padding: 10px; border-radius: 8px;"><span class="material-symbols-outlined">assignment</span></div><div class="texto-modelo"><h3>Relatório Técnico</h3><p>Estágio / Atividades.</p></div></div>
             </div>
 
             <div id="painel-tcc" class="painel-opcoes">
                 <label class="tcc-opcao"><input type="checkbox" id="tcc-capa" checked> Capa e Folha de Rosto</label>
                 <label class="tcc-opcao"><input type="checkbox" id="tcc-resumo" checked> Resumo / Abstract</label>
-                <label class="tcc-opcao"><input type="checkbox" id="tcc-desenv" checked> Estrutura Textual (Intro, Desenv, Conc)</label>
-                <hr>
-                <label class="tcc-opcao" style="color: #8e44ad; font-weight: bold;"><input type="checkbox" id="tcc-abnt" checked> Forçar formatação ABNT (Margens 3x2)</label>
-                <button class="btn-add" style="background: #8e44ad;" onclick="gerarDocumentoComplexo('tcc')">Gerar TCC</button>
+                <label class="tcc-opcao"><input type="checkbox" id="tcc-desenv" checked> Estrutura Textual (Introdução, Capítulos e Conclusão)</label>
+                <button class="btn-add" style="background: #8e44ad; margin-top: 10px;" onclick="gerarDocumentoComplexo('tcc')">Gerar TCC (Multi-páginas)</button>
             </div>
 
             <div id="painel-artigo" class="painel-opcoes">
                 <label class="tcc-opcao"><input type="checkbox" id="art-tudo" checked> Estrutura Completa do Artigo</label>
-                <button class="btn-add" style="background: #8e44ad;" onclick="gerarDocumentoComplexo('artigo')">Gerar Artigo Científico</button>
+                <label class="tcc-opcao"><input type="checkbox" id="art-20pag" checked> Gerar 15 Páginas em branco de Desenvolvimento</label>
+                <button class="btn-add" style="background: #8e44ad; margin-top: 10px;" onclick="gerarDocumentoComplexo('artigo')">Gerar Artigo (Até 20 Páginas)</button>
+            </div>
+
+            <div id="painel-pesquisa" class="painel-opcoes">
+                <label class="tcc-opcao"><input type="checkbox" id="pesq-tudo" checked> Projeto de Pesquisa Padrão CAPES</label>
+                <button class="btn-add" style="background: #8e44ad; margin-top: 10px;" onclick="gerarDocumentoComplexo('pesquisa')">Gerar Projeto</button>
             </div>
             
             <button class="btn-fechar-modal" onclick="fecharTodosModais()">Cancelar</button>
@@ -317,27 +335,23 @@
         const Size = Quill.import('attributors/style/size'); Size.whitelist = ['10px', '12px', '16px', '20px', '24px', '32px']; Quill.register(Size, true);
         const LineHeightStyle = new Parchment.Attributor.Style('lineHeight', 'line-height', { scope: Parchment.Scope.BLOCK, whitelist: ['1.0', '1.5', '2.0'] }); Quill.register(LineHeightStyle, true);
 
-        window.quill = new Quill('#editor-container', { theme: 'snow', placeholder: 'A tela está em branco. Comece a digitar...', modules: { toolbar: false, history: { delay: 1000, maxStack: 500, userOnly: true } } });
+        window.quill = new Quill('#editor-container', { theme: 'snow', placeholder: 'A tela está em branco. Use o botão Adicionar Nova Página ou o Gerador Académico...', modules: { toolbar: false, history: { delay: 1000, maxStack: 500, userOnly: true } } });
 
-        // CONTROLES DE UI (Barras e Gavetas)
+        // CONTROLES DE UI
         window.mostrarBarra = function(idBarra) { document.querySelectorAll('.container-barras .barra-superior').forEach(b => b.classList.add('escondida')); document.getElementById(idBarra).classList.remove('escondida'); }
         document.getElementById('btn-toggle-mapa').addEventListener('click', () => { document.getElementById('gaveta-mapa').classList.toggle('fechada'); });
 
         let meuNome = "Anônimo", meuEmail = "", minhaFoto = "", meuCargo = "leitor";
         let carregamentoInicial = true, isAtualizandoPelaNuvem = false, timeoutSalvar;
 
-        // INSERÇÃO DE CONTEÚDO
+        // INSERÇÕES ESPECIAIS
         window.aplicarFormato = function(formato, valor = null) { if(meuCargo === 'leitor') return; const formatoAtual = quill.getFormat()[formato]; if(valor === null) { quill.format(formato, !formatoAtual); } else { quill.format(formato, formatoAtual === valor ? false : valor); } }
-        window.aplicarMargensGlobais = function() { if(meuCargo === 'leitor') return; const topo = document.getElementById('margem-topo').value || '3cm'; const esq = document.getElementById('margem-esq').value || '3cm'; document.querySelector('.ql-editor').style.padding = `${topo} 2cm 2cm ${esq}`; salvarNaNuvemManual(); }
         
-        // A QUEBRA DE PÁGINA VIRTUAL
         window.inserirQuebraDePagina = function() {
             if(meuCargo === 'leitor') return;
             const range = quill.getSelection(true);
             quill.insertText(range.index, '\n', Quill.sources.USER);
-            quill.insertEmbed(range.index + 1, 'video', 'https://www.youtube.com/watch?v=transparent'); // Hack inofensivo
-            // Injeta o HTML cru para a linha
-            const htmlQuebra = `<hr class="quebra-de-pagina">`;
+            const htmlQuebra = `<hr class="quebra-de-pagina" contenteditable="false">`;
             const div = document.createElement('div'); div.innerHTML = htmlQuebra;
             document.querySelector('.ql-editor').insertBefore(div.firstChild, document.querySelector('.ql-editor').childNodes[range.index+1]);
             salvarNaNuvemManual();
@@ -346,100 +360,101 @@
         window.inserirLinkVisivel = function() { let url = prompt("URL:"); if (url) quill.insertText(quill.getSelection(true).index, url, 'link', url); }
         window.inserirVideoVisivel = function() { let url = prompt("YouTube URL:"); if (url) { const r = quill.getSelection(true); quill.insertEmbed(r.index, 'video', url); quill.insertText(r.index + 1, '\nFonte: ', 'bold', true); quill.insertText(r.index + 8, url, 'link', url); } }
 
-        // SINCRONIZAÇÃO E FIREBASE
+        document.getElementById('btn-upload-imagem').addEventListener('click', () => document.getElementById('input-imagem-firebase').click());
+        document.getElementById('input-imagem-firebase').addEventListener('change', async function(e) { const file = e.target.files[0]; if (!file || meuCargo === 'leitor') return; document.getElementById('btn-upload-imagem').innerHTML = "⏳ Enviando..."; const storageRef = ref(storage, `projetos/${idProjeto}/imagens/${Date.now()}_${file.name}`); try { await uploadBytes(storageRef, file); const url = await getDownloadURL(storageRef); quill.insertEmbed(quill.getSelection(true).index, 'image', url); document.getElementById('btn-upload-imagem').innerHTML = '<span class="material-symbols-outlined">image</span> Imagem (PC)'; } catch (error) { alert("Erro."); } this.value = ''; });
+
+        // FIREBASE E SINCRONIZAÇÃO
         onAuthStateChanged(auth, (user) => { if (user) { meuEmail = user.email; meuNome = user.displayName || user.email.split('@')[0]; minhaFoto = user.photoURL || `https://ui-avatars.com/api/?name=${meuNome}&background=ecf0f1&color=8e44ad`; iniciarSala(); } });
 
         function iniciarSala() {
-            const linkMágico = `${window.location.origin}/convite.html?id=${idProjeto}`; document.getElementById('link-gerado').value = linkMágico; document.getElementById('btn-copiar-link').addEventListener('click', () => navigator.clipboard.writeText(linkMágico));
-            
             onSnapshot(doc(db, "projetos", idProjeto), (snap) => {
                 if (!snap.exists()) return; const dados = snap.data(); document.getElementById('titulo-projeto-topo').innerText = dados.nome;
                 meuCargo = dados.permissoes[meuEmail] || "leitor"; if (meuCargo === "leitor") quill.disable(); else quill.enable();
-                if(dados.margens) document.querySelector('.ql-editor').style.padding = dados.margens;
-                
                 if (carregamentoInicial && dados.conteudo) { isAtualizandoPelaNuvem = true; quill.root.innerHTML = dados.conteudo; atualizarMapaDocumento(); carregamentoInicial = false; setTimeout(() => isAtualizandoPelaNuvem = false, 500); } 
                 else if (!carregamentoInicial && dados.conteudo && !quill.hasFocus()) { isAtualizandoPelaNuvem = true; quill.root.innerHTML = dados.conteudo; atualizarMapaDocumento(); setTimeout(() => isAtualizandoPelaNuvem = false, 500); }
             });
             
-            // MAPA DO DOCUMENTO EM TEMPO REAL
             quill.on('text-change', function(delta, oldDelta, source) { 
                 atualizarMapaDocumento();
                 if (source == 'user' && !isAtualizandoPelaNuvem && meuCargo !== "leitor") { document.getElementById('status-nuvem').innerText = "⏳ A Salvar..."; clearTimeout(timeoutSalvar); timeoutSalvar = setTimeout(salvarNaNuvemManual, 1000); } 
             });
         }
 
-        window.salvarNaNuvemManual = async function() { const pad = document.querySelector('.ql-editor').style.padding; await updateDoc(doc(db, "projetos", idProjeto), { conteudo: quill.root.innerHTML, margens: pad }); document.getElementById('status-nuvem').innerText = "☁️ Salvo"; }
+        window.salvarNaNuvemManual = async function() { await updateDoc(doc(db, "projetos", idProjeto), { conteudo: quill.root.innerHTML }); document.getElementById('status-nuvem').innerText = "☁️ Salvo"; }
 
-        // FUNÇÃO DO MAPA DO DOCUMENTO
         function atualizarMapaDocumento() {
-            const editor = document.querySelector('.ql-editor');
-            const titulos = editor.querySelectorAll('h1, h2, h3');
+            const titulos = document.querySelector('.ql-editor').querySelectorAll('h1, h2');
             const listaMapa = document.getElementById('lista-mapa');
-            
-            if(titulos.length === 0) { listaMapa.innerHTML = '<p style="font-size: 12px; color: #94a3b8; text-align: center;">Escreva títulos no documento (H1, H2, H3) para eles aparecerem aqui.</p>'; return; }
-            
+            if(titulos.length === 0) { listaMapa.innerHTML = '<p style="font-size: 12px; color: #94a3b8; text-align: center;">Escreva Títulos (H1, H2) para eles aparecerem aqui.</p>'; return; }
             let mapaHtml = '';
-            titulos.forEach((t, i) => {
-                const idTag = 'secao-' + i;
-                t.id = idTag; // Adiciona âncora no texto
-                const classeIndent = t.tagName === 'H1' ? 'h1' : (t.tagName === 'H2' ? 'h2' : 'h3');
-                const textoCortado = t.innerText.length > 25 ? t.innerText.substring(0, 25) + '...' : t.innerText;
-                mapaHtml += `<a href="#${idTag}" class="item-mapa ${classeIndent}" title="${t.innerText}">${textoCortado}</a>`;
-            });
+            titulos.forEach((t, i) => { const idTag = 'secao-' + i; t.id = idTag; const classeIndent = t.tagName === 'H1' ? 'h1' : 'h2'; const tc = t.innerText.length > 25 ? t.innerText.substring(0, 25) + '...' : t.innerText; mapaHtml += `<a href="#${idTag}" class="item-mapa ${classeIndent}" title="${t.innerText}">${tc}</a>`; });
             listaMapa.innerHTML = mapaHtml;
-            
-            // Adiciona scroll suave aos links gerados
-            document.querySelectorAll('.item-mapa').forEach(anchor => {
-                anchor.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const targetId = this.getAttribute('href').substring(1);
-                    const targetElement = document.getElementById(targetId);
-                    if(targetElement) { document.querySelector('.container-editor-scroll').scrollTo({ top: targetElement.offsetTop - 50, behavior: 'smooth' }); }
-                });
-            });
+            document.querySelectorAll('.item-mapa').forEach(a => { a.addEventListener('click', function(e) { e.preventDefault(); const target = document.getElementById(this.getAttribute('href').substring(1)); if(target) { document.querySelector('.container-editor-scroll').scrollTo({ top: target.offsetTop - 50, behavior: 'smooth' }); } }); });
         }
 
-        // GERADOR ACADÊMICO FIXO (Sem divs extras que o Quill apaga)
-        window.fecharTodosModais = function() { document.querySelectorAll('.fundo-modal').forEach(m => m.style.display = 'none'); document.querySelectorAll('.painel-opcoes').forEach(p => p.style.display = 'none'); }
-        window.abrirPainelGenerico = function(elementoCard, idPaisnel) { document.querySelectorAll('.painel-opcoes').forEach(p => p.style.display = 'none'); document.getElementById(idPaisnel).style.display = 'flex'; }
+        // GERADOR ACADÊMICO PROFUNDO
+        window.fecharTodosModais = function() { document.querySelectorAll('.fundo-modal').forEach(m => m.style.display = 'none'); document.querySelectorAll('.painel-opcoes').forEach(p => p.style.display = 'none'); document.querySelectorAll('.cartao-modelo').forEach(c => c.classList.remove('ativo')); }
+        window.abrirPainelGenerico = function(elementoCard, idPaisnel) { document.querySelectorAll('.painel-opcoes').forEach(p => p.style.display = 'none'); document.querySelectorAll('.cartao-modelo').forEach(c => c.classList.remove('ativo')); elementoCard.classList.add('ativo'); document.getElementById(idPaisnel).style.display = 'flex'; }
 
         window.aplicarTemplateDireto = async function(tipo) {
             if(meuCargo === "leitor") return;
-            const htmlResumo = `<h2 class="ql-align-center">RESUMO</h2><p class="ql-align-justify">O resumo é uma apresentação concisa de todos os pontos relevantes de um documento. De acordo com a ABNT, deve ter de 150 a 500 palavras em parágrafo único.</p><p><strong>Palavras-chave: </strong> Palavra 1. Palavra 2.</p>`;
-            if(confirm("Substituir o texto?")) { isAtualizandoPelaNuvem = true; quill.root.innerHTML = htmlResumo; await salvarNaNuvemManual(); fecharTodosModais(); atualizarMapaDocumento(); setTimeout(() => isAtualizandoPelaNuvem = false, 500); }
+            const t = {
+                'resumo': `<h2 class="ql-align-center">RESUMO</h2><p><br></p><p class="ql-align-justify">O resumo é uma apresentação concisa dos pontos do documento. (NBR 6028).</p><p><br></p><p><strong>Palavras-chave: </strong> Palavra 1. Palavra 2.</p>`,
+                'resenha': `<h2 class="ql-align-center">RESENHA CRÍTICA</h2><p><br></p><p class="ql-align-center"><strong>REFERÊNCIA: </strong> AUTOR. Título. Editora, Ano.</p><p><br></p><h2>1. CREDENCIAIS DO AUTOR</h2><p class="ql-align-justify">Quem é o autor?</p><p><br></p><h2>2. RESUMO DA OBRA</h2><p class="ql-align-justify">Do que trata a obra?</p>`,
+                'relatorio': `<h2 class="ql-align-center">RELATÓRIO TÉCNICO</h2><p><br></p><h2>1. INTRODUÇÃO</h2><p class="ql-align-justify">Contexto do relatório.</p><p><br></p><h2>2. DESENVOLVIMENTO</h2><p class="ql-align-justify">Atividades realizadas.</p><p><br></p><h2>3. CONCLUSÃO</h2><p class="ql-align-justify">Resultados.</p>`
+            };
+            if(confirm("Substituir o texto?")) { isAtualizandoPelaNuvem = true; quill.root.innerHTML = t[tipo]; await salvarNaNuvemManual(); fecharTodosModais(); atualizarMapaDocumento(); setTimeout(() => isAtualizandoPelaNuvem = false, 500); }
         }
 
         window.gerarDocumentoComplexo = async function(tipo) {
             if(meuCargo === "leitor") return;
-            if(!confirm("Isto apagará o texto atual. Continuar?")) return;
+            if(!confirm("Isto apagará o texto atual para gerar as múltiplas páginas. Continuar?")) return;
 
             let htmlDoc = "";
-            let forcarABNT = false;
-            const quebra = `<hr class="quebra-de-pagina">`;
+            const qp = `<hr class="quebra-de-pagina" contenteditable="false">`;
             
             if(tipo === 'tcc') {
-                forcarABNT = document.getElementById('tcc-abnt').checked;
-                
                 if(document.getElementById('tcc-capa').checked) {
-                    htmlDoc += `<h2 class="ql-align-center">NOME DA INSTITUIÇÃO</h2><p><br></p><p><br></p><h2 class="ql-align-center">NOME DO ALUNO</h2><p><br></p><p><br></p><h1 class="ql-align-center">TÍTULO DO TCC</h1><p><br></p><p><br></p><h3 class="ql-align-center">CIDADE E ANO</h3>${quebra}`;
-                    htmlDoc += `<h2 class="ql-align-center">NOME DO ALUNO</h2><p><br></p><p><br></p><h1 class="ql-align-center">TÍTULO DO TCC</h1><p><br></p><p class="ql-align-right">Trabalho apresentado como requisito... Orientador: Prof. Nome.</p><p><br></p><p><br></p><h3 class="ql-align-center">CIDADE E ANO</h3>${quebra}`;
+                    htmlDoc += `<h2 class="ql-align-center">NOME DA INSTITUIÇÃO</h2><p><br></p><p><br></p><h2 class="ql-align-center">NOME DO ALUNO</h2><p><br></p><p><br></p><p><br></p><h1 class="ql-align-center">TÍTULO DO TCC</h1><p><br></p><p><br></p><p><br></p><p><br></p><h3 class="ql-align-center">CIDADE E ANO</h3>${qp}`;
+                    htmlDoc += `<h2 class="ql-align-center">NOME DO ALUNO</h2><p><br></p><p><br></p><h1 class="ql-align-center">TÍTULO DO TCC</h1><p><br></p><p><br></p><p class="ql-align-right">Trabalho apresentado como requisito para conclusão...<br>Orientador: Prof. Nome.</p><p><br></p><p><br></p><p><br></p><h3 class="ql-align-center">CIDADE E ANO</h3>${qp}`;
                 }
-                if(document.getElementById('tcc-resumo').checked) htmlDoc += `<h2 class="ql-align-center">RESUMO</h2><p><br></p><p class="ql-align-justify">O resumo da sua monografia entra aqui em parágrafo único.</p><p><br></p><p><strong>Palavras-chave: </strong> TCC. Faculdade. Pesquisa.</p>${quebra}`;
-                if(document.getElementById('tcc-desenv').checked) htmlDoc += `<h2>1. INTRODUÇÃO</h2><p class="ql-align-justify">Apresente o seu tema e os objetivos...</p><p><br></p><h2>2. DESENVOLVIMENTO</h2><p class="ql-align-justify">Aqui entra a teoria...</p><p><br></p><h2>3. CONCLUSÃO</h2><p class="ql-align-justify">Fechamento das ideias...</p>${quebra}<h2 class="ql-align-center">REFERÊNCIAS</h2><p>SOBRENOME, Nome. Livro. Editora, 2026.</p>`;
+                if(document.getElementById('tcc-resumo').checked) htmlDoc += `<h2 class="ql-align-center">RESUMO</h2><p><br></p><p class="ql-align-justify">O resumo da sua monografia entra aqui em parágrafo único, de 150 a 500 palavras.</p><p><br></p><p><strong>Palavras-chave: </strong> TCC. Faculdade. Pesquisa.</p>${qp}`;
+                if(document.getElementById('tcc-desenv').checked) htmlDoc += `<h1>1. INTRODUÇÃO</h1><p class="ql-align-justify">Apresente o seu tema e os objetivos da sua monografia...</p><p><br></p>${qp}<h1>2. DESENVOLVIMENTO TEÓRICO</h1><p class="ql-align-justify">Aqui entra a revisão bibliográfica e fundamentação...</p><p><br></p>${qp}<h1>3. METODOLOGIA</h1><p class="ql-align-justify">Como a pesquisa foi conduzida...</p><p><br></p>${qp}<h1>4. CONCLUSÃO</h1><p class="ql-align-justify">Fechamento das ideias...</p>${qp}<h1 class="ql-align-center">REFERÊNCIAS</h1><p>SOBRENOME, Nome. Livro. Editora, 2026.</p>`;
             } 
             else if(tipo === 'artigo') {
-                forcarABNT = true;
-                htmlDoc += `<h1 class="ql-align-center">TÍTULO DO ARTIGO CIENTÍFICO</h1><h3 class="ql-align-center">Nome do Autor</h3><p><br></p><h2 class="ql-align-center">RESUMO</h2><p class="ql-align-justify">Texto do resumo...</p><p><br></p><h2>1. INTRODUÇÃO</h2><p class="ql-align-justify">Contexto do estudo...</p><p><br></p><h2>2. METODOLOGIA</h2><p class="ql-align-justify">Como foi feito...</p><p><br></p><h2>3. CONCLUSÃO</h2><p class="ql-align-justify">Resultados obtidos...</p>`;
+                htmlDoc += `<h1 class="ql-align-center">TÍTULO DO ARTIGO CIENTÍFICO</h1><h3 class="ql-align-center">Nome do Autor Principal</h3><p><br></p><h2 class="ql-align-center">RESUMO</h2><p class="ql-align-justify">Texto do resumo do artigo científico em parágrafo único.</p><p><br></p><p><strong>Palavras-chave: </strong> Artigo. Ciência.</p>${qp}`;
+                htmlDoc += `<h1>1. INTRODUÇÃO</h1><p class="ql-align-justify">Contexto da pesquisa do artigo...</p><p><br></p>${qp}`;
+                
+                // O LOOP DAS 15 PÁGINAS EM BRANCO!
+                if(document.getElementById('art-20pag').checked) {
+                    htmlDoc += `<h1>2. DESENVOLVIMENTO</h1><p class="ql-align-justify">Início do desenvolvimento teório...</p><p><br></p>${qp}`;
+                    for(let i=3; i<=15; i++) { htmlDoc += `<h2>2.${i-1} Subcapítulo de Desenvolvimento</h2><p class="ql-align-justify">Página em branco para desenvolvimento...</p><p><br></p>${qp}`; }
+                } else {
+                    htmlDoc += `<h1>2. DESENVOLVIMENTO</h1><p class="ql-align-justify">Desenvolvimento teórico...</p><p><br></p>${qp}`;
+                }
+                
+                htmlDoc += `<h1>3. METODOLOGIA</h1><p class="ql-align-justify">Métodos aplicados...</p><p><br></p>${qp}`;
+                htmlDoc += `<h1>4. RESULTADOS E CONCLUSÃO</h1><p class="ql-align-justify">Resultados obtidos...</p>${qp}`;
+                htmlDoc += `<h1>REFERÊNCIAS</h1><p>SOBRENOME, Nome. Artigo. Revista, 2026.</p>`;
+            }
+            else if(tipo === 'pesquisa') {
+                htmlDoc += `<h2 class="ql-align-center">PROJETO DE PESQUISA ACADÉMICA</h2><p><br></p><h1>1. TEMA E PROBLEMA</h1><p class="ql-align-justify">Qual a pergunta da pesquisa?</p><p><br></p>${qp}`;
+                htmlDoc += `<h1>2. JUSTIFICATIVA E HIPÓTESE</h1><p class="ql-align-justify">Por que a pesquisa é importante e qual a hipótese inicial?</p><p><br></p>${qp}`;
+                htmlDoc += `<h1>3. OBJETIVOS (GERAL E ESPECÍFICOS)</h1><p class="ql-align-justify">O que pretende alcançar?</p><p><br></p>${qp}`;
+                htmlDoc += `<h1>4. METODOLOGIA E CRONOGRAMA</h1><p class="ql-align-justify">Como e quando será feito?</p>`;
             }
 
-            isAtualizandoPelaNuvem = true; 
-            quill.root.innerHTML = htmlDoc;
-            if(forcarABNT) { document.getElementById('margem-topo').value = "3cm"; document.getElementById('margem-esq').value = "3cm"; aplicarMargensGlobais(); } 
-            else { await salvarNaNuvemManual(); }
-            
+            isAtualizandoPelaNuvem = true; quill.root.innerHTML = htmlDoc;
+            await salvarNaNuvemManual();
             atualizarMapaDocumento();
             fecharTodosModais(); setTimeout(() => isAtualizandoPelaNuvem = false, 500);
         }
+        
+        // MENUS E RESTO DO CÓDIGO (Igual ao anterior)
+        document.getElementById('btn-sair-esc').addEventListener('click', () => { window.location.href = "dashboard.html"; });
+        const caixaChat = document.getElementById('caixa-do-chat'); document.getElementById('btn-reabrir-chat').addEventListener('click', () => { caixaChat.classList.add('aberto'); }); document.getElementById('btn-minimizar-chat').addEventListener('click', () => { caixaChat.classList.remove('aberto'); });
+        const btnTema = document.getElementById('btn-tema-quadro'); let isDark = localStorage.getItem('tema-agora') === 'escuro'; if(isDark) document.body.classList.add('dark-mode');
+        btnTema.addEventListener('click', () => { isDark = !isDark; if(isDark) { document.body.classList.add('dark-mode'); localStorage.setItem('tema-agora', 'escuro'); } else { document.body.classList.remove('dark-mode'); localStorage.setItem('tema-agora', 'claro'); } });
     </script>
 </body>
 </html>
