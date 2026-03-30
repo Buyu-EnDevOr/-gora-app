@@ -84,7 +84,7 @@
         .mensagem-linha { display: flex; gap: 10px; align-items: flex-end; }
         .mensagem-linha.minha { flex-direction: row-reverse; }
         .foto-perfil-chat { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; }
-        .msg { padding: 10px 15px; border-radius: 15px; font-size: 13px; max-width: 80%; }
+        .msg { padding: 10px 15px; border-radius: 15px; font-size: 13px; max-width: 100%; }
         .msg-outro { background-color: #ecf0f1; color: #2c3e50;}
         .msg-minha { background-color: #8e44ad; color: white; }
         .nome-user { font-size: 10px; color: #7f8c8d; margin-bottom: 3px; display: block; }
@@ -92,8 +92,9 @@
         .caixa-digitar { padding: 15px; border-top: 1px solid #eee; display: flex; gap: 10px; background: white; }
         .caixa-digitar input { flex-grow: 1; padding: 10px 15px; border-radius: 20px; border: 1px solid #ddd; outline: none; font-size: 13px; }
         .btn-enviar { background: #8e44ad; color: white; border: none; width: 38px; height: 38px; border-radius: 50%; cursor: pointer;}
+        .btn-ligar-chamada { background: #27ae60; color: white; border: none; padding: 5px 10px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 4px; font-size: 12px; }
 
-        .container-video { position: fixed; bottom: 20px; left: 20px; width: 350px; height: 400px; background: white; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); display: flex; flex-direction: column; overflow: hidden; z-index: 9999; border: 1px solid #ddd; transition: 0.3s; }
+        .container-video { position: fixed; bottom: 20px; left: 20px; width: 350px; height: 400px; background: white; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); display: flex; flex-direction: column; overflow: hidden; z-index: 9999; border: 1px solid #ddd; transition: height 0.3s; }
         .container-video.escondido { display: none; }
         .container-video.minimizado { height: 45px !important; }
         .container-video.tela-cheia { top: 0 !important; left: 0 !important; width: 100vw !important; height: 100vh !important; border-radius: 0;}
@@ -138,11 +139,10 @@
         body.dark-mode .cartao-modelo { border-color: #334155; }
         body.dark-mode .texto-modelo h3, body.dark-mode .tcc-opcao { color: white; }
 
-       /* ========================================== */
-        /* IMPRESSÃO ABNT (PDF) E NUMERAÇÃO DE PÁGINA */
+        /* ========================================== */
+        /* IMPRESSÃO ABNT (PDF) - CORREÇÃO DEFINITIVA */
         /* ========================================== */
         @media print {
-            /* 1. Resetar o corpo inteiro para permitir impressão de múltiplas páginas */
             html, body {
                 background: white !important;
                 height: auto !important;
@@ -152,13 +152,11 @@
                 padding: 0 !important;
             }
 
-            /* 2. Esconder absolutamente toda a interface */
             .container-barras, .gaveta-esquerda, .gaveta-lateral, .container-video, 
             .regua-topo, .regua-esquerda, .fundo-modal {
                 display: none !important;
             }
 
-            /* 3. Quebrar as amarras do Workspace e do Quill (flexbox e overflow hidden) */
             .workspace, .container-editor-scroll, #editor-container, .ql-container {
                 display: block !important;
                 height: auto !important;
@@ -170,7 +168,6 @@
                 border: none !important;
             }
 
-            /* 4. O texto do editor deve fluir livremente */
             .ql-editor {
                 height: auto !important;
                 overflow: visible !important;
@@ -178,33 +175,28 @@
                 box-shadow: none !important;
             }
 
-            /* 5. A mágica da quebra de página (Garante que a folha corte aqui) */
             .quebra-de-pagina {
                 border: none !important;
                 background: transparent !important;
                 margin: 0 !important;
                 padding: 0 !important;
                 height: 0 !important;
-                page-break-after: always !important; /* Padrão antigo de navegadores */
-                break-after: page !important;        /* Padrão moderno */
+                page-break-after: always !important;
+                break-after: page !important;
             }
 
-            /* Esconder as tags de ilusão visual ("Página 1", "Página 2") na impressão final */
             .quebra-de-pagina::after, .ql-editor::before {
                 display: none !important;
             }
 
-            /* 6. Evitar que Títulos fiquem órfãos (sozinhos no fim de uma folha) */
             h1, h2, h3 {
                 page-break-after: avoid !important;
                 break-after: avoid !important;
             }
 
-            /* 7. Configuração da página física e numeração (A4 com margens ABNT) */
             @page {
                 size: A4 portrait;
                 margin: 3cm 2cm 2cm 3cm;
-                /* A numeração de página via CSS @page funciona bem no Chrome/Edge */
                 @bottom-right {
                     content: counter(page);
                     font-family: Arial, sans-serif;
@@ -309,13 +301,13 @@
         </div>
     </div>
 
-    <div id="container-video" class="container-video escondido"><div class="cabecalho-video" id="cabecalho-drag"><span>Reunião</span><div style="display:flex;"><button id="btn-minimizar-video" class="btn-icone" style="color:white;"><span class="material-symbols-outlined">remove</span></button><button id="btn-fechar-video" class="btn-icone" style="color:white;"><span class="material-symbols-outlined">close</span></button></div></div><div id="jitsi-iframe" style="flex:1;"></div></div>
+    <div id="container-video" class="container-video escondido"><div class="cabecalho-video" id="cabecalho-drag"><span>Reunião Ágora</span><div style="display:flex;"><button id="btn-minimizar-video" class="btn-icone" style="color:white;"><span class="material-symbols-outlined">remove</span></button><button id="btn-fechar-video" class="btn-icone" style="color:white;"><span class="material-symbols-outlined">close</span></button></div></div><div id="jitsi-iframe" style="flex:1;"></div></div>
 
-    <div class="fundo-modal" id="modal-equipe"><div class="caixa-modal"><h2>Equipe</h2><div class="linha-add"><input type="email" id="email-convidado" placeholder="E-mail"><select id="cargo-convidado"><option value="editor">Editor</option><option value="leitor">Leitor</option><option value="admin">Admin</option></select><button id="btn-add-membro" class="btn-add">Convidar</button></div><div class="lista-membros" id="lista-membros"></div><input type="text" id="link-gerado" readonly style="display:none;"><button class="btn-fechar-modal" onclick="document.getElementById('modal-equipe').style.display='none'">Fechar</button></div></div>
+    <div class="fundo-modal" id="modal-equipe"><div class="caixa-modal"><h2>Equipe do Projeto</h2><div class="linha-add"><input type="email" id="email-convidado" placeholder="E-mail do membro"><select id="cargo-convidado"><option value="editor">Editor</option><option value="leitor">Leitor</option><option value="admin">Admin</option></select><button id="btn-add-membro" class="btn-add">Convidar</button></div><div class="lista-membros" id="lista-membros"><p style="text-align:center; color:#7f8c8d; font-size:13px;">Integração com o painel de convites a ser implementada.</p></div><input type="text" id="link-gerado" readonly style="display:none;"><button class="btn-fechar-modal" onclick="document.getElementById('modal-equipe').style.display='none'">Fechar</button></div></div>
 
     <div class="fundo-modal" id="modal-modelos">
         <div class="caixa-modal" style="max-width: 800px;">
-            <h2 style="margin-top:0;"><span class="material-symbols-outlined" style="vertical-align: middle;">school</span> Central Académica Ágora</h2>
+            <h2 style="margin-top:0;"><span class="material-symbols-outlined" style="vertical-align: middle;">school</span> Central Acadêmica Ágora</h2>
             <p style="font-size: 13px; color: #e74c3c; font-weight: bold;">Injetar um documento substituirá todo o texto da tela.</p>
             
             <div class="grid-modelos">
@@ -395,7 +387,15 @@
         document.getElementById('input-imagem-firebase').addEventListener('change', async function(e) { const file = e.target.files[0]; if (!file || meuCargo === 'leitor') return; document.getElementById('btn-upload-imagem').innerHTML = "⏳ Enviando..."; const storageRef = ref(storage, `projetos/${idProjeto}/imagens/${Date.now()}_${file.name}`); try { await uploadBytes(storageRef, file); const url = await getDownloadURL(storageRef); quill.insertEmbed(quill.getSelection(true).index, 'image', url); document.getElementById('btn-upload-imagem').innerHTML = '<span class="material-symbols-outlined">image</span> Imagem (PC)'; } catch (error) { alert("Erro."); } this.value = ''; });
 
         // FIREBASE E SINCRONIZAÇÃO
-        onAuthStateChanged(auth, (user) => { if (user) { meuEmail = user.email; meuNome = user.displayName || user.email.split('@')[0]; minhaFoto = user.photoURL || `https://ui-avatars.com/api/?name=${meuNome}&background=ecf0f1&color=8e44ad`; iniciarSala(); } });
+        onAuthStateChanged(auth, (user) => { 
+            if (user) { 
+                meuEmail = user.email; 
+                meuNome = user.displayName || user.email.split('@')[0]; 
+                minhaFoto = user.photoURL || `https://ui-avatars.com/api/?name=${meuNome}&background=ecf0f1&color=8e44ad`; 
+                iniciarSala(); 
+                carregarChat(); // CHAT INICIADO AQUI
+            } 
+        });
 
         function iniciarSala() {
             onSnapshot(doc(db, "projetos", idProjeto), (snap) => {
@@ -424,7 +424,7 @@
             document.querySelectorAll('.item-mapa').forEach(a => { a.addEventListener('click', function(e) { e.preventDefault(); const target = document.getElementById(this.getAttribute('href').substring(1)); if(target) { document.querySelector('.container-editor-scroll').scrollTo({ top: target.offsetTop - 50, behavior: 'smooth' }); } }); });
         }
 
-        // GERADOR ACADÊMICO (OS MODELOS REAIS E DETALHADOS)
+        // GERADOR ACADÊMICO
         window.fecharTodosModais = function() { document.querySelectorAll('.fundo-modal').forEach(m => m.style.display = 'none'); document.querySelectorAll('.painel-opcoes').forEach(p => p.style.display = 'none'); document.querySelectorAll('.cartao-modelo').forEach(c => c.classList.remove('ativo')); }
         window.abrirPainelGenerico = function(elementoCard, idPaisnel) { document.querySelectorAll('.painel-opcoes').forEach(p => p.style.display = 'none'); document.querySelectorAll('.cartao-modelo').forEach(c => c.classList.remove('ativo')); elementoCard.classList.add('ativo'); document.getElementById(idPaisnel).style.display = 'flex'; }
 
@@ -451,7 +451,7 @@
                     htmlDoc += `<h2 class="ql-align-center">NOME COMPLETO DO ALUNO</h2><p><br></p><p><br></p><p><br></p><p><br></p><h1 class="ql-align-center">TÍTULO DO TRABALHO: SUBTÍTULO (SE HOUVER)</h1><p><br></p><p><br></p><p class="ql-align-right" style="margin-left: 40%; font-size: 10pt; line-height: 1.0;">Trabalho de Conclusão de Curso apresentado ao curso de [Nome do Curso] da [Nome da Instituição], como requisito parcial para a obtenção do título de Bacharel / Licenciado em [Área de Formação].<br><br>Orientador(a): Prof. / Profa. [Titulação e Nome do Orientador].</p><p><br></p><p><br></p><p><br></p><p><br></p><p><br></p><p><br></p><p><br></p><h3 class="ql-align-center">CIDADE - UF<br>ANO DE ENTREGA</h3>${qp}`;
                 }
                 if(document.getElementById('tcc-resumo').checked) {
-                    htmlDoc += `<h2 class="ql-align-center">RESUMO</h2><p><br></p><p class="ql-align-justify">O resumo deve conter de 150 a 500 palavras, redigido em parágrafo único e sem recuo. Apresente o problema de pesquisa, os objetivos gerais, a metodologia empregada e as principais conclusões obtidas pela monografia.</p><p><br></p><p><strong>Palavras-chave: </strong> Palavra 1. Palavra 2. Palavra 3. Palavra 4.</p>${qp}`;
+                    htmlDoc += `<h2 class="ql-align-center">RESUMO</h2><p><br></p><p class="ql-align-justify">O resumo deve conter de 150 a 500 palavras, redigido em parágrafo único e sem recuo. Apresente o problema de pesquisa, os objetivos gerais, a metodologia empregada e as principais conclusions obtidas pela monografia.</p><p><br></p><p><strong>Palavras-chave: </strong> Palavra 1. Palavra 2. Palavra 3. Palavra 4.</p>${qp}`;
                 }
                 if(document.getElementById('tcc-desenv').checked) {
                     htmlDoc += `<h1>1 INTRODUÇÃO</h1><p class="ql-align-justify" style="text-indent: 1.25cm;">A introdução é o cartão de visita do seu TCC. Apresente o tema de forma clara, delimitando o problema de pesquisa (a pergunta que o seu trabalho quer responder). Em seguida, escreva a justificativa: por que esta pesquisa é importante para a sociedade ou para o meio acadêmico? Finalize o capítulo listando o Objetivo Geral e os Objetivos Específicos.</p><p><br></p>${qp}`;
@@ -477,7 +477,7 @@
                 htmlDoc += `<h1 class="ql-align-center">REFERÊNCIAS</h1><p>Todo documento utilizado e citado no trabalho deve constar na lista de referências.</p><p><br></p><p>SOBRENOME, Nome. Título do livro: subtítulo (se houver). Número da edição. Local/Cidade: Editora, Ano.</p><p><br></p><p>SOBRENOME DO AUTOR, Nome. Título do texto. In.: Nome da revista ou site em que o texto se encontra. Data da Publicação. Disponível em: &lt;website visitado&gt;. Acesso em: dia, mês abreviado, ano.</p>`;
             }
             else if(tipo === 'pesquisa') {
-                htmlDoc += `<h2 class="ql-align-center">PROJETO DE PESQUISA ACADÉMICA</h2><p><br></p><h1>1. TEMA E PROBLEMA DE PESQUISA</h1><p class="ql-align-justify" style="text-indent: 1.25cm;"><strong>Tema:</strong> A grande área de estudo onde seu projeto se encaixa.</p><p class="ql-align-justify" style="text-indent: 1.25cm;"><strong>Problema:</strong> Qual a dúvida exata que seu trabalho quer resolver? Formule na estrutura de uma pergunta clara e objetiva.</p><p><br></p>${qp}`;
+                htmlDoc += `<h2 class="ql-align-center">PROJETO DE PESQUISA ACADÊMICA</h2><p><br></p><h1>1. TEMA E PROBLEMA DE PESQUISA</h1><p class="ql-align-justify" style="text-indent: 1.25cm;"><strong>Tema:</strong> A grande área de estudo onde seu projeto se encaixa.</p><p class="ql-align-justify" style="text-indent: 1.25cm;"><strong>Problema:</strong> Qual a dúvida exata que seu trabalho quer resolver? Formule na estrutura de uma pergunta clara e objetiva.</p><p><br></p>${qp}`;
                 htmlDoc += `<h1>2. JUSTIFICATIVA E HIPÓTESE</h1><p class="ql-align-justify" style="text-indent: 1.25cm;">Venda o seu projeto. Explique para a banca examinadora o porquê desta pesquisa precisar ser feita. Que lacuna ela preenche? Apresente também a <strong>Hipótese</strong>: qual a resposta provisória que você acredita que irá confirmar ao fim da pesquisa?</p><p><br></p>${qp}`;
                 htmlDoc += `<h1>3. OBJETIVOS</h1><p class="ql-align-justify" style="text-indent: 1.25cm;"><strong>Objetivo Geral:</strong> (Use verbos no infinitivo: Analisar, Compreender, Desenvolver...).</p><p class="ql-align-justify" style="text-indent: 1.25cm;"><strong>Objetivos Específicos:</strong><br>- Levantar dados teóricos sobre X;<br>- Aplicar questionário com Y;<br>- Comparar os resultados de X e Y.</p><p><br></p>${qp}`;
                 htmlDoc += `<h1>4. METODOLOGIA E CRONOGRAMA DE EXECUÇÃO</h1><p class="ql-align-justify" style="text-indent: 1.25cm;">Defina o roteiro. Onde a pesquisa será feita? Haverá coleta de dados de campo? Apresente também as etapas em formato de cronograma (Ex: Mês 1 - Revisão Teórica; Mês 2 - Aplicação de Entrevistas; Mês 3 - Análise de Dados; Mês 4 - Entrega do Texto Final).</p>`;
@@ -489,9 +489,93 @@
             fecharTodosModais(); setTimeout(() => isAtualizandoPelaNuvem = false, 500);
         }
         
-        // EVENTOS GERAIS
+        // ==========================================
+        // LÓGICA DO CHAT (FIREBASE)
+        // ==========================================
+        const inputChat = document.getElementById('input-chat');
+        const btnEnviarMsg = document.getElementById('btn-enviar-msg');
+        const painelMensagens = document.getElementById('chat-mensagens');
+
+        function rolarChatParaFim() { painelMensagens.scrollTop = painelMensagens.scrollHeight; }
+
+        async function enviarMensagem() {
+            const texto = inputChat.value.trim();
+            if (!texto || !idProjeto || meuNome === "Anônimo") return;
+            inputChat.value = ""; 
+            try {
+                await addDoc(collection(db, "projetos", idProjeto, "mensagens"), {
+                    texto: texto, autor: meuNome, email: meuEmail, foto: minhaFoto, timestamp: new Date().getTime() 
+                });
+            } catch (erro) { console.error("Erro ao enviar mensagem: ", erro); }
+        }
+
+        btnEnviarMsg.addEventListener('click', enviarMensagem);
+        inputChat.addEventListener('keypress', (e) => { if (e.key === 'Enter') enviarMensagem(); });
+
+        function carregarChat() {
+            if (!idProjeto) return;
+            const q = query(collection(db, "projetos", idProjeto, "mensagens"), orderBy("timestamp", "asc"));
+            onSnapshot(q, (snapshot) => {
+                painelMensagens.innerHTML = ""; 
+                snapshot.forEach((docSnap) => {
+                    const msg = docSnap.data();
+                    const ehMinha = msg.email === meuEmail;
+                    const htmlMsg = `
+                        <div class="mensagem-linha ${ehMinha ? 'minha' : ''}">
+                            <img src="${msg.foto}" class="foto-perfil-chat" alt="Foto">
+                            <div style="display: flex; flex-direction: column; max-width: 80%;">
+                                <span class="nome-user">${msg.autor}</span>
+                                <div class="msg ${ehMinha ? 'msg-minha' : 'msg-outro'}">${msg.texto}</div>
+                            </div>
+                        </div>
+                    `;
+                    painelMensagens.innerHTML += htmlMsg;
+                });
+                rolarChatParaFim();
+            });
+        }
+
+        // ==========================================
+        // LÓGICA DE VIDEOCHAMADA (JITSI MEET)
+        // ==========================================
+        let apiJitsi = null;
+        document.getElementById('btn-iniciar-chamada').addEventListener('click', () => {
+            const containerVideo = document.getElementById('container-video');
+            containerVideo.classList.remove('escondido');
+            containerVideo.classList.remove('minimizado');
+            
+            if (!apiJitsi) {
+                const domain = 'meet.jit.si';
+                const options = {
+                    roomName: 'ProjetoAgora_' + (idProjeto || 'ReuniaoGeral'),
+                    width: '100%',
+                    height: '100%',
+                    parentNode: document.querySelector('#jitsi-iframe'),
+                    userInfo: { displayName: meuNome }
+                };
+                apiJitsi = new JitsiMeetExternalAPI(domain, options);
+            }
+        });
+
+        document.getElementById('btn-fechar-video').addEventListener('click', () => {
+            document.getElementById('container-video').classList.add('escondido');
+            if (apiJitsi) { apiJitsi.dispose(); apiJitsi = null; }
+        });
+
+        document.getElementById('btn-minimizar-video').addEventListener('click', () => {
+            document.getElementById('container-video').classList.toggle('minimizado');
+        });
+
+        // ==========================================
+        // EVENTOS GERAIS DA INTERFACE E MODAIS
+        // ==========================================
+        document.getElementById('btn-abrir-equipe').addEventListener('click', () => { 
+            document.getElementById('modal-equipe').style.display = 'flex'; 
+        });
+        
         document.getElementById('btn-sair-esc').addEventListener('click', () => { window.location.href = "dashboard.html"; });
         const caixaChat = document.getElementById('caixa-do-chat'); document.getElementById('btn-reabrir-chat').addEventListener('click', () => { caixaChat.classList.add('aberto'); }); document.getElementById('btn-minimizar-chat').addEventListener('click', () => { caixaChat.classList.remove('aberto'); });
+        
         const btnTema = document.getElementById('btn-tema-quadro'); let isDark = localStorage.getItem('tema-agora') === 'escuro'; if(isDark) document.body.classList.add('dark-mode');
         btnTema.addEventListener('click', () => { isDark = !isDark; if(isDark) { document.body.classList.add('dark-mode'); localStorage.setItem('tema-agora', 'escuro'); } else { document.body.classList.remove('dark-mode'); localStorage.setItem('tema-agora', 'claro'); } });
     </script>
