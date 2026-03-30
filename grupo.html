@@ -44,7 +44,6 @@
         .btn-acao-destaque:hover { background: #7d3c98; }
         .caixa-select { padding: 6px; border-radius: 6px; border: 1px solid #475569; background: #0f172a; color: white; outline: none; cursor: pointer; font-size: 12px;}
         .entrada-cor { border: none; padding: 0; width: 24px; height: 24px; cursor: pointer; background: transparent; border-radius: 50%; }
-        .input-medida { padding: 6px; border-radius: 6px; border: 1px solid #475569; background: #0f172a; color: white; width: 60px; font-size: 12px; text-align: center;}
 
         /* ========================================== */
         /* ÁREA CENTRAL E ILUSÃO DE PÁGINAS A4        */
@@ -352,11 +351,27 @@
         const app = initializeApp(firebaseConfig); const db = getFirestore(app); const auth = getAuth(app); const storage = getStorage(app);
         const idProjeto = new URLSearchParams(window.location.search).get('id');
 
-        // ATRIBUIDORES DO QUILL
+        // ==========================================
+        // ATRIBUIDORES E CONFIGURAÇÃO DO QUILL
+        // ==========================================
         const Parchment = Quill.import('parchment');
         const Font = Quill.import('formats/font'); Font.whitelist = ['roboto', 'open-sans', 'lato', 'montserrat', 'oswald', 'merriweather', 'nunito', 'poppins', 'dancing']; Quill.register(Font, true);
         const Size = Quill.import('attributors/style/size'); Size.whitelist = ['10px', '12px', '16px', '20px', '24px', '32px']; Quill.register(Size, true);
         const LineHeightStyle = new Parchment.Attributor.Style('lineHeight', 'line-height', { scope: Parchment.Scope.BLOCK, whitelist: ['1.0', '1.5', '2.0'] }); Quill.register(LineHeightStyle, true);
+
+        // A MÁGICA PARA O LAYOUT NÃO EXPLODIR: Ensinando o Quill a lidar com a Quebra de Página
+        const BlockEmbed = Quill.import('blots/block/embed');
+        class QuebraDePaginaBlot extends BlockEmbed {
+            static create(value) {
+                const node = super.create();
+                node.setAttribute('contenteditable', 'false');
+                return node;
+            }
+        }
+        QuebraDePaginaBlot.blotName = 'quebra-pagina';
+        QuebraDePaginaBlot.tagName = 'hr';
+        QuebraDePaginaBlot.className = 'quebra-de-pagina';
+        Quill.register(QuebraDePaginaBlot);
 
         window.quill = new Quill('#editor-container', { theme: 'snow', placeholder: 'A tela está em branco. Use o botão Adicionar Nova Página ou o Gerador Académico...', modules: { toolbar: false, history: { delay: 1000, maxStack: 500, userOnly: true } } });
 
@@ -367,17 +382,18 @@
         let meuNome = "Anônimo", meuEmail = "", minhaFoto = "", meuCargo = "leitor";
         let carregamentoInicial = true, isAtualizandoPelaNuvem = false, timeoutSalvar;
 
-        // INSERÇÕES ESPECIAIS
+        // INSERÇÕES ESPECIAIS (Agora usando a API nativa do Quill)
         window.aplicarFormato = function(formato, valor = null) { if(meuCargo === 'leitor') return; const formatoAtual = quill.getFormat()[formato]; if(valor === null) { quill.format(formato, !formatoAtual); } else { quill.format(formato, formatoAtual === valor ? false : valor); } }
         
         window.inserirQuebraDePagina = function() {
             if(meuCargo === 'leitor') return;
             const range = quill.getSelection(true);
-            quill.insertText(range.index, '\n', Quill.sources.USER);
-            const htmlQuebra = `<hr class="quebra-de-pagina" contenteditable="false">`;
-            const div = document.createElement('div'); div.innerHTML = htmlQuebra;
-            document.querySelector('.ql-editor').insertBefore(div.firstChild, document.querySelector('.ql-editor').childNodes[range.index+1]);
-            salvarNaNuvemManual();
+            if (range) {
+                // Insere nativamente pelo motor do Quill, sem quebrar as divs!
+                quill.insertEmbed(range.index, 'quebra-pagina', true, Quill.sources.USER);
+                quill.setSelection(range.index + 1, Quill.sources.SILENT);
+                salvarNaNuvemManual();
+            }
         }
 
         window.inserirLinkVisivel = function() { let url = prompt("URL:"); if (url) quill.insertText(quill.getSelection(true).index, url, 'link', url); }
@@ -386,14 +402,16 @@
         document.getElementById('btn-upload-imagem').addEventListener('click', () => document.getElementById('input-imagem-firebase').click());
         document.getElementById('input-imagem-firebase').addEventListener('change', async function(e) { const file = e.target.files[0]; if (!file || meuCargo === 'leitor') return; document.getElementById('btn-upload-imagem').innerHTML = "⏳ Enviando..."; const storageRef = ref(storage, `projetos/${idProjeto}/imagens/${Date.now()}_${file.name}`); try { await uploadBytes(storageRef, file); const url = await getDownloadURL(storageRef); quill.insertEmbed(quill.getSelection(true).index, 'image', url); document.getElementById('btn-upload-imagem').innerHTML = '<span class="material-symbols-outlined">image</span> Imagem (PC)'; } catch (error) { alert("Erro."); } this.value = ''; });
 
+        // ==========================================
         // FIREBASE E SINCRONIZAÇÃO
+        // ==========================================
         onAuthStateChanged(auth, (user) => { 
             if (user) { 
                 meuEmail = user.email; 
                 meuNome = user.displayName || user.email.split('@')[0]; 
                 minhaFoto = user.photoURL || `https://ui-avatars.com/api/?name=${meuNome}&background=ecf0f1&color=8e44ad`; 
                 iniciarSala(); 
-                carregarChat(); // CHAT INICIADO AQUI
+                carregarChat(); 
             } 
         });
 
@@ -402,8 +420,9 @@
                 if (!snap.exists()) return; const dados = snap.data(); document.getElementById('titulo-projeto-topo').innerText = dados.nome;
                 meuCargo = dados.permissoes[meuEmail] || "leitor"; if (meuCargo === "leitor") quill.disable(); else quill.enable();
                 
-                if (carregamentoInicial && dados.conteudo) { isAtualizandoPelaNuvem = true; quill.root.innerHTML = dados.conteudo; atualizarMapaDocumento(); carregamentoInicial = false; setTimeout(() => isAtualizandoPelaNuvem = false, 500); } 
-                else if (!carregamentoInicial && dados.conteudo && !quill.hasFocus()) { isAtualizandoPelaNuvem = true; quill.root.innerHTML = dados.conteudo; atualizarMapaDocumento(); setTimeout(() => isAtualizandoPelaNuvem = false, 500); }
+                // Usando dangerouslyPasteHTML em vez de innerHTML para o Quill ler os embeds corretamente
+                if (carregamentoInicial && dados.conteudo) { isAtualizandoPelaNuvem = true; quill.clipboard.dangerouslyPasteHTML(dados.conteudo); atualizarMapaDocumento(); carregamentoInicial = false; setTimeout(() => isAtualizandoPelaNuvem = false, 500); } 
+                else if (!carregamentoInicial && dados.conteudo && !quill.hasFocus()) { isAtualizandoPelaNuvem = true; quill.clipboard.dangerouslyPasteHTML(dados.conteudo); atualizarMapaDocumento(); setTimeout(() => isAtualizandoPelaNuvem = false, 500); }
             });
             
             quill.on('text-change', function(delta, oldDelta, source) { 
@@ -424,7 +443,9 @@
             document.querySelectorAll('.item-mapa').forEach(a => { a.addEventListener('click', function(e) { e.preventDefault(); const target = document.getElementById(this.getAttribute('href').substring(1)); if(target) { document.querySelector('.container-editor-scroll').scrollTo({ top: target.offsetTop - 50, behavior: 'smooth' }); } }); });
         }
 
+        // ==========================================
         // GERADOR ACADÊMICO
+        // ==========================================
         window.fecharTodosModais = function() { document.querySelectorAll('.fundo-modal').forEach(m => m.style.display = 'none'); document.querySelectorAll('.painel-opcoes').forEach(p => p.style.display = 'none'); document.querySelectorAll('.cartao-modelo').forEach(c => c.classList.remove('ativo')); }
         window.abrirPainelGenerico = function(elementoCard, idPaisnel) { document.querySelectorAll('.painel-opcoes').forEach(p => p.style.display = 'none'); document.querySelectorAll('.cartao-modelo').forEach(c => c.classList.remove('ativo')); elementoCard.classList.add('ativo'); document.getElementById(idPaisnel).style.display = 'flex'; }
 
@@ -435,7 +456,7 @@
                 'resenha': `<h2 class="ql-align-center">RESENHA CRÍTICA</h2><p><br></p><p class="ql-align-center"><strong>REFERÊNCIA DA OBRA</strong></p><p class="ql-align-center" style="font-size: 10pt;">SOBRENOME, Nome do Autor. <strong>Título da Obra em Negrito:</strong> subtítulo sem negrito. Cidade: Editora, Ano. Total de páginas.</p><p><br></p><h2>1. CREDENCIAIS DO AUTOR</h2><p class="ql-align-justify" style="text-indent: 1.25cm;">Apresente brevemente quem é o autor da obra. Qual a sua formação acadêmica? Quais são suas principais influências e em qual contexto histórico ou social ele está inserido? Isso ajuda o leitor a entender o ponto de vista defendido no texto.</p><p><br></p><h2>2. RESUMO DA OBRA</h2><p class="ql-align-justify" style="text-indent: 1.25cm;">Descreva detalhadamente do que trata o livro ou artigo. Quais são as ideias principais? Faça um apanhado geral dos capítulos, explicando os conceitos fundamentais que o autor tentou transmitir, mas sem ainda colocar a sua opinião pessoal.</p><p><br></p><h2>3. ANÁLISE CRÍTICA</h2><p class="ql-align-justify" style="text-indent: 1.25cm;">Este é o núcleo da resenha. Apresente sua avaliação sobre o texto. O autor conseguiu provar sua tese? Os argumentos são válidos, coerentes e bem fundamentados? A linguagem é acessível ou muito técnica? Compare a obra com outras do mesmo tema.</p>`,
                 'relatorio': `<h2 class="ql-align-center">RELATÓRIO TÉCNICO DE ATIVIDADES</h2><p><br></p><h2>1. INTRODUÇÃO</h2><p class="ql-align-justify" style="text-indent: 1.25cm;">Nesta seção, você deve apresentar o contexto que motivou a realização deste relatório. Descreva o ambiente (laboratório, estágio, setor da empresa) e indique o período em que as atividades foram realizadas. Deixe claro qual é o objetivo central do documento.</p><p><br></p><h2>2. DESENVOLVIMENTO (MÉTODOS E MATERIAIS)</h2><p class="ql-align-justify" style="text-indent: 1.25cm;">Descreva de maneira minuciosa as atividades que foram executadas. Responda: O que foi feito? Como foi feito? Quais materiais, ferramentas ou softwares foram utilizados? Se houve alguma dificuldade ou desafio durante a execução técnica, relate aqui e explique como o problema foi solucionado.</p><p><br></p><h2>3. CONCLUSÃO</h2><p class="ql-align-justify" style="text-indent: 1.25cm;">Faça as considerações finais. Os objetivos iniciais foram atingidos? Qual o aprendizado ou retorno técnico adquirido durante o período relatado? Sugira, se houver, passos futuros para a continuação do projeto.</p>`
             };
-            if(confirm("Substituir o texto por este modelo profissional?")) { isAtualizandoPelaNuvem = true; quill.root.innerHTML = t[tipo]; await salvarNaNuvemManual(); fecharTodosModais(); atualizarMapaDocumento(); setTimeout(() => isAtualizandoPelaNuvem = false, 500); }
+            if(confirm("Substituir o texto por este modelo profissional?")) { isAtualizandoPelaNuvem = true; quill.clipboard.dangerouslyPasteHTML(t[tipo]); await salvarNaNuvemManual(); fecharTodosModais(); atualizarMapaDocumento(); setTimeout(() => isAtualizandoPelaNuvem = false, 500); }
         }
 
         window.gerarDocumentoComplexo = async function(tipo) {
@@ -483,7 +504,7 @@
                 htmlDoc += `<h1>4. METODOLOGIA E CRONOGRAMA DE EXECUÇÃO</h1><p class="ql-align-justify" style="text-indent: 1.25cm;">Defina o roteiro. Onde a pesquisa será feita? Haverá coleta de dados de campo? Apresente também as etapas em formato de cronograma (Ex: Mês 1 - Revisão Teórica; Mês 2 - Aplicação de Entrevistas; Mês 3 - Análise de Dados; Mês 4 - Entrega do Texto Final).</p>`;
             }
 
-            isAtualizandoPelaNuvem = true; quill.root.innerHTML = htmlDoc;
+            isAtualizandoPelaNuvem = true; quill.clipboard.dangerouslyPasteHTML(htmlDoc);
             await salvarNaNuvemManual();
             atualizarMapaDocumento();
             fecharTodosModais(); setTimeout(() => isAtualizandoPelaNuvem = false, 500);
