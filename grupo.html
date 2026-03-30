@@ -138,18 +138,79 @@
         body.dark-mode .cartao-modelo { border-color: #334155; }
         body.dark-mode .texto-modelo h3, body.dark-mode .tcc-opcao { color: white; }
 
-        /* ========================================== */
+       /* ========================================== */
         /* IMPRESSÃO ABNT (PDF) E NUMERAÇÃO DE PÁGINA */
         /* ========================================== */
         @media print {
-            body { background: white; }
-            .container-barras, .gaveta-esquerda, .gaveta-lateral, .container-video, .regua-topo, .regua-esquerda { display: none !important; }
-            .container-editor-scroll { padding: 0; overflow: visible; display: block; }
-            #editor-container { box-shadow: none; max-width: none; margin: 0;}
-            .ql-editor { padding: 0 !important; box-shadow: none; }
-            .quebra-de-pagina { border: none; page-break-after: always; height: 0; margin: 0; background: transparent; }
-            .quebra-de-pagina::after { content: ""; }
-            @page { margin: 3cm 2cm 2cm 3cm; counter-increment: page; @top-right { content: counter(page); font-family: Arial; font-size: 10pt; } }
+            /* 1. Resetar o corpo inteiro para permitir impressão de múltiplas páginas */
+            html, body {
+                background: white !important;
+                height: auto !important;
+                overflow: visible !important;
+                display: block !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            /* 2. Esconder absolutamente toda a interface */
+            .container-barras, .gaveta-esquerda, .gaveta-lateral, .container-video, 
+            .regua-topo, .regua-esquerda, .fundo-modal {
+                display: none !important;
+            }
+
+            /* 3. Quebrar as amarras do Workspace e do Quill (flexbox e overflow hidden) */
+            .workspace, .container-editor-scroll, #editor-container, .ql-container {
+                display: block !important;
+                height: auto !important;
+                overflow: visible !important;
+                position: static !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                box-shadow: none !important;
+                border: none !important;
+            }
+
+            /* 4. O texto do editor deve fluir livremente */
+            .ql-editor {
+                height: auto !important;
+                overflow: visible !important;
+                padding: 0 !important;
+                box-shadow: none !important;
+            }
+
+            /* 5. A mágica da quebra de página (Garante que a folha corte aqui) */
+            .quebra-de-pagina {
+                border: none !important;
+                background: transparent !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                height: 0 !important;
+                page-break-after: always !important; /* Padrão antigo de navegadores */
+                break-after: page !important;        /* Padrão moderno */
+            }
+
+            /* Esconder as tags de ilusão visual ("Página 1", "Página 2") na impressão final */
+            .quebra-de-pagina::after, .ql-editor::before {
+                display: none !important;
+            }
+
+            /* 6. Evitar que Títulos fiquem órfãos (sozinhos no fim de uma folha) */
+            h1, h2, h3 {
+                page-break-after: avoid !important;
+                break-after: avoid !important;
+            }
+
+            /* 7. Configuração da página física e numeração (A4 com margens ABNT) */
+            @page {
+                size: A4 portrait;
+                margin: 3cm 2cm 2cm 3cm;
+                /* A numeração de página via CSS @page funciona bem no Chrome/Edge */
+                @bottom-right {
+                    content: counter(page);
+                    font-family: Arial, sans-serif;
+                    font-size: 10pt;
+                }
+            }
         }
     </style>
 </head>
