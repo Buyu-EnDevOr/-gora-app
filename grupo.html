@@ -21,151 +21,70 @@
         .ql-font-roboto { font-family: 'Roboto', sans-serif; } .ql-font-open-sans { font-family: 'Open Sans', sans-serif; } .ql-font-lato { font-family: 'Lato', sans-serif; } .ql-font-montserrat { font-family: 'Montserrat', sans-serif; } .ql-font-oswald { font-family: 'Oswald', sans-serif; } .ql-font-merriweather { font-family: 'Merriweather', serif; } .ql-font-nunito { font-family: 'Nunito', sans-serif; } .ql-font-poppins { font-family: 'Poppins', sans-serif; } .ql-font-dancing { font-family: 'Dancing Script', cursive; }
 
         /* ========================================== */
-        /* NOVO RIBBON ÁGORA PRO (ESTILO MOBIDOCS)    */
+        /* NOVO RIBBON ÁGORA PRO E DROPDOWNS          */
         /* ========================================== */
-        .ribbon-container {
-            width: 100%;
-            background-color: white;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            z-index: 100;
-            flex-shrink: 0;
-        }
-
-        /* Topo Roxo (Essência Ágora) */
-        .ribbon-topbar {
-            background-color: #8e44ad; /* Roxo Ágora */
-            color: white;
-            height: 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 15px;
-        }
-
-        .ribbon-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
+        .ribbon-container { width: 100%; background-color: white; display: flex; flex-direction: column; box-shadow: 0 2px 5px rgba(0,0,0,0.05); z-index: 100; flex-shrink: 0; }
+        .ribbon-topbar { background-color: #8e44ad; color: white; height: 40px; display: flex; justify-content: space-between; align-items: center; padding: 0 15px; }
+        .ribbon-info { display: flex; align-items: center; gap: 15px; }
         .ribbon-info h1 { margin: 0; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
         .status-nuvem { font-size: 11px; background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 12px; }
-
-        .ribbon-actions {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .btn-top {
-            background: transparent; border: none; color: white; cursor: pointer; border-radius: 4px; padding: 4px 8px; display: flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; transition: 0.2s;
-        }
+        .ribbon-actions { display: flex; align-items: center; gap: 10px; }
+        .btn-top { background: transparent; border: none; color: white; cursor: pointer; border-radius: 4px; padding: 4px 8px; display: flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; transition: 0.2s; }
         .btn-top:hover { background: rgba(255,255,255,0.15); }
         .btn-top.destaque { background: #27ae60; }
         .btn-top.destaque:hover { background: #219653; }
 
-        /* Abas do Ribbon */
-        .ribbon-tabs {
-            display: flex;
-            background-color: #f8fafc;
-            border-bottom: 1px solid #e2e8f0;
-            padding: 0 10px;
-            overflow-x: auto;
-            white-space: nowrap;
-        }
-        .ribbon-tabs::-webkit-scrollbar { display: none; } /* Esconde scrollbar nativa */
-
-        .tab-btn {
-            background: transparent; border: none; padding: 8px 16px; font-size: 13px; color: #475569; cursor: pointer; border-bottom: 2px solid transparent; transition: 0.2s;
-        }
+        .ribbon-tabs { display: flex; background-color: #f8fafc; border-bottom: 1px solid #e2e8f0; padding: 0 10px; overflow-x: auto; white-space: nowrap; }
+        .ribbon-tabs::-webkit-scrollbar { display: none; }
+        .tab-btn { background: transparent; border: none; padding: 8px 16px; font-size: 13px; color: #475569; cursor: pointer; border-bottom: 2px solid transparent; transition: 0.2s; }
         .tab-btn:hover { color: #8e44ad; }
         .tab-btn.active { color: #8e44ad; border-bottom: 2px solid #8e44ad; font-weight: 600; background-color: white; border-top-left-radius: 4px; border-top-right-radius: 4px;}
 
-        /* Conteúdo do Ribbon (Ferramentas) */
-        .ribbon-content {
-            background-color: white;
-            min-height: 85px;
-            position: relative;
-        }
-
-        .tab-pane {
-            display: none;
-            padding: 8px 15px;
-            align-items: flex-start;
-            gap: 15px;
-            overflow-x: auto;
-            height: 100%;
-            box-sizing: border-box;
-        }
+        .ribbon-content { background-color: white; min-height: 85px; position: relative; }
+        .tab-pane { display: none; padding: 8px 15px; align-items: flex-start; gap: 15px; overflow-x: auto; height: 100%; box-sizing: border-box; }
         .tab-pane.active { display: flex; }
         .tab-pane::-webkit-scrollbar { height: 6px; }
         .tab-pane::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
 
-        /* Grupos de Ferramentas (Como no Word) */
-        .ribbon-group {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            border-right: 1px solid #e2e8f0;
-            padding-right: 15px;
-            height: 100%;
-            justify-content: flex-start;
-        }
+        .ribbon-group { display: flex; flex-direction: column; align-items: center; border-right: 1px solid #e2e8f0; padding-right: 15px; height: 100%; justify-content: flex-start; }
         .ribbon-group:last-child { border-right: none; }
-        
-        .group-tools {
-            display: flex;
-            gap: 4px;
-            align-items: center;
-            flex-wrap: wrap; /* Permite quebrar linha se necessário */
-            justify-content: center;
-            margin-bottom: 4px;
-        }
+        .group-tools { display: flex; gap: 4px; align-items: center; flex-wrap: wrap; justify-content: center; margin-bottom: 4px; }
+        .group-label { font-size: 10px; color: #94a3b8; margin-top: auto; text-align: center; width: 100%; }
 
-        .group-label {
-            font-size: 10px;
-            color: #94a3b8;
-            margin-top: auto;
-            text-align: center;
-            width: 100%;
-        }
-
-        /* Botões das ferramentas */
-        .tool-btn {
-            background: transparent; border: 1px solid transparent; color: #334155; padding: 4px; border-radius: 4px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.2s; font-size: 11px;
-        }
+        .tool-btn { background: transparent; border: 1px solid transparent; color: #334155; padding: 4px; border-radius: 4px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.2s; font-size: 11px; position: relative;}
         .tool-btn:hover { background-color: #f1f5f9; border-color: #e2e8f0; }
         .tool-btn .material-symbols-outlined { font-size: 20px; color: #475569; }
         .tool-btn.active { background-color: #e2e8f0; }
-
-        /* Botões grandes (com texto embaixo do ícone) */
-        .tool-btn-large {
-            padding: 6px 10px;
-        }
+        .tool-btn-large { padding: 6px 10px; }
         .tool-btn-large .material-symbols-outlined { font-size: 28px; margin-bottom: 2px; color: #8e44ad;}
+        .tool-select { padding: 4px; border: 1px solid #cbd5e1; border-radius: 4px; background: white; color: #334155; font-size: 12px; outline: none; cursor: pointer; }
 
-        .tool-select {
-            padding: 4px; border: 1px solid #cbd5e1; border-radius: 4px; background: white; color: #334155; font-size: 12px; outline: none; cursor: pointer;
-        }
+        /* Estilos dos Menus Dropdown (As listas suspensas) */
+        .dropdown-container { position: relative; display: inline-block; }
+        .dropdown-menu { display: none; position: absolute; top: 100%; left: 0; background-color: white; min-width: 180px; box-shadow: 0 8px 16px rgba(0,0,0,0.15); border-radius: 6px; border: 1px solid #e2e8f0; z-index: 200; padding: 5px 0; margin-top: 2px; }
+        .dropdown-menu.show { display: block; animation: fadeIn 0.2s ease-in-out; }
+        .dropdown-item { padding: 8px 15px; color: #334155; text-decoration: none; display: flex; align-items: center; gap: 10px; font-size: 13px; cursor: pointer; transition: background 0.2s; white-space: nowrap; border: none; width: 100%; text-align: left; background: none;}
+        .dropdown-item:hover { background-color: #f8fafc; color: #8e44ad; }
+        .dropdown-item .material-symbols-outlined { font-size: 18px; color: #64748b; }
+        .dropdown-divider { height: 1px; background-color: #e2e8f0; margin: 5px 0; }
+        .dropdown-title { padding: 5px 15px; font-size: 10px; font-weight: bold; color: #94a3b8; text-transform: uppercase; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* ========================================== */
-        /* RESPONSIVIDADE DO RIBBON (MOBILE)          */
-        /* ========================================== */
+        /* Estilos de Botão Composto (Botão + Setinha) */
+        .split-btn { display: flex; align-items: center; border: 1px solid transparent; border-radius: 4px; transition: 0.2s; }
+        .split-btn:hover { background-color: #f1f5f9; border-color: #e2e8f0; }
+        .split-main { padding: 4px; cursor: pointer; display: flex; flex-direction: column; align-items: center; border-right: 1px solid transparent; }
+        .split-main:hover { background-color: #e2e8f0; }
+        .split-arrow { padding: 4px 2px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .split-arrow:hover { background-color: #e2e8f0; }
+
         @media (max-width: 768px) {
-            .ribbon-info h1 span:last-child { display: none; } /* Esconde o texto "Ágora Pro" em telas pequenas */
-            .btn-top span:last-child { display: none; } /* Esconde texto dos botões superiores, deixa só ícone */
-            
-            .ribbon-content { min-height: 70px; }
-            .ribbon-group { padding-right: 10px; }
-            .group-label { display: none; } /* Esconde os rótulos dos grupos no mobile para ganhar espaço */
-            
-            /* Ajuste para rolagem suave no celular */
+            .ribbon-info h1 span:last-child, .btn-top span:last-child { display: none; }
+            .ribbon-content { min-height: 70px; } .ribbon-group { padding-right: 10px; } .group-label { display: none; }
             .tab-pane { padding: 5px 10px; align-items: center;}
-            .tool-btn-large { padding: 4px; }
-            .tool-btn-large .material-symbols-outlined { font-size: 24px; }
-            .tool-btn-large span:last-child { display: none; } /* Botões grandes viram só ícones */
+            .tool-btn-large { padding: 4px; } .tool-btn-large .material-symbols-outlined { font-size: 24px; } .tool-btn-large span:last-child { display: none; }
+            .dropdown-menu { position: fixed; bottom: 0; left: 0; width: 100%; top: auto; border-radius: 15px 15px 0 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.2); }
         }
 
         /* ========================================== */
@@ -176,12 +95,15 @@
         .regua-topo { position: absolute; top: 0; left: 250px; right: 0; height: 20px; background: #f8fafc url('data:image/svg+xml;utf8,<svg width="37.79" height="20" xmlns="http://www.w3.org/2000/svg"><line x1="0" y1="15" x2="0" y2="20" stroke="%2394a3b8" stroke-width="1"/><line x1="18.89" y1="17" x2="18.89" y2="20" stroke="%2394a3b8" stroke-width="1"/></svg>') repeat-x; border-bottom: 1px solid #cbd5e1; z-index: 10; font-size: 10px; color: #64748b; line-height: 20px; text-indent: 10px; transition: 0.3s;}
         .regua-esquerda { position: absolute; top: 20px; left: 250px; bottom: 0; width: 20px; background: #f8fafc url('data:image/svg+xml;utf8,<svg width="20" height="37.79" xmlns="http://www.w3.org/2000/svg"><line x1="15" y1="0" x2="20" y2="0" stroke="%2394a3b8" stroke-width="1"/><line x1="17" y1="18.89" x2="20" y2="18.89" stroke="%2394a3b8" stroke-width="1"/></svg>') repeat-y; border-right: 1px solid #cbd5e1; z-index: 10; transition: 0.3s;}
         .gaveta-esquerda.fechada ~ .regua-topo, .gaveta-esquerda.fechada ~ .regua-esquerda { left: 0; }
+        
+        /* Classe para esconder as réguas quando o botão for clicado */
+        .reguas-ocultas { display: none !important; }
 
         .container-editor-scroll { flex-grow: 1; overflow-y: auto; display: flex; justify-content: center; padding: 40px 20px 40px 40px; transition: 0.3s; scroll-behavior: smooth; position: relative;}
         #editor-container { width: 100%; max-width: 850px; border: none !important; margin-bottom: 50px;}
         .ql-container { font-family: 'Arial', sans-serif; border: none !important;}
         
-        .ql-editor { background: white; box-shadow: 0 5px 15px rgba(0,0,0,0.05); padding: 3cm 2cm 2cm 3cm; line-height: 1.5; min-height: 29.7cm; color: #2c3e50; font-size: 12pt;}
+        .ql-editor { background: white; box-shadow: 0 5px 15px rgba(0,0,0,0.05); padding: 3cm 2cm 2cm 3cm; line-height: 1.5; min-height: 29.7cm; color: #2c3e50; font-size: 12pt; transition: background-color 0.3s;}
         
         .quebra-de-pagina { display: block; height: 40px; background-color: #f1f5f9; border: none; margin: 2cm -3cm 3cm -3cm; position: relative; box-shadow: inset 0 5px 5px -5px rgba(0,0,0,0.05), inset 0 -5px 5px -5px rgba(0,0,0,0.05); counter-increment: pagina_editor; }
         .quebra-de-pagina::after { content: "Página " counter(pagina_editor); position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #cbd5e1; color: white; padding: 2px 10px; font-size: 11px; font-weight: bold; border-radius: 10px; }
@@ -222,41 +144,37 @@
         .cabecalho-video { background: #2c3e50; color: white; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; cursor: grab;}
         #jitsi-iframe { flex-grow: 1; background: #000; width: 100%; height: 100%; }
 
-        /* ========================================== */
-        /* MODAIS E GERADOR ACADÊMICO                 */
-        /* ========================================== */
+        /* MODAIS */
         .fundo-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 5000; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; backdrop-filter: blur(5px);}
         .caixa-modal { background: white; padding: 30px; border-radius: 15px; width: 100%; max-width: 650px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 50px rgba(0,0,0,0.2);}
-        
+        .caixa-modal-pequena { max-width: 400px; text-align: center; }
         .linha-add { display: flex; gap: 10px; margin-top: 15px; margin-bottom: 20px; flex-wrap: wrap;}
         .linha-add input, .linha-add select { flex-grow: 1; padding: 10px; border: 1px solid #ddd; border-radius: 8px; outline: none;}
         .btn-add { background: #27ae60; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; }
         .lista-membros { max-height: 150px; overflow-y: auto; border: 1px solid #eee; border-radius: 8px; padding: 10px; margin-bottom: 20px; }
         .membro-item { display: flex; justify-content: space-between; padding: 8px; border-bottom: 1px solid #f5f5f5; font-size: 14px; }
-        
         .grid-modelos { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-top: 15px; }
         .cartao-modelo { border: 2px solid #ecf0f1; border-radius: 8px; padding: 15px; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; }
         .cartao-modelo:hover, .cartao-modelo.ativo { border-color: #8e44ad; background: #fdfafb; }
         .texto-modelo h3 { margin: 0; font-size: 14px; color: #2c3e50; }
         .texto-modelo p { margin: 0; font-size: 11px; color: #7f8c8d; }
         .btn-fechar-modal { width: 100%; background: #ecf0f1; color: #2c3e50; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s; margin-top: 15px;}
-        
         .painel-opcoes { display: none; flex-direction: column; gap: 10px; margin-top: 15px; border-top: 1px solid #eee; padding-top: 15px; }
         .tcc-opcao { display: flex; align-items: center; gap: 10px; font-size: 13px; color: #2c3e50;}
 
-        /* ========================================== */
-        /* MODO NOTURNO (Adaptado para o Ribbon)      */
-        /* ========================================== */
+        /* MODO NOTURNO */
         body.dark-mode { background-color: #121212; }
         body.dark-mode .ribbon-container, body.dark-mode .ribbon-content { background-color: #1e1e1e; border-color: #333;}
         body.dark-mode .ribbon-tabs { background-color: #121212; border-color: #333; }
         body.dark-mode .tab-btn { color: #cbd5e1; }
         body.dark-mode .tab-btn.active { background-color: #1e1e1e; color: #c084fc; border-color: #c084fc; }
         body.dark-mode .ribbon-group { border-color: #333; }
-        body.dark-mode .tool-btn { color: #cbd5e1; }
+        body.dark-mode .tool-btn, body.dark-mode .dropdown-item { color: #cbd5e1; }
         body.dark-mode .tool-btn:hover { background-color: #333; }
         body.dark-mode .tool-btn .material-symbols-outlined { color: #cbd5e1; }
-        body.dark-mode .tool-select { background-color: #333; color: white; border-color: #444; }
+        body.dark-mode .tool-select, body.dark-mode .dropdown-menu { background-color: #333; color: white; border-color: #444; }
+        body.dark-mode .dropdown-item:hover { background-color: #444; color: #c084fc;}
+        body.dark-mode .dropdown-divider { background-color: #444; }
         body.dark-mode .container-editor-scroll, body.dark-mode .gaveta-esquerda { background-color: #121212; border-color: #333;}
         body.dark-mode .ql-editor { background: #1e1e1e; box-shadow: 0 10px 30px rgba(0,0,0,0.8); color: #f8fafc; }
         body.dark-mode .quebra-de-pagina { background-color: #121212; }
@@ -270,70 +188,16 @@
         body.dark-mode .cartao-modelo { border-color: #334155; }
         body.dark-mode .texto-modelo h3, body.dark-mode .tcc-opcao { color: white; }
 
-        /* ========================================== */
-        /* IMPRESSÃO ABNT (PDF) - CORREÇÃO DEFINITIVA */
-        /* ========================================== */
+        /* IMPRESSÃO ABNT (PDF) */
         @media print {
-            html, body {
-                background: white !important;
-                height: auto !important;
-                overflow: visible !important;
-                display: block !important;
-                margin: 0 !important;
-                padding: 0 !important;
-            }
-
-            .ribbon-container, .gaveta-esquerda, .gaveta-lateral, .container-video, 
-            .regua-topo, .regua-esquerda, .fundo-modal {
-                display: none !important;
-            }
-
-            .workspace, .container-editor-scroll, #editor-container, .ql-container {
-                display: block !important;
-                height: auto !important;
-                overflow: visible !important;
-                position: static !important;
-                padding: 0 !important;
-                margin: 0 !important;
-                box-shadow: none !important;
-                border: none !important;
-            }
-
-            .ql-editor {
-                height: auto !important;
-                overflow: visible !important;
-                padding: 0 !important;
-                box-shadow: none !important;
-            }
-
-            .quebra-de-pagina {
-                border: none !important;
-                background: transparent !important;
-                margin: 0 !important;
-                padding: 0 !important;
-                height: 0 !important;
-                page-break-after: always !important;
-                break-after: page !important;
-            }
-
-            .quebra-de-pagina::after, .ql-editor::before {
-                display: none !important;
-            }
-
-            h1, h2, h3 {
-                page-break-after: avoid !important;
-                break-after: avoid !important;
-            }
-
-            @page {
-                size: A4 portrait;
-                margin: 3cm 2cm 2cm 3cm;
-                @bottom-right {
-                    content: counter(page);
-                    font-family: Arial, sans-serif;
-                    font-size: 10pt;
-                }
-            }
+            html, body { background: white !important; height: auto !important; overflow: visible !important; display: block !important; margin: 0 !important; padding: 0 !important; }
+            .ribbon-container, .gaveta-esquerda, .gaveta-lateral, .container-video, .regua-topo, .regua-esquerda, .fundo-modal { display: none !important; }
+            .workspace, .container-editor-scroll, #editor-container, .ql-container { display: block !important; height: auto !important; overflow: visible !important; position: static !important; padding: 0 !important; margin: 0 !important; box-shadow: none !important; border: none !important; }
+            .ql-editor { height: auto !important; overflow: visible !important; padding: 0 !important; box-shadow: none !important; }
+            .quebra-de-pagina { border: none !important; background: transparent !important; margin: 0 !important; padding: 0 !important; height: 0 !important; page-break-after: always !important; break-after: page !important; }
+            .quebra-de-pagina::after, .ql-editor::before { display: none !important; }
+            h1, h2, h3 { page-break-after: avoid !important; break-after: avoid !important; }
+            @page { size: A4 portrait; margin: 3cm 2cm 2cm 3cm; @bottom-right { content: counter(page); font-family: Arial, sans-serif; font-size: 10pt; } }
         }
     </style>
 </head>
@@ -370,24 +234,53 @@
                 <div class="ribbon-group">
                     <div class="group-tools">
                         <button class="tool-btn tool-btn-large" onclick="document.getElementById('modal-modelos').style.display='flex'">
-                            <span class="material-symbols-outlined">auto_awesome</span>
-                            <span>Novo por Molde</span>
+                            <span class="material-symbols-outlined">auto_awesome</span><span>Novo por Molde</span>
                         </button>
                     </div>
                     <span class="group-label">Documento</span>
                 </div>
+                
                 <div class="ribbon-group">
                     <div class="group-tools">
-                        <button class="tool-btn tool-btn-large" onclick="window.print()">
-                            <span class="material-symbols-outlined" style="color:#e74c3c;">picture_as_pdf</span>
-                            <span>Exportar PDF</span>
-                        </button>
+                        <div class="dropdown-container">
+                            <button class="tool-btn tool-btn-large dropdown-toggle">
+                                <span class="material-symbols-outlined" style="color:#e74c3c;">picture_as_pdf</span>
+                                <span>PDF <span class="material-symbols-outlined" style="font-size: 14px; margin-left: 2px;">arrow_drop_down</span></span>
+                            </button>
+                            <div class="dropdown-menu">
+                                <button class="dropdown-item" onclick="window.print()"><span class="material-symbols-outlined" style="color:#e74c3c;">file_download</span> Exportar para PDF</button>
+                                <button class="dropdown-item" onclick="alertaDesenvolvimento()"><span class="material-symbols-outlined" style="color:#3498db;">file_upload</span> Importar de PDF</button>
+                                <div class="dropdown-divider"></div>
+                                <button class="dropdown-item" onclick="alertaDesenvolvimento()"><span class="material-symbols-outlined" style="color:#2c3e50;">draw</span> Assinar como PDF</button>
+                                <button class="dropdown-item" onclick="alertaDesenvolvimento()"><span class="material-symbols-outlined" style="color:#8e44ad;">share</span> Compartilhar como PDF</button>
+                            </div>
+                        </div>
                     </div>
-                    <span class="group-label">Exportar</span>
+                    <span class="group-label">Exportar / Arquivar</span>
                 </div>
             </div>
 
             <div id="tab-editar" class="tab-pane active">
+                <div class="ribbon-group">
+                    <div class="group-tools">
+                        <div class="dropdown-container">
+                            <button class="tool-btn dropdown-toggle" title="Área de Transferência">
+                                <span class="material-symbols-outlined">content_paste</span>
+                                <span>Colar <span class="material-symbols-outlined" style="font-size: 10px;">arrow_drop_down</span></span>
+                            </button>
+                            <div class="dropdown-menu">
+                                <div class="dropdown-title">Opções de Colar</div>
+                                <button class="dropdown-item" onclick="document.execCommand('paste')"><span class="material-symbols-outlined">content_paste</span> Manter Formatação (Ctrl+V)</button>
+                                <button class="dropdown-item" onclick="alertaDesenvolvimento()"><span class="material-symbols-outlined">text_format</span> Colar apenas texto</button>
+                                <div class="dropdown-divider"></div>
+                                <button class="dropdown-item" onclick="document.execCommand('cut')"><span class="material-symbols-outlined">content_cut</span> Recortar</button>
+                                <button class="dropdown-item" onclick="document.execCommand('copy')"><span class="material-symbols-outlined">content_copy</span> Copiar</button>
+                            </div>
+                        </div>
+                    </div>
+                    <span class="group-label">Área de Transf.</span>
+                </div>
+
                 <div class="ribbon-group">
                     <div class="group-tools">
                         <button class="tool-btn" onclick="quill.history.undo()" title="Desfazer"><span class="material-symbols-outlined">undo</span></button>
@@ -424,11 +317,44 @@
                         <button class="tool-btn" onclick="aplicarFormato('align', 'justify')" title="Justificar"><span class="material-symbols-outlined">format_align_justify</span></button>
                     </div>
                     <div class="group-tools">
-                        <select class="tool-select" title="Espaçamento entre Linhas" onchange="aplicarFormato('lineHeight', this.value)">
-                            <option value="1.0">1.0</option><option value="1.5" selected>1.5</option><option value="2.0">2.0</option>
-                        </select>
-                        <button class="tool-btn" onclick="aplicarFormato('header', '1')" title="Título 1 (H1)"><span class="material-symbols-outlined">format_h1</span></button>
-                        <button class="tool-btn" onclick="aplicarFormato('header', '2')" title="Título 2 (H2)"><span class="material-symbols-outlined">format_h2</span></button>
+                        <div class="dropdown-container">
+                            <button class="tool-btn dropdown-toggle" title="Espaçamento de Linhas e Parágrafos">
+                                <div style="display:flex; align-items:center;">
+                                    <span class="material-symbols-outlined" style="font-size: 16px;">format_line_spacing</span>
+                                    <span class="material-symbols-outlined" style="font-size: 12px;">arrow_drop_down</span>
+                                </div>
+                            </button>
+                            <div class="dropdown-menu">
+                                <button class="dropdown-item" onclick="aplicarFormato('lineHeight', '1.0')">1.0</button>
+                                <button class="dropdown-item" onclick="aplicarFormato('lineHeight', '1.15')">1.15</button>
+                                <button class="dropdown-item" onclick="aplicarFormato('lineHeight', '1.5')">1.5</button>
+                                <button class="dropdown-item" onclick="aplicarFormato('lineHeight', '2.0')">2.0</button>
+                                <div class="dropdown-divider"></div>
+                                <button class="dropdown-item" onclick="alertaDesenvolvimento()"><span class="material-symbols-outlined">format_indent_increase</span> Opções de Espaçamento...</button>
+                                <button class="dropdown-item" onclick="alertaDesenvolvimento()"><span class="material-symbols-outlined">vertical_align_bottom</span> Adicionar Espaço Antes</button>
+                            </div>
+                        </div>
+                        
+                        <div class="dropdown-container">
+                            <button class="tool-btn dropdown-toggle" title="Estilos de Texto">
+                                <div style="display:flex; align-items:center;">
+                                    <span class="material-symbols-outlined" style="font-size: 16px; color:#3498db;">match_case</span>
+                                    <span>Estilos</span>
+                                    <span class="material-symbols-outlined" style="font-size: 12px;">arrow_drop_down</span>
+                                </div>
+                            </button>
+                            <div class="dropdown-menu" style="width: 250px; display: none; flex-wrap: wrap; padding: 10px;">
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 5px; width:100%;">
+                                    <button class="dropdown-item" style="border:1px solid #eee; padding:5px;" onclick="aplicarFormato('header', false)"><b>AaBb</b><br><span style="font-size:10px;">Normal</span></button>
+                                    <button class="dropdown-item" style="border:1px solid #eee; padding:5px; color:#3498db;" onclick="aplicarFormato('header', '1')"><b style="font-size:16px;">AaBb</b><br><span style="font-size:10px;">Título 1</span></button>
+                                    <button class="dropdown-item" style="border:1px solid #eee; padding:5px; color:#2980b9;" onclick="aplicarFormato('header', '2')"><b style="font-size:14px;">AaBb</b><br><span style="font-size:10px;">Título 2</span></button>
+                                    <button class="dropdown-item" style="border:1px solid #eee; padding:5px; font-style:italic;" onclick="aplicarFormato('italic', true)"><b>AaBb</b><br><span style="font-size:10px;">Ênfase</span></button>
+                                </div>
+                                <div class="dropdown-divider" style="width:100%; margin: 10px 0;"></div>
+                                <button class="dropdown-item" style="width:100%;" onclick="alertaDesenvolvimento()"><span class="material-symbols-outlined">format_clear</span> Limpar Formatação</button>
+                            </div>
+                        </div>
+
                     </div>
                     <span class="group-label">Parágrafo & Estilo</span>
                 </div>
@@ -438,57 +364,215 @@
                 <div class="ribbon-group">
                     <div class="group-tools">
                         <button class="tool-btn tool-btn-large" onclick="inserirQuebraDePagina()">
-                            <span class="material-symbols-outlined">post_add</span>
-                            <span>Página</span>
+                            <span class="material-symbols-outlined">post_add</span><span>Página em Branco</span>
                         </button>
                     </div>
                     <span class="group-label">Páginas</span>
                 </div>
+
+                <div class="ribbon-group">
+                    <div class="group-tools">
+                        <div class="dropdown-container">
+                            <button class="tool-btn tool-btn-large dropdown-toggle">
+                                <span class="material-symbols-outlined" style="color:#2980b9;">table_chart</span>
+                                <span>Tabela <span class="material-symbols-outlined" style="font-size: 14px;">arrow_drop_down</span></span>
+                            </button>
+                            <div class="dropdown-menu">
+                                <button class="dropdown-item" onclick="alertaDesenvolvimento()"><span class="material-symbols-outlined">grid_on</span> Inserir Tabela Rápida</button>
+                                <button class="dropdown-item" onclick="alertaDesenvolvimento()"><span class="material-symbols-outlined">draw</span> Desenhar Tabela</button>
+                            </div>
+                        </div>
+                    </div>
+                    <span class="group-label">Tabelas</span>
+                </div>
+
                 <div class="ribbon-group">
                     <div class="group-tools">
                         <button class="tool-btn tool-btn-large" id="btn-upload-imagem">
-                            <span class="material-symbols-outlined">image</span>
-                            <span>Imagem</span>
+                            <span class="material-symbols-outlined">image</span><span>Imagem</span>
                         </button>
                         <input type="file" id="input-imagem-firebase" accept="image/*" style="display: none;">
                         <button class="tool-btn tool-btn-large" onclick="inserirVideoVisivel()">
-                            <span class="material-symbols-outlined">smart_display</span>
-                            <span>Vídeo Online</span>
+                            <span class="material-symbols-outlined">smart_display</span><span>Vídeo Online</span>
                         </button>
+                        
+                        <div class="dropdown-container">
+                            <button class="tool-btn dropdown-toggle" style="margin-top: 5px;">
+                                <div style="display:flex; align-items:center;">
+                                    <span class="material-symbols-outlined" style="font-size: 16px; color:#e67e22;">category</span>
+                                    <span>Formas</span>
+                                    <span class="material-symbols-outlined" style="font-size: 12px;">arrow_drop_down</span>
+                                </div>
+                            </button>
+                            <div class="dropdown-menu">
+                                <div class="dropdown-title">Inserções Visuais</div>
+                                <button class="dropdown-item" onclick="alertaDesenvolvimento()"><span class="material-symbols-outlined">rectangle</span> Retângulo</button>
+                                <button class="dropdown-item" onclick="alertaDesenvolvimento()"><span class="material-symbols-outlined">circle</span> Círculo</button>
+                                <button class="dropdown-item" onclick="alertaDesenvolvimento()"><span class="material-symbols-outlined">trending_flat</span> Setas</button>
+                            </div>
+                        </div>
+
                     </div>
-                    <span class="group-label">Mídia</span>
+                    <span class="group-label">Ilustrações</span>
                 </div>
+                
                 <div class="ribbon-group">
                     <div class="group-tools">
-                        <button class="tool-btn tool-btn-large" onclick="inserirLinkVisivel()">
-                            <span class="material-symbols-outlined">link</span>
-                            <span>Link</span>
-                        </button>
+                        <button class="tool-btn" onclick="inserirLinkVisivel()"><span class="material-symbols-outlined" style="color:#3498db;">link</span> Link</button>
+                        <button class="tool-btn" onclick="alertaDesenvolvimento()"><span class="material-symbols-outlined" style="color:#e74c3c;">bookmark</span> Indicador</button>
                     </div>
                     <span class="group-label">Links</span>
                 </div>
             </div>
 
-            <div id="tab-design" class="tab-pane"><div class="ribbon-group"><span class="group-label" style="font-size:12px; margin-top:10px;">Opções de Design (Em Breve - Meta 2)</span></div></div>
-            <div id="tab-layout" class="tab-pane"><div class="ribbon-group"><span class="group-label" style="font-size:12px; margin-top:10px;">Opções de Layout (Em Breve - Meta 2)</span></div></div>
-            <div id="tab-correio" class="tab-pane"><div class="ribbon-group"><span class="group-label" style="font-size:12px; margin-top:10px;">Mala Direta e Etiquetas (Em Breve - Meta 3)</span></div></div>
-            <div id="tab-revisao" class="tab-pane"><div class="ribbon-group"><span class="group-label" style="font-size:12px; margin-top:10px;">Contagem de Palavras e Tradutor (Em Breve - Meta 3)</span></div></div>
+            <div id="tab-design" class="tab-pane">
+                <div class="ribbon-group">
+                    <div class="group-tools">
+                        <button class="tool-btn tool-btn-large" onclick="alertaDesenvolvimento()">
+                            <span class="material-symbols-outlined" style="color:#1abc9c;">branding_watermark</span><span>Marca D'água</span>
+                        </button>
+                        
+                        <div class="dropdown-container">
+                            <button class="tool-btn tool-btn-large dropdown-toggle">
+                                <span class="material-symbols-outlined" style="color:#f1c40f;">format_color_fill</span>
+                                <span>Cor da Página <span class="material-symbols-outlined" style="font-size: 14px;">arrow_drop_down</span></span>
+                            </button>
+                            <div class="dropdown-menu" style="padding: 10px; width: 150px;">
+                                <div class="dropdown-title">Cores Padrão</div>
+                                <div style="display: flex; gap: 5px; flex-wrap: wrap;">
+                                    <div style="width: 25px; height: 25px; background: white; border: 1px solid #ccc; cursor: pointer;" onclick="mudarCorPagina('white')"></div>
+                                    <div style="width: 25px; height: 25px; background: #fdf5e6; border: 1px solid #ccc; cursor: pointer;" onclick="mudarCorPagina('#fdf5e6')" title="Papiro"></div>
+                                    <div style="width: 25px; height: 25px; background: #e8f4f8; border: 1px solid #ccc; cursor: pointer;" onclick="mudarCorPagina('#e8f4f8')" title="Azul Gelo"></div>
+                                    <div style="width: 25px; height: 25px; background: #fcf3cf; border: 1px solid #ccc; cursor: pointer;" onclick="mudarCorPagina('#fcf3cf')" title="Amarelo Suave"></div>
+                                    <div style="width: 25px; height: 25px; background: #ebdef0; border: 1px solid #ccc; cursor: pointer;" onclick="mudarCorPagina('#ebdef0')" title="Roxo Claro"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="tool-btn tool-btn-large" onclick="alertaDesenvolvimento()">
+                            <span class="material-symbols-outlined" style="color:#e67e22;">border_outer</span><span>Bordas</span>
+                        </button>
+                    </div>
+                    <span class="group-label">Fundo da Página</span>
+                </div>
+            </div>
+
+            <div id="tab-layout" class="tab-pane">
+                <div class="ribbon-group">
+                    <div class="group-tools">
+                        <div class="dropdown-container">
+                            <button class="tool-btn tool-btn-large dropdown-toggle">
+                                <span class="material-symbols-outlined">margin</span>
+                                <span>Margens <span class="material-symbols-outlined" style="font-size: 14px;">arrow_drop_down</span></span>
+                            </button>
+                            <div class="dropdown-menu">
+                                <button class="dropdown-item" onclick="alertaDesenvolvimento()"><span class="material-symbols-outlined">crop_square</span> Normal (ABNT)</button>
+                                <button class="dropdown-item" onclick="alertaDesenvolvimento()"><span class="material-symbols-outlined">crop_din</span> Estreita</button>
+                                <button class="dropdown-item" onclick="alertaDesenvolvimento()"><span class="material-symbols-outlined">crop_landscape</span> Larga</button>
+                            </div>
+                        </div>
+
+                        <div class="dropdown-container">
+                            <button class="tool-btn tool-btn-large dropdown-toggle">
+                                <span class="material-symbols-outlined">screen_rotation</span>
+                                <span>Orientação <span class="material-symbols-outlined" style="font-size: 14px;">arrow_drop_down</span></span>
+                            </button>
+                            <div class="dropdown-menu">
+                                <button class="dropdown-item" onclick="alertaDesenvolvimento()"><span class="material-symbols-outlined">portrait</span> Retrato</button>
+                                <button class="dropdown-item" onclick="alertaDesenvolvimento()"><span class="material-symbols-outlined">landscape</span> Paisagem</button>
+                            </div>
+                        </div>
+                    </div>
+                    <span class="group-label">Configurar Página</span>
+                </div>
+            </div>
+
+            <div id="tab-correio" class="tab-pane">
+                <div class="ribbon-group">
+                    <div class="group-tools">
+                        <button class="tool-btn tool-btn-large" onclick="alertaDesenvolvimento()">
+                            <span class="material-symbols-outlined" style="color:#7f8c8d;">mail</span><span>Envelopes</span>
+                        </button>
+                        <button class="tool-btn tool-btn-large" onclick="alertaDesenvolvimento()">
+                            <span class="material-symbols-outlined" style="color:#7f8c8d;">sell</span><span>Etiquetas</span>
+                        </button>
+                        <button class="tool-btn tool-btn-large" onclick="alertaDesenvolvimento()">
+                            <span class="material-symbols-outlined" style="color:#8e44ad;">group</span><span>Mala Direta</span>
+                        </button>
+                    </div>
+                    <span class="group-label">Criar (Em Breve)</span>
+                </div>
+            </div>
+
+            <div id="tab-revisao" class="tab-pane">
+                <div class="ribbon-group">
+                    <div class="group-tools">
+                        <button class="tool-btn tool-btn-large" onclick="alertaDesenvolvimento()">
+                            <span class="material-symbols-outlined" style="color:#27ae60;">spellcheck</span><span>Ortografia</span>
+                        </button>
+                        
+                        <button class="tool-btn tool-btn-large" onclick="contarPalavras()">
+                            <span class="material-symbols-outlined" style="color:#34495e;">pin</span><span>Contagem</span>
+                        </button>
+                    </div>
+                    <span class="group-label">Revisão de Texto</span>
+                </div>
+                
+                <div class="ribbon-group">
+                    <div class="group-tools">
+                        <div class="dropdown-container">
+                            <button class="tool-btn tool-btn-large dropdown-toggle">
+                                <span class="material-symbols-outlined" style="color:#2980b9;">translate</span>
+                                <span>Traduzir <span class="material-symbols-outlined" style="font-size: 14px;">arrow_drop_down</span></span>
+                            </button>
+                            <div class="dropdown-menu">
+                                <button class="dropdown-item" onclick="alertaDesenvolvimento()"><span class="material-symbols-outlined">g_translate</span> Traduzir Documento</button>
+                                <button class="dropdown-item" onclick="alertaDesenvolvimento()"><span class="material-symbols-outlined">check</span> Português (Definido)</button>
+                                <div class="dropdown-divider"></div>
+                                <button class="dropdown-item" onclick="alertaDesenvolvimento()">Mais Idiomas...</button>
+                            </div>
+                        </div>
+                    </div>
+                    <span class="group-label">Idioma</span>
+                </div>
+                
+                <div class="ribbon-group">
+                    <div class="group-tools">
+                        <button class="tool-btn tool-btn-large" onclick="alertaDesenvolvimento()">
+                            <span class="material-symbols-outlined" style="color:#e74c3c;">track_changes</span><span>Rastrear</span>
+                        </button>
+                    </div>
+                    <span class="group-label">Alterações</span>
+                </div>
+            </div>
             
             <div id="tab-exibir" class="tab-pane">
                 <div class="ribbon-group">
                     <div class="group-tools">
-                        <button class="tool-btn tool-btn-large" id="btn-toggle-mapa">
-                            <span class="material-symbols-outlined">menu_book</span>
-                            <span>Índice Lateral</span>
+                        <button class="tool-btn tool-btn-large" onclick="alertaDesenvolvimento()">
+                            <span class="material-symbols-outlined" style="color:#3498db;">web</span><span>Layout da Web</span>
+                        </button>
+                        <button class="tool-btn tool-btn-large" onclick="alertaDesenvolvimento()">
+                            <span class="material-symbols-outlined" style="color:#34495e;">print</span><span>Layout de Impressão</span>
                         </button>
                     </div>
-                    <span class="group-label">Navegação</span>
+                    <span class="group-label">Modos de Exibição</span>
+                </div>
+                <div class="ribbon-group">
+                    <div class="group-tools">
+                        <button class="tool-btn tool-btn-large" onclick="toggleRegua()">
+                            <span class="material-symbols-outlined" style="color:#f39c12;">straighten</span><span>Mostrar Régua</span>
+                        </button>
+                        <button class="tool-btn tool-btn-large" id="btn-toggle-mapa">
+                            <span class="material-symbols-outlined" style="color:#8e44ad;">menu_book</span><span>Índice Lateral</span>
+                        </button>
+                    </div>
+                    <span class="group-label">Mostrar</span>
                 </div>
                 <div class="ribbon-group">
                     <div class="group-tools">
                         <button class="tool-btn tool-btn-large" id="btn-tema-quadro">
-                            <span class="material-symbols-outlined">dark_mode</span>
-                            <span>Modo Escuro</span>
+                            <span class="material-symbols-outlined">dark_mode</span><span>Modo Escuro</span>
                         </button>
                     </div>
                     <span class="group-label">Aparência</span>
@@ -501,13 +585,11 @@
     <div class="workspace">
         <div class="gaveta-esquerda" id="gaveta-mapa">
             <div class="cabecalho-mapa"><span><span class="material-symbols-outlined" style="vertical-align: middle;">toc</span> Índice</span></div>
-            <div class="lista-mapa" id="lista-mapa">
-                <p style="font-size: 12px; color: #94a3b8; text-align: center;">Escreva Títulos (H1, H2) para eles aparecerem aqui.</p>
-            </div>
+            <div class="lista-mapa" id="lista-mapa"><p style="font-size: 12px; color: #94a3b8; text-align: center;">Escreva Títulos (H1, H2) para eles aparecerem aqui.</p></div>
         </div>
 
-        <div class="regua-topo">1cm &nbsp; 2cm &nbsp; 3cm &nbsp; 4cm &nbsp; 5cm &nbsp; 6cm &nbsp; 7cm &nbsp; 8cm &nbsp; 9cm &nbsp; 10cm &nbsp; 11cm &nbsp; 12cm &nbsp; 13cm &nbsp; 14cm &nbsp; 15cm &nbsp; 16cm</div>
-        <div class="regua-esquerda"></div>
+        <div class="regua-topo" id="regua-h">1cm &nbsp; 2cm &nbsp; 3cm &nbsp; 4cm &nbsp; 5cm &nbsp; 6cm &nbsp; 7cm &nbsp; 8cm &nbsp; 9cm &nbsp; 10cm &nbsp; 11cm &nbsp; 12cm &nbsp; 13cm &nbsp; 14cm &nbsp; 15cm &nbsp; 16cm</div>
+        <div class="regua-esquerda" id="regua-v"></div>
 
         <div class="container-editor-scroll"><div id="editor-container"></div></div>
 
@@ -522,11 +604,19 @@
 
     <div class="fundo-modal" id="modal-equipe"><div class="caixa-modal"><h2>Equipe do Projeto</h2><div class="linha-add"><input type="email" id="email-convidado" placeholder="E-mail do membro"><select id="cargo-convidado" class="tool-select"><option value="editor">Editor</option><option value="leitor">Leitor</option><option value="admin">Admin</option></select><button id="btn-add-membro" class="btn-add">Convidar</button></div><div class="lista-membros" id="lista-membros"><p style="text-align:center; color:#7f8c8d; font-size:13px;">Integração com o painel de convites a ser implementada.</p></div><input type="text" id="link-gerado" readonly style="display:none;"><button class="btn-fechar-modal" onclick="document.getElementById('modal-equipe').style.display='none'">Fechar</button></div></div>
 
+    <div class="fundo-modal" id="modal-alerta">
+        <div class="caixa-modal caixa-modal-pequena">
+            <span class="material-symbols-outlined" style="font-size: 48px; color: #f39c12;">construction</span>
+            <h2 style="margin-top: 10px;">Função Pro em Desenvolvimento</h2>
+            <p style="font-size: 14px; color: #7f8c8d;">Esta ferramenta requer conexão avançada com o servidor e estará disponível na próxima atualização do Ágora Pro.</p>
+            <button class="btn-fechar-modal" onclick="document.getElementById('modal-alerta').style.display='none'">Entendi</button>
+        </div>
+    </div>
+
     <div class="fundo-modal" id="modal-modelos">
         <div class="caixa-modal" style="max-width: 800px;">
             <h2 style="margin-top:0;"><span class="material-symbols-outlined" style="vertical-align: middle;">school</span> Central Acadêmica Ágora</h2>
             <p style="font-size: 13px; color: #e74c3c; font-weight: bold;">Injetar um documento substituirá todo o texto da tela.</p>
-            
             <div class="grid-modelos">
                 <div class="cartao-modelo" onclick="abrirPainelGenerico(this, 'painel-tcc')"><div style="background: #f5f0fa; color: #8e44ad; padding: 10px; border-radius: 8px;"><span class="material-symbols-outlined">menu_book</span></div><div class="texto-modelo"><h3>TCC / Monografia</h3><p>Estrutura ABNT Completa.</p></div></div>
                 <div class="cartao-modelo" onclick="abrirPainelGenerico(this, 'painel-artigo')"><div style="background: #f5f0fa; color: #8e44ad; padding: 10px; border-radius: 8px;"><span class="material-symbols-outlined">article</span></div><div class="texto-modelo"><h3>Artigo Científico</h3><p>Para publicações.</p></div></div>
@@ -535,25 +625,9 @@
                 <div class="cartao-modelo" onclick="aplicarTemplateDireto('resenha')"><div style="background: #f5f0fa; color: #8e44ad; padding: 10px; border-radius: 8px;"><span class="material-symbols-outlined">rate_review</span></div><div class="texto-modelo"><h3>Resenha Crítica</h3><p>Análise de Obras.</p></div></div>
                 <div class="cartao-modelo" onclick="aplicarTemplateDireto('relatorio')"><div style="background: #f5f0fa; color: #8e44ad; padding: 10px; border-radius: 8px;"><span class="material-symbols-outlined">assignment</span></div><div class="texto-modelo"><h3>Relatório Técnico</h3><p>Estágio / Atividades.</p></div></div>
             </div>
-
-            <div id="painel-tcc" class="painel-opcoes">
-                <label class="tcc-opcao"><input type="checkbox" id="tcc-capa" checked> Capa e Folha de Rosto</label>
-                <label class="tcc-opcao"><input type="checkbox" id="tcc-resumo" checked> Resumo / Abstract</label>
-                <label class="tcc-opcao"><input type="checkbox" id="tcc-desenv" checked> Estrutura Textual (Introdução, Capítulos e Conclusão)</label>
-                <button class="btn-add" style="background: #8e44ad; margin-top: 10px;" onclick="gerarDocumentoComplexo('tcc')">Gerar TCC (Multi-páginas)</button>
-            </div>
-
-            <div id="painel-artigo" class="painel-opcoes">
-                <label class="tcc-opcao"><input type="checkbox" id="art-tudo" checked> Estrutura Completa do Artigo Científico</label>
-                <label class="tcc-opcao"><input type="checkbox" id="art-20pag"> Gerar 15 Páginas em branco de Desenvolvimento</label>
-                <button class="btn-add" style="background: #8e44ad; margin-top: 10px;" onclick="gerarDocumentoComplexo('artigo')">Gerar Artigo Científico</button>
-            </div>
-
-            <div id="painel-pesquisa" class="painel-opcoes">
-                <label class="tcc-opcao"><input type="checkbox" id="pesq-tudo" checked> Projeto de Pesquisa Completo</label>
-                <button class="btn-add" style="background: #8e44ad; margin-top: 10px;" onclick="gerarDocumentoComplexo('pesquisa')">Gerar Projeto</button>
-            </div>
-            
+            <div id="painel-tcc" class="painel-opcoes"><label class="tcc-opcao"><input type="checkbox" id="tcc-capa" checked> Capa e Folha de Rosto</label><label class="tcc-opcao"><input type="checkbox" id="tcc-resumo" checked> Resumo / Abstract</label><label class="tcc-opcao"><input type="checkbox" id="tcc-desenv" checked> Estrutura Textual</label><button class="btn-add" style="background: #8e44ad; margin-top: 10px;" onclick="gerarDocumentoComplexo('tcc')">Gerar TCC (Multi-páginas)</button></div>
+            <div id="painel-artigo" class="painel-opcoes"><label class="tcc-opcao"><input type="checkbox" id="art-tudo" checked> Estrutura Completa do Artigo Científico</label><label class="tcc-opcao"><input type="checkbox" id="art-20pag"> Gerar 15 Páginas em branco de Desenvolvimento</label><button class="btn-add" style="background: #8e44ad; margin-top: 10px;" onclick="gerarDocumentoComplexo('artigo')">Gerar Artigo Científico</button></div>
+            <div id="painel-pesquisa" class="painel-opcoes"><label class="tcc-opcao"><input type="checkbox" id="pesq-tudo" checked> Projeto de Pesquisa Completo</label><button class="btn-add" style="background: #8e44ad; margin-top: 10px;" onclick="gerarDocumentoComplexo('pesquisa')">Gerar Projeto</button></div>
             <button class="btn-fechar-modal" onclick="fecharTodosModais()">Cancelar</button>
         </div>
     </div>
@@ -569,23 +643,83 @@
         const app = initializeApp(firebaseConfig); const db = getFirestore(app); const auth = getAuth(app); const storage = getStorage(app);
         const idProjeto = new URLSearchParams(window.location.search).get('id');
 
-        // LÓGICA DO RIBBON (Alternar Abas)
+        // ==========================================
+        // LÓGICA DO RIBBON E DROPDOWNS
+        // ==========================================
+        
+        // Alternar Abas Principais
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
                 document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
-                
                 this.classList.add('active');
-                const targetId = this.getAttribute('data-target');
-                document.getElementById(targetId).classList.add('active');
+                document.getElementById(this.getAttribute('data-target')).classList.add('active');
             });
         });
 
+        // Abrir/Fechar Dropdowns (Menus Suspensos)
+        document.addEventListener('click', function(event) {
+            const isDropdownBtn = event.target.closest('.dropdown-toggle');
+            const isInsideMenu = event.target.closest('.dropdown-menu');
+            
+            // Se clicou no botão de abrir
+            if (isDropdownBtn) {
+                const container = isDropdownBtn.closest('.dropdown-container');
+                const menu = container.querySelector('.dropdown-menu');
+                // Fecha todos os outros primeiro
+                document.querySelectorAll('.dropdown-menu').forEach(m => { if(m !== menu) m.classList.remove('show'); });
+                
+                // Abre/Fecha o clicado e arruma o layout do grid se for o menu de estilos
+                if(menu.classList.contains('show')) {
+                    menu.classList.remove('show');
+                } else {
+                    menu.classList.add('show');
+                    if(menu.style.display === 'flex') menu.style.display = 'flex'; // Mantém o grid do menu estilos
+                }
+            } 
+            // Se clicou fora de qualquer dropdown, fecha todos
+            else if (!isInsideMenu) {
+                document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show'));
+            }
+        });
+
+        // ==========================================
+        // NOVAS FUNÇÕES ÁGORA PRO (Meta 2)
+        // ==========================================
+        
+        // Função de Alerta para ferramentas em construção
+        window.alertaDesenvolvimento = function() {
+            document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show')); // Fecha menus abertos
+            document.getElementById('modal-alerta').style.display = 'flex';
+        }
+
+        // Alterar Cor da Página
+        window.mudarCorPagina = function(corHex) {
+            document.querySelector('.ql-editor').style.backgroundColor = corHex;
+            document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show'));
+        }
+
+        // Mostrar/Ocultar Régua
+        window.toggleRegua = function() {
+            document.getElementById('regua-h').classList.toggle('reguas-ocultas');
+            document.getElementById('regua-v').classList.toggle('reguas-ocultas');
+        }
+
+        // Contagem de Palavras Rápida
+        window.contarPalavras = function() {
+            const texto = quill.getText().trim();
+            const numCaracteres = texto.length;
+            const numPalavras = texto.split(/\s+/).filter(word => word.length > 0).length;
+            alert(`📝 Estatísticas do Documento:\n\nPalavras: ${numPalavras}\nCaracteres: ${numCaracteres}`);
+        }
+
+        // ==========================================
         // ATRIBUIDORES E CONFIGURAÇÃO DO QUILL
+        // ==========================================
         const Parchment = Quill.import('parchment');
         const Font = Quill.import('formats/font'); Font.whitelist = ['roboto', 'open-sans', 'lato', 'montserrat', 'oswald', 'merriweather', 'nunito', 'poppins', 'dancing']; Quill.register(Font, true);
         const Size = Quill.import('attributors/style/size'); Size.whitelist = ['10px', '12px', '16px', '20px', '24px', '32px']; Quill.register(Size, true);
-        const LineHeightStyle = new Parchment.Attributor.Style('lineHeight', 'line-height', { scope: Parchment.Scope.BLOCK, whitelist: ['1.0', '1.5', '2.0'] }); Quill.register(LineHeightStyle, true);
+        const LineHeightStyle = new Parchment.Attributor.Style('lineHeight', 'line-height', { scope: Parchment.Scope.BLOCK, whitelist: ['1.0', '1.15', '1.5', '2.0', '2.5', '3.0'] }); Quill.register(LineHeightStyle, true);
 
         const BlockEmbed = Quill.import('blots/block/embed');
         class QuebraDePaginaBlot extends BlockEmbed {
@@ -603,7 +737,16 @@
         let carregamentoInicial = true, isAtualizandoPelaNuvem = false, timeoutSalvar;
 
         // INSERÇÕES ESPECIAIS 
-        window.aplicarFormato = function(formato, valor = null) { if(meuCargo === 'leitor') return; const formatoAtual = quill.getFormat()[formato]; if(valor === null) { quill.format(formato, !formatoAtual); } else { quill.format(formato, formatoAtual === valor ? false : valor); } }
+        window.aplicarFormato = function(formato, valor = null) { 
+            if(meuCargo === 'leitor') return; 
+            const formatoAtual = quill.getFormat()[formato]; 
+            if(valor === null) { quill.format(formato, !formatoAtual); } 
+            else if (valor === false) { quill.removeFormat(quill.getSelection().index, quill.getSelection().length); } // Limpar formatação
+            else { quill.format(formato, formatoAtual === valor ? false : valor); } 
+            
+            // Fecha os dropdowns após aplicar formatação se vier de um deles
+            document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show'));
+        }
         
         window.inserirQuebraDePagina = function() {
             if(meuCargo === 'leitor') return; const range = quill.getSelection(true);
