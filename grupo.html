@@ -8,604 +8,38 @@
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
-    <script src="https://meet.jit.si/external_api.js"></script>
-
     <link href="https://fonts.googleapis.com/css2?family=Roboto&family=Open+Sans&family=Lato&family=Montserrat&family=Oswald&family=Source+Sans+Pro&family=Raleway&family=PT+Sans&family=Merriweather&family=Nunito&family=Playfair+Display&family=Lora&family=Rubik&family=Work+Sans&family=Fira+Sans&family=Quicksand&family=Barlow&family=Inconsolata&family=Ubuntu&family=Poppins&family=Dancing+Script&display=swap" rel="stylesheet">
 
-    <style>
-        /* ========================================== */
-        /* RESET, FONTES E LAYOUT PRINCIPAL           */
-        /* ========================================== */
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            margin: 0; 
-            display: flex; 
-            flex-direction: column; 
-            background-color: #f3f4f6; 
-            height: 100vh; 
-            overflow: hidden; 
-            overscroll-behavior: none; /* Trava o vazamento de scroll do navegador */
-            counter-reset: pagina_editor; 
-        }
-        
-        .ql-font-roboto { font-family: 'Roboto', sans-serif; } 
-        .ql-font-open-sans { font-family: 'Open Sans', sans-serif; } 
-        .ql-font-lato { font-family: 'Lato', sans-serif; } 
-        .ql-font-montserrat { font-family: 'Montserrat', sans-serif; } 
-        .ql-font-oswald { font-family: 'Oswald', sans-serif; } 
-        .ql-font-merriweather { font-family: 'Merriweather', serif; } 
-        .ql-font-nunito { font-family: 'Nunito', sans-serif; } 
-        .ql-font-poppins { font-family: 'Poppins', sans-serif; } 
-        .ql-font-dancing { font-family: 'Dancing Script', cursive; }
-
-        /* ========================================== */
-        /* RIBBON ÁGORA PRO E DROPDOWNS               */
-        /* ========================================== */
-        .ribbon-container { 
-            width: 100%; 
-            background-color: white; 
-            display: flex; 
-            flex-direction: column; 
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05); 
-            z-index: 100; 
-            flex-shrink: 0; 
-        }
-
-        .ribbon-topbar { 
-            background-color: #8e44ad; 
-            color: white; 
-            height: 40px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            padding: 0 15px; 
-        }
-
-        .ribbon-info { 
-            display: flex; 
-            align-items: center; 
-            gap: 15px; 
-        }
-
-        .ribbon-info h1 { 
-            margin: 0; 
-            font-size: 14px; 
-            font-weight: 600; 
-            display: flex; 
-            align-items: center; 
-            gap: 8px; 
-        }
-
-        .status-nuvem { 
-            font-size: 11px; 
-            background: rgba(255,255,255,0.2); 
-            padding: 2px 8px; 
-            border-radius: 12px; 
-        }
-
-        .ribbon-actions { 
-            display: flex; 
-            align-items: center; 
-            gap: 10px; 
-        }
-
-        .btn-top { 
-            background: transparent; 
-            border: none; 
-            color: white; 
-            cursor: pointer; 
-            border-radius: 4px; 
-            padding: 4px 8px; 
-            display: flex; 
-            align-items: center; 
-            gap: 5px; 
-            font-size: 12px; 
-            font-weight: 600; 
-            transition: 0.2s; 
-        }
-
-        .btn-top:hover { background: rgba(255,255,255,0.15); }
-        .btn-top.destaque { background: #27ae60; }
-        .btn-top.destaque:hover { background: #219653; }
-
-        .ribbon-tabs { 
-            display: flex; 
-            background-color: #f8fafc; 
-            border-bottom: 1px solid #e2e8f0; 
-            padding: 0 10px; 
-            overflow-x: auto; 
-            white-space: nowrap; 
-        }
-
-        .ribbon-tabs::-webkit-scrollbar { display: none; }
-        
-        .tab-btn { 
-            background: transparent; 
-            border: none; 
-            padding: 8px 16px; 
-            font-size: 13px; 
-            color: #475569; 
-            cursor: pointer; 
-            border-bottom: 2px solid transparent; 
-            transition: 0.2s; 
-        }
-
-        .tab-btn:hover { color: #8e44ad; }
-        .tab-btn.active { 
-            color: #8e44ad; 
-            border-bottom: 2px solid #8e44ad; 
-            font-weight: 600; 
-            background-color: white; 
-            border-top-left-radius: 4px; 
-            border-top-right-radius: 4px;
-        }
-
-        .ribbon-content { 
-            background-color: white; 
-            min-height: 85px; 
-            position: relative; 
-        }
-
-        .tab-pane { 
-            display: none; 
-            padding: 8px 15px; 
-            align-items: flex-start; 
-            gap: 15px; 
-            overflow-x: auto; 
-            height: 100%; 
-            box-sizing: border-box; 
-        }
-
-        .tab-pane.active { display: flex; }
-        .tab-pane::-webkit-scrollbar { height: 6px; }
-        .tab-pane::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
-
-        .ribbon-group { 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            border-right: 1px solid #e2e8f0; 
-            padding-right: 15px; 
-            height: 100%; 
-            justify-content: flex-start; 
-        }
-
-        .ribbon-group:last-child { border-right: none; }
-        
-        .group-tools { 
-            display: flex; 
-            gap: 4px; 
-            align-items: center; 
-            flex-wrap: wrap; 
-            justify-content: center; 
-            margin-bottom: 4px; 
-        }
-
-        .group-label { 
-            font-size: 10px; 
-            color: #94a3b8; 
-            margin-top: auto; 
-            text-align: center; 
-            width: 100%; 
-        }
-
-        .tool-btn { 
-            background: transparent; 
-            border: 1px solid transparent; 
-            color: #334155; 
-            padding: 4px; 
-            border-radius: 4px; 
-            cursor: pointer; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            transition: 0.2s; 
-            font-size: 11px; 
-            position: relative;
-        }
-
-        .tool-btn:hover { background-color: #f1f5f9; border-color: #e2e8f0; }
-        .tool-btn .material-symbols-outlined { font-size: 20px; color: #475569; }
-        .tool-btn.active { background-color: #e2e8f0; }
-        
-        .tool-btn-large { padding: 6px 10px; }
-        .tool-btn-large .material-symbols-outlined { font-size: 28px; margin-bottom: 2px; color: #8e44ad;}
-        
-        .tool-select { 
-            padding: 4px; 
-            border: 1px solid #cbd5e1; 
-            border-radius: 4px; 
-            background: white; 
-            color: #334155; 
-            font-size: 12px; 
-            outline: none; 
-            cursor: pointer; 
-        }
-
-        .dropdown-container { position: relative; display: inline-block; }
-        
-        .dropdown-menu { 
-            display: none; 
-            position: absolute; 
-            top: 100%; 
-            left: 0; 
-            background-color: white; 
-            min-width: 180px; 
-            box-shadow: 0 8px 16px rgba(0,0,0,0.15); 
-            border-radius: 6px; 
-            border: 1px solid #e2e8f0; 
-            z-index: 200; 
-            padding: 5px 0; 
-            margin-top: 2px; 
-        }
-
-        .dropdown-menu.show { display: block; animation: fadeIn 0.2s ease-in-out; }
-        
-        .dropdown-item { 
-            padding: 8px 15px; 
-            color: #334155; 
-            text-decoration: none; 
-            display: flex; 
-            align-items: center; 
-            gap: 10px; 
-            font-size: 13px; 
-            cursor: pointer; 
-            transition: background 0.2s; 
-            white-space: nowrap; 
-            border: none; 
-            width: 100%; 
-            text-align: left; 
-            background: none;
-        }
-
-        .dropdown-item:hover { background-color: #f8fafc; color: #8e44ad; }
-        .dropdown-item .material-symbols-outlined { font-size: 18px; color: #64748b; }
-        
-        .dropdown-divider { height: 1px; background-color: #e2e8f0; margin: 5px 0; }
-        .dropdown-title { padding: 5px 15px; font-size: 10px; font-weight: bold; color: #94a3b8; text-transform: uppercase; }
-        
-        @keyframes fadeIn { 
-            from { opacity: 0; transform: translateY(-5px); } 
-            to { opacity: 1; transform: translateY(0); } 
-        }
-
-        @media (max-width: 768px) {
-            .ribbon-info h1 span:last-child, .btn-top span:last-child { display: none; }
-            .ribbon-content { min-height: 70px; } 
-            .ribbon-group { padding-right: 10px; } 
-            .group-label { display: none; }
-            .tab-pane { padding: 5px 10px; align-items: center;}
-            .tool-btn-large { padding: 4px; } 
-            .tool-btn-large .material-symbols-outlined { font-size: 24px; } 
-            .tool-btn-large span:last-child { display: none; }
-            .dropdown-menu { position: fixed; bottom: 0; left: 0; width: 100%; top: auto; border-radius: 15px 15px 0 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.2); }
-        }
-
-        /* ========================================== */
-        /* ÁREA CENTRAL E ILUSÃO DE PÁGINAS A4        */
-        /* ========================================== */
-        .workspace { 
-            display: flex; 
-            flex-grow: 1; 
-            height: calc(100vh - 125px); 
-            position: relative; 
-            overflow: hidden; 
-            transition: background 0.3s;
-        }
-        
-        .regua-topo { 
-            position: absolute; top: 0; left: 250px; right: 0; height: 20px; 
-            background: #f8fafc url('data:image/svg+xml;utf8,<svg width="37.79" height="20" xmlns="http://www.w3.org/2000/svg"><line x1="0" y1="15" x2="0" y2="20" stroke="%2394a3b8" stroke-width="1"/><line x1="18.89" y1="17" x2="18.89" y2="20" stroke="%2394a3b8" stroke-width="1"/></svg>') repeat-x; 
-            border-bottom: 1px solid #cbd5e1; z-index: 10; font-size: 10px; color: #64748b; line-height: 20px; text-indent: 10px; transition: 0.3s;
-        }
-        
-        .regua-esquerda { 
-            position: absolute; top: 20px; left: 250px; bottom: 0; width: 20px; 
-            background: #f8fafc url('data:image/svg+xml;utf8,<svg width="20" height="37.79" xmlns="http://www.w3.org/2000/svg"><line x1="15" y1="0" x2="20" y2="0" stroke="%2394a3b8" stroke-width="1"/><line x1="17" y1="18.89" x2="20" y2="18.89" stroke="%2394a3b8" stroke-width="1"/></svg>') repeat-y; 
-            border-right: 1px solid #cbd5e1; z-index: 10; transition: 0.3s;
-        }
-        
-        .gaveta-esquerda.fechada ~ .regua-topo, .gaveta-esquerda.fechada ~ .regua-esquerda { left: 0; }
-        
-        .reguas-ocultas { display: none !important; }
-
-        /* AQUI MORA A CORREÇÃO DO SCROLL DO VÍDEO */
-        .container-editor-scroll { 
-            flex-grow: 1; 
-            overflow-y: auto; 
-            display: flex; 
-            justify-content: center; 
-            padding: 40px 20px 40px 40px; 
-            transition: 0.3s; 
-            scroll-behavior: smooth; 
-            position: relative;
-        }
-
-        #editor-container { 
-            width: 100%; 
-            max-width: 850px; 
-            border: none !important; 
-            margin-bottom: 50px; 
-            transition: max-width 0.3s;
-        }
-
-        .ql-container { font-family: 'Arial', sans-serif; border: none !important; }
-        
-        .ql-editor { 
-            background: white; 
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05); 
-            padding: 3cm 2cm 2cm 3cm; 
-            line-height: 1.5; 
-            min-height: 29.7cm; 
-            color: #2c3e50; 
-            font-size: 12pt; 
-            transition: padding 0.3s, min-height 0.3s, background-color 0.3s, border 0.3s;
-        }
-        
-        .quebra-de-pagina { 
-            display: block; 
-            height: 30px; 
-            background-color: #e2e8f0; 
-            border: none; 
-            margin: 2cm -3cm 3cm -3cm; 
-            position: relative; 
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05), inset 0 -2px 4px rgba(0,0,0,0.05); 
-            counter-increment: pagina_editor; 
-        }
-
-        .quebra-de-pagina::after { 
-            content: "Página " counter(pagina_editor); 
-            position: absolute; 
-            top: 50%; left: 50%; 
-            transform: translate(-50%, -50%); 
-            background: #94a3b8; 
-            color: white; 
-            padding: 2px 15px; 
-            font-size: 11px; 
-            font-weight: bold; 
-            border-radius: 12px; 
-            letter-spacing: 1px;
-        }
-
-        .ql-editor::before { 
-            content: "Página 1"; 
-            position: absolute; top: -20px; right: 0; 
-            color: #94a3b8; font-size: 11px; font-weight: bold; 
-        }
-
-        /* Tabelas e Formas Editáveis */
-        .tabela-wrapper { width: 100%; overflow-x: auto; margin-bottom: 15px; }
-        .tabela-agora { width: 100%; border-collapse: collapse; background-color: white; }
-        .tabela-agora td, .tabela-agora th { border: 1px solid #94a3b8; padding: 10px; min-width: 50px; text-align: left; }
-        
-        /* O Segredo do Redimensionamento Nativo: resize: both */
-        .forma-agora { 
-            display: inline-flex; 
-            align-items: center; 
-            justify-content: center; 
-            margin: 10px; 
-            vertical-align: middle; 
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
-            resize: both; 
-            overflow: hidden; 
-            min-width: 50px; 
-            min-height: 50px;
-        }
-
-        /* MODOS FUNCIONAIS */
-        body.layout-web .container-editor-scroll { background: white; padding: 20px; justify-content: stretch;}
-        body.layout-web #editor-container { max-width: 100%; margin: 0; }
-        body.layout-web .ql-editor { padding: 20px !important; box-shadow: none; min-height: auto; border: none !important; background-image: none !important;}
-        body.layout-web .quebra-de-pagina { display: none !important; }
-        body.layout-web .regua-topo, body.layout-web .regua-esquerda { display: none !important; }
-        body.layout-web .ql-editor::before { display: none !important; }
-
-        .orientacao-paisagem { max-width: 1123px !important; } 
-        .orientacao-paisagem .ql-editor { min-height: 21cm !important; }
-
-        /* ========================================== */
-        /* BARRA LATERAL (QUADRINHOS DE PÁGINAS)      */
-        /* ========================================== */
-        .gaveta-esquerda { 
-            width: 250px; 
-            background-color: #f8fafc; 
-            border-right: 1px solid #cbd5e1; 
-            display: flex; 
-            flex-direction: column; 
-            transition: 0.3s; 
-            transform: translateX(0); 
-            z-index: 90;
-        }
-
-        .gaveta-esquerda.fechada { transform: translateX(-250px); margin-right: -250px; }
-        
-        .cabecalho-mapa { 
-            padding: 15px; 
-            border-bottom: 1px solid #e2e8f0; 
-            font-weight: bold; color: #334155; 
-            display: flex; justify-content: space-between; align-items: center;
-        }
-
-        .lista-mapa { 
-            padding: 15px; 
-            overflow-y: auto; 
-            display: grid; 
-            grid-template-columns: 1fr 1fr; 
-            gap: 15px;
-            align-content: flex-start;
-        }
-
-        .miniatura-pagina {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            cursor: pointer;
-            gap: 8px;
-        }
-
-        .miniatura-folha {
-            width: 70px;
-            height: 95px;
-            background-color: white;
-            border: 1px solid #cbd5e1;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease-in-out;
-            border-radius: 2px;
-        }
-
-        .miniatura-pagina:hover .miniatura-folha {
-            border-color: #8e44ad;
-            box-shadow: 0 5px 15px rgba(142, 68, 173, 0.2);
-            transform: translateY(-2px);
-        }
-
-        .miniatura-numero { font-size: 12px; font-weight: bold; color: #64748b; }
-
-        /* ========================================== */
-        /* CHAT E JITSI MEET                          */
-        /* ========================================== */
-        .gaveta-lateral { 
-            width: 320px; background-color: white; box-shadow: -5px 0 25px rgba(0,0,0,0.05); 
-            display: flex; flex-direction: column; transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); 
-            position: absolute; right: 0; top: 0; height: 100%; z-index: 90; border-left: 1px solid #eee; transform: translateX(100%); 
-        }
-
-        .gaveta-lateral.aberto { transform: translateX(0); }
-        .cabecalho-gaveta { padding: 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; font-weight: bold; color: #2c3e50;}
-        .mensagens { flex-grow: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background-color: #fafbfc; }
-        .mensagem-linha { display: flex; gap: 10px; align-items: flex-end; }
-        .mensagem-linha.minha { flex-direction: row-reverse; }
-        .foto-perfil-chat { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; }
-        .msg { padding: 10px 15px; border-radius: 15px; font-size: 13px; max-width: 100%; }
-        .msg-outro { background-color: #ecf0f1; color: #2c3e50;}
-        .msg-minha { background-color: #8e44ad; color: white; }
-        .nome-user { font-size: 10px; color: #7f8c8d; margin-bottom: 3px; display: block; }
-        .mensagem-linha.minha .nome-user { text-align: right; }
-        
-        .caixa-digitar { padding: 15px; border-top: 1px solid #eee; display: flex; gap: 10px; background: white; }
-        .caixa-digitar input { flex-grow: 1; padding: 10px 15px; border-radius: 20px; border: 1px solid #ddd; outline: none; font-size: 13px; }
-        .btn-enviar-chat { background: #8e44ad; color: white; border: none; width: 38px; height: 38px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;}
-        
-        .container-video { 
-            position: fixed; bottom: 20px; left: 20px; width: 350px; height: 400px; background: white; 
-            border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); display: flex; flex-direction: column; 
-            overflow: hidden; z-index: 9999; border: 1px solid #ddd; transition: height 0.3s; 
-        }
-
-        .container-video.escondido { display: none; }
-        .container-video.minimizado { height: 45px !important; }
-        .container-video.tela-cheia { top: 0 !important; left: 0 !important; width: 100vw !important; height: 100vh !important; border-radius: 0;}
-        .cabecalho-video { background: #2c3e50; color: white; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; cursor: grab;}
-        #jitsi-iframe { flex-grow: 1; background: #000; width: 100%; height: 100%; }
-
-        /* ========================================== */
-        /* MODAIS E CAIXAS DE DIÁLOGO                 */
-        /* ========================================== */
-        .fundo-modal { 
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.6); z-index: 5000; justify-content: center; align-items: center; 
-            padding: 20px; box-sizing: border-box; backdrop-filter: blur(5px);
-        }
-
-        .caixa-modal { 
-            background: white; padding: 30px; border-radius: 15px; width: 100%; 
-            max-width: 650px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 50px rgba(0,0,0,0.2);
-        }
-
-        .caixa-modal-pequena { max-width: 400px; text-align: center; }
-        
-        .linha-add { display: flex; gap: 10px; margin-top: 15px; margin-bottom: 20px; flex-wrap: wrap;}
-        .linha-add input, .linha-add select { flex-grow: 1; padding: 10px; border: 1px solid #ddd; border-radius: 8px; outline: none;}
-        .btn-add { background: #27ae60; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; }
-        
-        .lista-membros { 
-            max-height: 200px; overflow-y: auto; border: 1px solid #eee; border-radius: 8px; 
-            padding: 10px; margin-bottom: 20px; display:flex; flex-direction:column; gap:8px;
-        }
-
-        .membro-item { 
-            display: flex; justify-content: space-between; align-items: center; padding: 8px; 
-            border-bottom: 1px solid #f5f5f5; font-size: 14px; background:#f8fafc; border-radius:6px; 
-        }
-
-        .grid-modelos { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-top: 15px; }
-        .cartao-modelo { border: 2px solid #ecf0f1; border-radius: 8px; padding: 15px; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; }
-        .cartao-modelo:hover, .cartao-modelo.ativo { border-color: #8e44ad; background: #fdfafb; }
-        .texto-modelo h3 { margin: 0; font-size: 14px; color: #2c3e50; }
-        .texto-modelo p { margin: 0; font-size: 11px; color: #7f8c8d; }
-        .btn-fechar-modal { width: 100%; background: #ecf0f1; color: #2c3e50; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s; margin-top: 15px;}
-        .painel-opcoes { display: none; flex-direction: column; gap: 10px; margin-top: 15px; border-top: 1px solid #eee; padding-top: 15px; }
-        .tcc-opcao { display: flex; align-items: center; gap: 10px; font-size: 13px; color: #2c3e50;}
-
-        /* Quadro de Assinatura */
-        #quadro-assinatura { border: 2px dashed #cbd5e1; border-radius: 8px; cursor: crosshair; background: #f8fafc; touch-action: none; margin-bottom: 15px; width: 100%; }
-
-        /* ========================================== */
-        /* MODO NOTURNO INTEGRADOR                    */
-        /* ========================================== */
-        body.dark-mode { background-color: #121212; }
-        body.dark-mode .ribbon-container, body.dark-mode .ribbon-content { background-color: #1e1e1e; border-color: #333;}
-        body.dark-mode .ribbon-tabs { background-color: #121212; border-color: #333; }
-        body.dark-mode .tab-btn { color: #cbd5e1; }
-        body.dark-mode .tab-btn.active { background-color: #1e1e1e; color: #c084fc; border-color: #c084fc; }
-        body.dark-mode .ribbon-group { border-color: #333; }
-        body.dark-mode .tool-btn, body.dark-mode .dropdown-item { color: #cbd5e1; }
-        body.dark-mode .tool-btn:hover { background-color: #333; }
-        body.dark-mode .tool-btn .material-symbols-outlined { color: #cbd5e1; }
-        body.dark-mode .tool-select, body.dark-mode .dropdown-menu { background-color: #333; color: white; border-color: #444; }
-        body.dark-mode .dropdown-item:hover { background-color: #444; color: #c084fc;}
-        body.dark-mode .dropdown-divider { background-color: #444; }
-        body.dark-mode .container-editor-scroll, body.dark-mode .gaveta-esquerda { background-color: #121212; border-color: #333;}
-        body.dark-mode .ql-editor { background: #1e1e1e; box-shadow: 0 10px 30px rgba(0,0,0,0.8); color: #f8fafc; }
-        body.dark-mode .quebra-de-pagina { background-color: #121212; }
-        body.dark-mode .regua-topo, body.dark-mode .regua-esquerda { background-color: #121212; border-color: #333;}
-        body.dark-mode .cabecalho-mapa { color: #cbd5e1; }
-        body.dark-mode .miniatura-folha { background-color: #2a2a2a; border-color: #444; }
-        body.dark-mode .miniatura-numero { color: #cbd5e1; }
-        body.dark-mode .gaveta-lateral, body.dark-mode .caixa-digitar, body.dark-mode .caixa-modal { background-color: #1e1e1e; border-color: #333; color: white;}
-        body.dark-mode .mensagens { background-color: #121212; }
-        body.dark-mode .msg-outro { background-color: #333; color: white; }
-        body.dark-mode .caixa-digitar input, body.dark-mode .linha-add input, body.dark-mode .linha-add select { background-color: #2a2a2a; border-color: #444; color: white; }
-        body.dark-mode .btn-fechar-modal { background: #334155; color: white; }
-        body.dark-mode .cartao-modelo { border-color: #334155; }
-        body.dark-mode .texto-modelo h3, body.dark-mode .tcc-opcao { color: white; }
-        body.dark-mode .membro-item { background: #2a2a2a; border-color: #444; }
-        body.dark-mode .tabela-agora { background-color: #1e1e1e; }
-        body.dark-mode .tabela-agora td, body.dark-mode .tabela-agora th { border-color: #444; }
-        body.dark-mode #quadro-assinatura { background-color: #1e1e1e; border-color: #444; }
-
-        /* ========================================== */
-        /* IMPRESSÃO ABNT (PDF) E OCULTAÇÃO DE GUI    */
-        /* ========================================== */
-        @media print {
-            html, body { background: white !important; height: auto !important; overflow: visible !important; display: block !important; margin: 0 !important; padding: 0 !important; overscroll-behavior: auto; }
-            .ribbon-container, .gaveta-esquerda, .gaveta-lateral, .container-video, .regua-topo, .regua-esquerda, .fundo-modal { display: none !important; }
-            .workspace, .container-editor-scroll, #editor-container, .ql-container { display: block !important; height: auto !important; overflow: visible !important; position: static !important; padding: 0 !important; margin: 0 !important; box-shadow: none !important; border: none !important; }
-            .ql-editor { height: auto !important; overflow: visible !important; padding: 0 !important; box-shadow: none !important; background-image: none !important;}
-            .quebra-de-pagina { border: none !important; background: transparent !important; margin: 0 !important; padding: 0 !important; height: 0 !important; page-break-after: always !important; break-after: page !important; }
-            .quebra-de-pagina::after, .ql-editor::before { display: none !important; }
-            h1, h2, h3 { page-break-after: avoid !important; break-after: avoid !important; }
-            @page { size: A4 portrait; margin: 3cm 2cm 2cm 3cm; @bottom-right { content: counter(page); font-family: Arial, sans-serif; font-size: 10pt; } }
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div class="ribbon-container">
         <div class="ribbon-topbar">
             <div class="ribbon-info">
-                <button class="btn-top" onclick="window.location.href='dashboard.html'" title="Voltar ao Início"><span class="material-symbols-outlined">arrow_back</span></button>
-                <h1><span class="material-symbols-outlined">description</span> <span id="titulo-projeto-topo">Carregando...</span> <span style="font-weight: 300;">- Ágora Pro</span></h1>
+                <button class="btn-top" onclick="window.location.href='dashboard.html'" title="Voltar ao Início">
+                    <span class="material-symbols-outlined">arrow_back</span>
+                </button>
+                <h1>
+                    <span class="material-symbols-outlined">description</span> 
+                    <span id="titulo-projeto-topo">Carregando...</span> 
+                    <span style="font-weight: 300;">- Ágora Pro</span>
+                </h1>
                 <span id="status-nuvem" class="status-nuvem">☁️ Sincronizando</span>
             </div>
             <div class="ribbon-actions">
-                <button id="btn-abrir-equipe" class="btn-top" title="Compartilhar / Equipe"><span class="material-symbols-outlined">group_add</span> <span>Compartilhar</span></button>
-                <button id="btn-reabrir-chat" class="btn-top" title="Chat do Projeto"><span class="material-symbols-outlined">chat</span> <span>Chat</span></button>
-                <button id="btn-iniciar-chamada" class="btn-top destaque" title="Reunião em Vídeo"><span class="material-symbols-outlined">videocam</span> <span>Reunir</span></button>
+                <button id="btn-abrir-equipe" class="btn-top" title="Compartilhar / Equipe">
+                    <span class="material-symbols-outlined">group_add</span> 
+                    <span>Compartilhar</span>
+                </button>
+                <button id="btn-reabrir-chat" class="btn-top" title="Chat do Projeto">
+                    <span class="material-symbols-outlined">chat</span> 
+                    <span>Chat</span>
+                </button>
+                <button id="btn-iniciar-chamada" class="btn-top destaque" title="Reunião em Vídeo">
+                    <span class="material-symbols-outlined">videocam</span> 
+                    <span>Reunir</span>
+                </button>
             </div>
         </div>
 
@@ -621,17 +55,16 @@
         </div>
 
         <div class="ribbon-content">
-            
             <div id="tab-arquivo" class="tab-pane">
                 <div class="ribbon-group">
                     <div class="group-tools">
                         <button class="tool-btn tool-btn-large" onclick="document.getElementById('modal-modelos').style.display='flex'">
-                            <span class="material-symbols-outlined">auto_awesome</span><span>Novo por Molde</span>
+                            <span class="material-symbols-outlined">auto_awesome</span>
+                            <span>Novo por Molde</span>
                         </button>
                     </div>
                     <span class="group-label">Documento</span>
                 </div>
-                
                 <div class="ribbon-group">
                     <div class="group-tools">
                         <div class="dropdown-container">
@@ -640,11 +73,19 @@
                                 <span>PDF <span class="material-symbols-outlined" style="font-size: 14px; margin-left: 2px;">arrow_drop_down</span></span>
                             </button>
                             <div class="dropdown-menu">
-                                <button class="dropdown-item" onclick="window.print()"><span class="material-symbols-outlined" style="color:#e74c3c;">file_download</span> Exportar para PDF</button>
-                                <button class="dropdown-item" onclick="alertaVIP()"><span class="material-symbols-outlined" style="color:#3498db;">file_upload</span> Importar de PDF</button>
+                                <button class="dropdown-item" onclick="window.print()">
+                                    <span class="material-symbols-outlined" style="color:#e74c3c;">file_download</span> Exportar para PDF
+                                </button>
+                                <button class="dropdown-item" onclick="alertaVIP()">
+                                    <span class="material-symbols-outlined" style="color:#3498db;">file_upload</span> Importar de PDF
+                                </button>
                                 <div class="dropdown-divider"></div>
-                                <button class="dropdown-item" onclick="abrirModalAssinatura()"><span class="material-symbols-outlined" style="color:#2c3e50;">draw</span> Assinar como PDF</button>
-                                <button class="dropdown-item" onclick="alertaVIP()"><span class="material-symbols-outlined" style="color:#8e44ad;">share</span> Compartilhar como PDF</button>
+                                <button class="dropdown-item" onclick="abrirModalAssinatura()">
+                                    <span class="material-symbols-outlined" style="color:#2c3e50;">draw</span> Assinar como PDF
+                                </button>
+                                <button class="dropdown-item" onclick="alertaVIP()">
+                                    <span class="material-symbols-outlined" style="color:#8e44ad;">share</span> Compartilhar como PDF
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -685,9 +126,7 @@
                 <div class="ribbon-group">
                     <div class="group-tools">
                         <select id="select-fontes" class="tool-select" style="width: 120px;" onchange="aplicarFormato('font', this.value)">
-                            <option value="">Arial (Padrão)</option>
-                            <option value="roboto">Roboto</option><option value="open-sans">Open Sans</option><option value="lato">Lato</option>
-                            <option value="montserrat">Montserrat</option><option value="oswald">Oswald</option><option value="merriweather">Merriweather</option><option value="poppins">Poppins</option><option value="dancing">Dancing Script</option>
+                            <option value="">Arial (Padrão)</option><option value="roboto">Roboto</option><option value="open-sans">Open Sans</option><option value="lato">Lato</option><option value="montserrat">Montserrat</option><option value="oswald">Oswald</option><option value="merriweather">Merriweather</option><option value="poppins">Poppins</option><option value="dancing">Dancing Script</option>
                         </select>
                         <select class="tool-select" style="width: 50px;" onchange="aplicarFormato('size', this.value)">
                             <option value="10px">10</option><option value="12px">12</option><option value="16px" selected>16</option><option value="20px">20</option><option value="24px">24</option>
@@ -723,14 +162,9 @@
                                 <button class="dropdown-item" onclick="aplicarFormato('lineHeight', '2.0')">2.0</button>
                             </div>
                         </div>
-                        
                         <div class="dropdown-container">
                             <button class="tool-btn dropdown-toggle" title="Estilos de Texto">
-                                <div style="display:flex; align-items:center;">
-                                    <span class="material-symbols-outlined" style="font-size: 16px; color:#3498db;">match_case</span>
-                                    <span>Estilos</span>
-                                    <span class="material-symbols-outlined" style="font-size: 12px;">arrow_drop_down</span>
-                                </div>
+                                <div style="display:flex; align-items:center;"><span class="material-symbols-outlined" style="font-size: 16px; color:#3498db;">match_case</span><span>Estilos</span><span class="material-symbols-outlined" style="font-size: 12px;">arrow_drop_down</span></div>
                             </button>
                             <div class="dropdown-menu" style="width: 250px; display: none; flex-wrap: wrap; padding: 10px;">
                                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 5px; width:100%;">
@@ -750,21 +184,13 @@
 
             <div id="tab-inserir" class="tab-pane">
                 <div class="ribbon-group">
-                    <div class="group-tools">
-                        <button class="tool-btn tool-btn-large" onclick="inserirQuebraDePagina()">
-                            <span class="material-symbols-outlined">post_add</span><span>Página</span>
-                        </button>
-                    </div>
+                    <div class="group-tools"><button class="tool-btn tool-btn-large" onclick="inserirQuebraDePagina()"><span class="material-symbols-outlined">post_add</span><span>Página</span></button></div>
                     <span class="group-label">Páginas</span>
                 </div>
-
                 <div class="ribbon-group">
                     <div class="group-tools">
                         <div class="dropdown-container">
-                            <button class="tool-btn tool-btn-large dropdown-toggle">
-                                <span class="material-symbols-outlined" style="color:#2980b9;">table_chart</span>
-                                <span>Tabela <span class="material-symbols-outlined" style="font-size: 14px;">arrow_drop_down</span></span>
-                            </button>
+                            <button class="tool-btn tool-btn-large dropdown-toggle"><span class="material-symbols-outlined" style="color:#2980b9;">table_chart</span><span>Tabela <span class="material-symbols-outlined" style="font-size: 14px;">arrow_drop_down</span></span></button>
                             <div class="dropdown-menu">
                                 <button class="dropdown-item" onclick="inserirTabelaBasica()"><span class="material-symbols-outlined">grid_on</span> Tabela Básica 3x3</button>
                                 <button class="dropdown-item" onclick="alertaVIP()"><span class="material-symbols-outlined">draw</span> Desenhar Tabela (VIP)</button>
@@ -773,26 +199,13 @@
                     </div>
                     <span class="group-label">Tabelas</span>
                 </div>
-
                 <div class="ribbon-group">
                     <div class="group-tools">
-                        <button class="tool-btn tool-btn-large" id="btn-upload-imagem">
-                            <span class="material-symbols-outlined">image</span><span>Imagem</span>
-                        </button>
+                        <button class="tool-btn tool-btn-large" id="btn-upload-imagem"><span class="material-symbols-outlined">image</span><span>Imagem</span></button>
                         <input type="file" id="input-imagem-firebase" accept="image/*" style="display: none;">
-                        
-                        <button class="tool-btn tool-btn-large" onclick="inserirVideoVisivel()">
-                            <span class="material-symbols-outlined">smart_display</span><span>Vídeo Online</span>
-                        </button>
-                        
+                        <button class="tool-btn tool-btn-large" onclick="abrirModalVideo()"><span class="material-symbols-outlined">smart_display</span><span>Vídeo Online</span></button>
                         <div class="dropdown-container">
-                            <button class="tool-btn dropdown-toggle" style="margin-top: 5px;">
-                                <div style="display:flex; align-items:center;">
-                                    <span class="material-symbols-outlined" style="font-size: 16px; color:#e67e22;">category</span>
-                                    <span>Formas Livres</span>
-                                    <span class="material-symbols-outlined" style="font-size: 12px;">arrow_drop_down</span>
-                                </div>
-                            </button>
+                            <button class="tool-btn dropdown-toggle" style="margin-top: 5px;"><div style="display:flex; align-items:center;"><span class="material-symbols-outlined" style="font-size: 16px; color:#e67e22;">category</span><span>Formas Livres</span><span class="material-symbols-outlined" style="font-size: 12px;">arrow_drop_down</span></div></button>
                             <div class="dropdown-menu">
                                 <div class="dropdown-title">Formas (Arraste para redimensionar)</div>
                                 <button class="dropdown-item" onclick="inserirFormaVisivel('retangulo')"><span class="material-symbols-outlined">rectangle</span> Retângulo Vazado</button>
@@ -805,21 +218,14 @@
                     </div>
                     <span class="group-label">Ilustrações</span>
                 </div>
-                
                 <div class="ribbon-group">
                     <div class="group-tools">
-                        <button class="tool-btn" onclick="inserirLinkVisivel()"><span class="material-symbols-outlined" style="color:#3498db;">link</span> Link</button>
+                        <button class="tool-btn" onclick="abrirModalLink()"><span class="material-symbols-outlined" style="color:#3498db;">link</span> Link</button>
                         <button class="tool-btn" onclick="alertaVIP()"><span class="material-symbols-outlined" style="color:#e74c3c;">bookmark</span> Indicador</button>
                     </div>
                     <div class="group-tools">
                         <div class="dropdown-container">
-                            <button class="tool-btn dropdown-toggle">
-                                <div style="display:flex; align-items:center;">
-                                    <span class="material-symbols-outlined" style="font-size: 16px;">emoji_symbols</span>
-                                    <span>Símbolo</span>
-                                    <span class="material-symbols-outlined" style="font-size: 12px;">arrow_drop_down</span>
-                                </div>
-                            </button>
+                            <button class="tool-btn dropdown-toggle"><div style="display:flex; align-items:center;"><span class="material-symbols-outlined" style="font-size: 16px;">emoji_symbols</span><span>Símbolo</span><span class="material-symbols-outlined" style="font-size: 12px;">arrow_drop_down</span></div></button>
                             <div class="dropdown-menu" style="min-width: 120px;">
                                 <button class="dropdown-item" onclick="inserirTexto('©')">© Copyright</button>
                                 <button class="dropdown-item" onclick="inserirTexto('®')">® Registrado</button>
@@ -836,15 +242,9 @@
             <div id="tab-design" class="tab-pane">
                 <div class="ribbon-group">
                     <div class="group-tools">
-                        <button class="tool-btn tool-btn-large" onclick="inserirMarcaDagua()">
-                            <span class="material-symbols-outlined" style="color:#1abc9c;">branding_watermark</span><span>Marca D'água</span>
-                        </button>
-                        
+                        <button class="tool-btn tool-btn-large" onclick="abrirModalMarcaDagua()"><span class="material-symbols-outlined" style="color:#1abc9c;">branding_watermark</span><span>Marca D'água</span></button>
                         <div class="dropdown-container">
-                            <button class="tool-btn tool-btn-large dropdown-toggle">
-                                <span class="material-symbols-outlined" style="color:#f1c40f;">format_color_fill</span>
-                                <span>Cor da Página <span class="material-symbols-outlined" style="font-size: 14px;">arrow_drop_down</span></span>
-                            </button>
+                            <button class="tool-btn tool-btn-large dropdown-toggle"><span class="material-symbols-outlined" style="color:#f1c40f;">format_color_fill</span><span>Cor da Página <span class="material-symbols-outlined" style="font-size: 14px;">arrow_drop_down</span></span></button>
                             <div class="dropdown-menu" style="padding: 10px; width: 150px;">
                                 <div class="dropdown-title">Cores Padrão</div>
                                 <div style="display: flex; gap: 5px; flex-wrap: wrap;">
@@ -856,12 +256,8 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="dropdown-container">
-                            <button class="tool-btn tool-btn-large dropdown-toggle">
-                                <span class="material-symbols-outlined" style="color:#e67e22;">border_outer</span>
-                                <span>Bordas <span class="material-symbols-outlined" style="font-size: 14px;">arrow_drop_down</span></span>
-                            </button>
+                            <button class="tool-btn tool-btn-large dropdown-toggle"><span class="material-symbols-outlined" style="color:#e67e22;">border_outer</span><span>Bordas <span class="material-symbols-outlined" style="font-size: 14px;">arrow_drop_down</span></span></button>
                             <div class="dropdown-menu">
                                 <button class="dropdown-item" onclick="mudarBorda('nenhuma')"><span class="material-symbols-outlined">border_clear</span> Sem Borda</button>
                                 <button class="dropdown-item" onclick="mudarBorda('simples')"><span class="material-symbols-outlined">check_box_outline_blank</span> Borda Simples</button>
@@ -872,14 +268,10 @@
                     </div>
                     <span class="group-label">Fundo da Página</span>
                 </div>
-
                 <div class="ribbon-group">
                     <div class="group-tools">
                         <div class="dropdown-container">
-                            <button class="tool-btn tool-btn-large dropdown-toggle">
-                                <span class="material-symbols-outlined" style="color:#e84393;">format_paint</span>
-                                <span>Pintar Forma <span class="material-symbols-outlined" style="font-size: 14px;">arrow_drop_down</span></span>
-                            </button>
+                            <button class="tool-btn tool-btn-large dropdown-toggle"><span class="material-symbols-outlined" style="color:#e84393;">format_paint</span><span>Pintar Forma <span class="material-symbols-outlined" style="font-size: 14px;">arrow_drop_down</span></span></button>
                             <div class="dropdown-menu" style="padding: 10px; width: 150px;">
                                 <div class="dropdown-title">Clique na forma e escolha:</div>
                                 <div style="display: flex; gap: 5px; flex-wrap: wrap;">
@@ -900,22 +292,15 @@
                 <div class="ribbon-group">
                     <div class="group-tools">
                         <div class="dropdown-container">
-                            <button class="tool-btn tool-btn-large dropdown-toggle">
-                                <span class="material-symbols-outlined">margin</span>
-                                <span>Margens <span class="material-symbols-outlined" style="font-size: 14px;">arrow_drop_down</span></span>
-                            </button>
+                            <button class="tool-btn tool-btn-large dropdown-toggle"><span class="material-symbols-outlined">margin</span><span>Margens <span class="material-symbols-outlined" style="font-size: 14px;">arrow_drop_down</span></span></button>
                             <div class="dropdown-menu">
                                 <button class="dropdown-item" onclick="mudarMargem('normal')"><span class="material-symbols-outlined">crop_square</span> Normal (ABNT)</button>
                                 <button class="dropdown-item" onclick="mudarMargem('estreita')"><span class="material-symbols-outlined">crop_din</span> Estreita</button>
                                 <button class="dropdown-item" onclick="mudarMargem('larga')"><span class="material-symbols-outlined">crop_landscape</span> Larga</button>
                             </div>
                         </div>
-
                         <div class="dropdown-container">
-                            <button class="tool-btn tool-btn-large dropdown-toggle">
-                                <span class="material-symbols-outlined">screen_rotation</span>
-                                <span>Orientação <span class="material-symbols-outlined" style="font-size: 14px;">arrow_drop_down</span></span>
-                            </button>
+                            <button class="tool-btn tool-btn-large dropdown-toggle"><span class="material-symbols-outlined">screen_rotation</span><span>Orientação <span class="material-symbols-outlined" style="font-size: 14px;">arrow_drop_down</span></span></button>
                             <div class="dropdown-menu">
                                 <button class="dropdown-item" onclick="mudarOrientacao('retrato')"><span class="material-symbols-outlined">portrait</span> Retrato (Vertical)</button>
                                 <button class="dropdown-item" onclick="mudarOrientacao('paisagem')"><span class="material-symbols-outlined">landscape</span> Paisagem (Horizontal)</button>
@@ -929,8 +314,8 @@
             <div id="tab-correio" class="tab-pane">
                 <div class="ribbon-group">
                     <div class="group-tools">
-                        <button class="tool-btn tool-btn-large" onclick="alertaVIP()"><span class="material-symbols-outlined" style="color:#7f8c8d;">mail</span><span>Envelopes</span></button>
-                        <button class="tool-btn tool-btn-large" onclick="alertaVIP()"><span class="material-symbols-outlined" style="color:#7f8c8d;">sell</span><span>Etiquetas</span></button>
+                        <button class="tool-btn tool-btn-large" onclick="aplicarTemplateDireto('envelope')"><span class="material-symbols-outlined" style="color:#f39c12;">mail</span><span>Envelopes</span></button>
+                        <button class="tool-btn tool-btn-large" onclick="aplicarTemplateDireto('etiqueta')"><span class="material-symbols-outlined" style="color:#27ae60;">sell</span><span>Etiquetas</span></button>
                         <button class="tool-btn tool-btn-large" onclick="abrirModalMalaDireta()"><span class="material-symbols-outlined" style="color:#8e44ad;">group</span><span>Mala Direta</span></button>
                     </div>
                     <span class="group-label">Criar Documentos em Massa</span>
@@ -941,18 +326,14 @@
                 <div class="ribbon-group">
                     <div class="group-tools">
                         <button class="tool-btn tool-btn-large" onclick="toggleOrtografia()"><span class="material-symbols-outlined" style="color:#27ae60;">spellcheck</span><span>Ortografia</span></button>
-                        <button class="tool-btn tool-btn-large" onclick="contarPalavras()"><span class="material-symbols-outlined" style="color:#34495e;">pin</span><span>Contagem</span></button>
+                        <button class="tool-btn tool-btn-large" onclick="abrirModalContagem()"><span class="material-symbols-outlined" style="color:#34495e;">pin</span><span>Contagem</span></button>
                     </div>
                     <span class="group-label">Revisão de Texto</span>
                 </div>
-                
                 <div class="ribbon-group">
                     <div class="group-tools">
                         <div class="dropdown-container">
-                            <button class="tool-btn tool-btn-large dropdown-toggle">
-                                <span class="material-symbols-outlined" style="color:#2980b9;">translate</span>
-                                <span>Traduzir <span class="material-symbols-outlined" style="font-size: 14px;">arrow_drop_down</span></span>
-                            </button>
+                            <button class="tool-btn tool-btn-large dropdown-toggle"><span class="material-symbols-outlined" style="color:#2980b9;">translate</span><span>Traduzir <span class="material-symbols-outlined" style="font-size: 14px;">arrow_drop_down</span></span></button>
                             <div class="dropdown-menu">
                                 <button class="dropdown-item" onclick="traduzirDocumento()"><span class="material-symbols-outlined">g_translate</span> Traduzir via Google</button>
                                 <button class="dropdown-item" onclick="alertaVIP()"><span class="material-symbols-outlined">auto_awesome</span> Tradução Ágora AI (VIP)</button>
@@ -961,12 +342,9 @@
                     </div>
                     <span class="group-label">Idioma</span>
                 </div>
-                
                 <div class="ribbon-group">
                     <div class="group-tools">
-                        <button class="tool-btn tool-btn-large" id="btn-rastrear" onclick="toggleRastrear()">
-                            <span class="material-symbols-outlined" style="color:#e74c3c;">track_changes</span><span>Rastrear</span>
-                        </button>
+                        <button class="tool-btn tool-btn-large" id="btn-rastrear" onclick="toggleRastrear()"><span class="material-symbols-outlined" style="color:#e74c3c;">track_changes</span><span>Rastrear</span></button>
                     </div>
                     <span class="group-label">Alterações</span>
                 </div>
@@ -998,18 +376,16 @@
     </div>
 
     <div class="workspace">
-        
         <div class="gaveta-esquerda" id="gaveta-mapa">
             <div class="cabecalho-mapa">
                 <span><span class="material-symbols-outlined" style="vertical-align: middle;">grid_view</span> Páginas</span>
             </div>
-            <div class="lista-mapa" id="lista-miniaturas">
-                </div>
+            <div class="lista-mapa" id="lista-miniaturas"></div>
         </div>
 
         <div class="regua-topo" id="regua-h">1cm &nbsp; 2cm &nbsp; 3cm &nbsp; 4cm &nbsp; 5cm &nbsp; 6cm &nbsp; 7cm &nbsp; 8cm &nbsp; 9cm &nbsp; 10cm &nbsp; 11cm &nbsp; 12cm &nbsp; 13cm &nbsp; 14cm &nbsp; 15cm &nbsp; 16cm</div>
         <div class="regua-esquerda" id="regua-v"></div>
-
+        
         <div class="container-editor-scroll">
             <div id="editor-container"></div>
         </div>
@@ -1038,11 +414,55 @@
         <div id="jitsi-iframe" style="flex:1;"></div>
     </div>
 
+    <div class="fundo-modal" id="modal-inserir-link">
+        <div class="caixa-modal caixa-modal-pequena">
+            <h2 style="margin-top: 0; display: flex; align-items: center; justify-content: center; gap: 8px;"><span class="material-symbols-outlined" style="color: #3498db;">link</span> Inserir Link</h2>
+            <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
+                <input type="url" id="input-url-link" class="tool-select" style="padding: 10px;" placeholder="Cole a URL aqui (https://...)">
+                <button class="btn-add" style="background: #3498db;" onclick="confirmarInserirLink()">Inserir no Texto</button>
+            </div>
+            <button class="btn-fechar-modal" onclick="document.getElementById('modal-inserir-link').style.display='none'">Cancelar</button>
+        </div>
+    </div>
+
+    <div class="fundo-modal" id="modal-inserir-video">
+        <div class="caixa-modal caixa-modal-pequena">
+            <h2 style="margin-top: 0; display: flex; align-items: center; justify-content: center; gap: 8px;"><span class="material-symbols-outlined" style="color: #e74c3c;">smart_display</span> Inserir Vídeo</h2>
+            <p style="font-size: 12px; color: #7f8c8d;">Cole o link de um vídeo do YouTube para incorporá-lo na página.</p>
+            <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
+                <input type="url" id="input-url-video" class="tool-select" style="padding: 10px;" placeholder="Link do YouTube">
+                <button class="btn-add" style="background: #e74c3c;" onclick="confirmarInserirVideo()">Incorporar Vídeo</button>
+            </div>
+            <button class="btn-fechar-modal" onclick="document.getElementById('modal-inserir-video').style.display='none'">Cancelar</button>
+        </div>
+    </div>
+
+    <div class="fundo-modal" id="modal-inserir-marcadagua">
+        <div class="caixa-modal caixa-modal-pequena">
+            <h2 style="margin-top: 0; display: flex; align-items: center; justify-content: center; gap: 8px;"><span class="material-symbols-outlined" style="color: #1abc9c;">branding_watermark</span> Marca D'água</h2>
+            <p style="font-size: 12px; color: #7f8c8d;">Digite o texto de fundo. Deixe em branco e salve para remover.</p>
+            <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
+                <input type="text" id="input-texto-marcadagua" class="tool-select" style="padding: 10px;" placeholder="Ex: CONFIDENCIAL">
+                <button class="btn-add" style="background: #1abc9c;" onclick="confirmarInserirMarcaDagua()">Aplicar Marca D'água</button>
+            </div>
+            <button class="btn-fechar-modal" onclick="document.getElementById('modal-inserir-marcadagua').style.display='none'">Cancelar</button>
+        </div>
+    </div>
+    
+    <div class="fundo-modal" id="modal-contagem">
+        <div class="caixa-modal caixa-modal-pequena">
+            <h2 style="margin-top: 0; display: flex; align-items: center; justify-content: center; gap: 8px;"><span class="material-symbols-outlined" style="color: #34495e;">analytics</span> Estatísticas</h2>
+            <div class="painel-estatisticas">
+                <div class="item-estatistica"><span class="numero-estatistica" id="stat-palavras">0</span><span class="label-estatistica">Palavras</span></div>
+                <div class="item-estatistica"><span class="numero-estatistica" id="stat-caracteres">0</span><span class="label-estatistica">Caracteres</span></div>
+            </div>
+            <button class="btn-fechar-modal" style="margin-top: 20px;" onclick="document.getElementById('modal-contagem').style.display='none'">Fechar</button>
+        </div>
+    </div>
+
     <div class="fundo-modal" id="modal-localizar">
         <div class="caixa-modal caixa-modal-pequena">
-            <h2 style="margin-top: 0; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                <span class="material-symbols-outlined" style="color: #2980b9;">find_replace</span> Localizar e Substituir
-            </h2>
+            <h2 style="margin-top: 0; display: flex; align-items: center; justify-content: center; gap: 8px;"><span class="material-symbols-outlined" style="color: #2980b9;">find_replace</span> Localizar e Substituir</h2>
             <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
                 <input type="text" id="input-busca" class="tool-select" style="padding: 10px;" placeholder="Palavra para buscar...">
                 <input type="text" id="input-substituto" class="tool-select" style="padding: 10px;" placeholder="Substituir por...">
@@ -1056,9 +476,7 @@
         <div class="caixa-modal" style="max-width: 500px; text-align: center;">
             <h2 style="margin-top: 0;">Assinar Documento</h2>
             <p style="font-size: 12px; color: #7f8c8d;">Desenhe sua assinatura no quadro abaixo usando o mouse ou o dedo.</p>
-            
             <canvas id="quadro-assinatura" width="400" height="200"></canvas>
-            
             <div style="display: flex; gap: 10px; justify-content: center; margin-top: 10px;">
                 <button class="btn-fechar-modal" style="margin-top: 0;" onclick="limparAssinatura()">Limpar Quadro</button>
                 <button class="btn-add" onclick="inserirAssinatura()">Inserir no Texto</button>
@@ -1069,12 +487,9 @@
 
     <div class="fundo-modal" id="modal-maladireta">
         <div class="caixa-modal" style="max-width: 500px;">
-            <h2 style="margin-top: 0; display: flex; align-items: center; gap: 8px;">
-                <span class="material-symbols-outlined" style="color: #8e44ad;">group</span> Mala Direta Ágora
-            </h2>
+            <h2 style="margin-top: 0; display: flex; align-items: center; gap: 8px;"><span class="material-symbols-outlined" style="color: #8e44ad;">group</span> Mala Direta Ágora</h2>
             <p style="font-size: 13px; color: #333;">Digite no seu texto tags usando chaves duplas. Ex: Olá, <b>{{NOME}}</b>.</p>
             <p style="font-size: 12px; color: #7f8c8d;">Depois, insira abaixo a variável e o valor para preencher o documento todo.</p>
-            
             <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
                 <input type="text" id="input-tag" class="tool-select" style="padding: 10px;" placeholder="Nome da Tag (Ex: NOME)">
                 <input type="text" id="input-valor" class="tool-select" style="padding: 10px;" placeholder="Valor real (Ex: Pedro Maia)">
@@ -1083,25 +498,21 @@
             <button class="btn-fechar-modal" onclick="document.getElementById('modal-maladireta').style.display='none'">Fechar</button>
         </div>
     </div>
-
+    
     <div class="fundo-modal" id="modal-equipe">
         <div class="caixa-modal">
             <h2>Equipe do Projeto</h2>
             <div class="linha-add">
                 <input type="email" id="email-convidado" placeholder="E-mail do membro">
                 <select id="cargo-convidado" class="tool-select">
-                    <option value="editor">Editor</option>
-                    <option value="leitor">Leitor</option>
-                    <option value="admin">Admin</option>
+                    <option value="editor">Editor</option><option value="leitor">Leitor</option><option value="admin">Admin</option>
                 </select>
                 <button id="btn-add-membro" class="btn-add">Convidar</button>
             </div>
             <div class="lista-membros" id="lista-membros"></div>
             <div style="margin-top: 15px; display: flex; gap: 10px; align-items: center;">
                 <input type="text" id="link-gerado" readonly class="tool-select" style="flex-grow: 1; background: #f8fafc; padding: 10px;">
-                <button class="btn-add" onclick="copiarLinkProjeto()" style="display: flex; align-items: center; gap: 5px;">
-                    <span class="material-symbols-outlined" style="font-size: 16px;">content_copy</span> Copiar
-                </button>
+                <button class="btn-add" onclick="copiarLinkProjeto()" style="display: flex; align-items: center; gap: 5px;"><span class="material-symbols-outlined" style="font-size: 16px;">content_copy</span> Copiar Link</button>
             </div>
             <button class="btn-fechar-modal" onclick="document.getElementById('modal-equipe').style.display='none'">Fechar</button>
         </div>
@@ -1115,7 +526,7 @@
             <button class="btn-fechar-modal" onclick="document.getElementById('modal-alerta').style.display='none'">Entendi</button>
         </div>
     </div>
-
+    
     <div class="fundo-modal" id="modal-modelos">
         <div class="caixa-modal" style="max-width: 800px;">
             <h2 style="margin-top:0;"><span class="material-symbols-outlined" style="vertical-align: middle;">school</span> Central Acadêmica Ágora</h2>
@@ -1128,849 +539,32 @@
                 <div class="cartao-modelo" onclick="aplicarTemplateDireto('resenha')"><div style="background: #f5f0fa; color: #8e44ad; padding: 10px; border-radius: 8px;"><span class="material-symbols-outlined">rate_review</span></div><div class="texto-modelo"><h3>Resenha Crítica</h3><p>Análise de Obras.</p></div></div>
                 <div class="cartao-modelo" onclick="aplicarTemplateDireto('relatorio')"><div style="background: #f5f0fa; color: #8e44ad; padding: 10px; border-radius: 8px;"><span class="material-symbols-outlined">assignment</span></div><div class="texto-modelo"><h3>Relatório Técnico</h3><p>Estágio / Atividades.</p></div></div>
             </div>
-            <div id="painel-tcc" class="painel-opcoes"><label class="tcc-opcao"><input type="checkbox" id="tcc-capa" checked> Capa e Folha de Rosto</label><label class="tcc-opcao"><input type="checkbox" id="tcc-resumo" checked> Resumo / Abstract</label><label class="tcc-opcao"><input type="checkbox" id="tcc-desenv" checked> Estrutura Textual</label><button class="btn-add" style="background: #8e44ad; margin-top: 10px;" onclick="gerarDocumentoComplexo('tcc')">Gerar TCC (Multi-páginas)</button></div>
-            <div id="painel-artigo" class="painel-opcoes"><label class="tcc-opcao"><input type="checkbox" id="art-tudo" checked> Estrutura Completa do Artigo Científico</label><label class="tcc-opcao"><input type="checkbox" id="art-20pag"> Gerar 15 Páginas em branco de Desenvolvimento</label><button class="btn-add" style="background: #8e44ad; margin-top: 10px;" onclick="gerarDocumentoComplexo('artigo')">Gerar Artigo Científico</button></div>
-            <div id="painel-pesquisa" class="painel-opcoes"><label class="tcc-opcao"><input type="checkbox" id="pesq-tudo" checked> Projeto de Pesquisa Completo</label><button class="btn-add" style="background: #8e44ad; margin-top: 10px;" onclick="gerarDocumentoComplexo('pesquisa')">Gerar Projeto</button></div>
+            <div id="painel-tcc" class="painel-opcoes">
+                <label class="tcc-opcao"><input type="checkbox" id="tcc-capa" checked> Capa e Folha de Rosto</label>
+                <label class="tcc-opcao"><input type="checkbox" id="tcc-resumo" checked> Resumo / Abstract</label>
+                <label class="tcc-opcao"><input type="checkbox" id="tcc-desenv" checked> Estrutura Textual</label>
+                <button class="btn-add" style="background: #8e44ad; margin-top: 10px;" onclick="gerarDocumentoComplexo('tcc')">Gerar TCC (Multi-páginas)</button>
+            </div>
+            <div id="painel-artigo" class="painel-opcoes">
+                <label class="tcc-opcao"><input type="checkbox" id="art-tudo" checked> Estrutura Completa do Artigo Científico</label>
+                <label class="tcc-opcao"><input type="checkbox" id="art-20pag"> Gerar 15 Páginas em branco de Desenvolvimento</label>
+                <button class="btn-add" style="background: #8e44ad; margin-top: 10px;" onclick="gerarDocumentoComplexo('artigo')">Gerar Artigo Científico</button>
+            </div>
+            <div id="painel-pesquisa" class="painel-opcoes">
+                <label class="tcc-opcao"><input type="checkbox" id="pesq-tudo" checked> Projeto de Pesquisa Completo</label>
+                <button class="btn-add" style="background: #8e44ad; margin-top: 10px;" onclick="gerarDocumentoComplexo('pesquisa')">Gerar Projeto</button>
+            </div>
             <button class="btn-fechar-modal" onclick="fecharTodosModais()">Cancelar</button>
         </div>
     </div>
 
+    <script src="https://meet.jit.si/external_api.js"></script>
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-        import { getFirestore, doc, onSnapshot, updateDoc, collection, addDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
-        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-storage.js";
+    <script src="https://cdn.jsdelivr.net/npm/quill-image-resize-script@3.0.0/image-resize.min.js"></script>
+    
+    <script src="editor.js"></script>
+    
+    <script type="module" src="firebase.js"></script>
 
-        // ==========================================
-        // 1. CONFIGURAÇÃO FIREBASE
-        // ==========================================
-        const firebaseConfig = { 
-            apiKey: "AIzaSyCrO7jKe3ja8XJWeNTfTpv4wwEWwzzcYzo", 
-            authDomain: "agora-ea1be.firebaseapp.com", 
-            projectId: "agora-ea1be", 
-            storageBucket: "agora-ea1be.firebasestorage.app", 
-            messagingSenderId: "801313514193", 
-            appId: "1:801313514193:web:99621b133ed4ca80e89bf0" 
-        };
-        const app = initializeApp(firebaseConfig); 
-        const db = getFirestore(app); 
-        const auth = getAuth(app); 
-        const storage = getStorage(app);
-        const idProjeto = new URLSearchParams(window.location.search).get('id');
-
-        // ==========================================
-        // 2. LÓGICA DE INTERFACE (RIBBON)
-        // ==========================================
-        document.querySelectorAll('.tab-btn').forEach(btn => { 
-            btn.addEventListener('click', function() { 
-                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); 
-                document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active')); 
-                this.classList.add('active'); 
-                document.getElementById(this.getAttribute('data-target')).classList.add('active'); 
-            }); 
-        });
-
-        document.addEventListener('click', function(event) { 
-            const isDropdownBtn = event.target.closest('.dropdown-toggle'); 
-            const isInsideMenu = event.target.closest('.dropdown-menu'); 
-            if (isDropdownBtn) { 
-                const container = isDropdownBtn.closest('.dropdown-container'); 
-                const menu = container.querySelector('.dropdown-menu'); 
-                document.querySelectorAll('.dropdown-menu').forEach(m => { 
-                    if(m !== menu) m.classList.remove('show'); 
-                }); 
-                if(menu.classList.contains('show')) { 
-                    menu.classList.remove('show'); 
-                } else { 
-                    menu.classList.add('show'); 
-                    if(menu.style.display === 'flex') menu.style.display = 'flex'; 
-                } 
-            } else if (!isInsideMenu) { 
-                document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show')); 
-            } 
-        });
-
-        // ==========================================
-        // 3. NOVAS FUNÇÕES (LOCALIZAR, ASSINATURA, RASTREAR)
-        // ==========================================
-        
-        window.alertaVIP = function() { 
-            document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show')); 
-            document.getElementById('modal-alerta').style.display = 'flex'; 
-        }
-
-        // Localizar e Substituir
-        window.abrirModalLocalizar = function() {
-            document.getElementById('modal-localizar').style.display = 'flex';
-        }
-        
-        window.executarSubstituicao = function() {
-            const busca = document.getElementById('input-busca').value;
-            const substituto = document.getElementById('input-substituto').value;
-            if(!busca) return;
-            
-            const textoInteiro = quill.getText();
-            let qtd = 0;
-            let startIndex = 0;
-            let index;
-
-            // Loop para achar e trocar todas as palavras preservando o resto
-            while ((index = textoInteiro.indexOf(busca, startIndex)) > -1) {
-                quill.deleteText(index, busca.length, Quill.sources.USER);
-                quill.insertText(index, substituto, Quill.sources.USER);
-                startIndex = index + substituto.length;
-                qtd++;
-            }
-            
-            alert(`${qtd} substituição(ões) realizada(s).`);
-            document.getElementById('modal-localizar').style.display = 'none';
-            salvarNaNuvemManual();
-        }
-
-        // Mala Direta Simulada
-        window.abrirModalMalaDireta = function() {
-            document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show')); 
-            document.getElementById('modal-maladireta').style.display = 'flex';
-        }
-
-        window.executarMalaDireta = function() {
-            const tag = document.getElementById('input-tag').value.trim();
-            const valor = document.getElementById('input-valor').value;
-            if(!tag) return;
-            
-            const tagCompleta = `{{${tag}}}`;
-            const textoInteiro = quill.getText();
-            let qtd = 0;
-            let startIndex = 0;
-            let index;
-
-            while ((index = textoInteiro.indexOf(tagCompleta, startIndex)) > -1) {
-                quill.deleteText(index, tagCompleta.length, Quill.sources.USER);
-                quill.insertText(index, valor, Quill.sources.USER);
-                startIndex = index + valor.length;
-                qtd++;
-            }
-            
-            alert(`Mala Direta aplicada: ${qtd} campo(s) preenchido(s).`);
-            document.getElementById('modal-maladireta').style.display = 'none';
-            salvarNaNuvemManual();
-        }
-
-        // Rastrear Alterações (Modo Revisão)
-        let rastreando = false;
-        window.toggleRastrear = function() {
-            rastreando = !rastreando;
-            const btn = document.getElementById('btn-rastrear');
-            if(rastreando) {
-                btn.classList.add('active');
-                alert("Modo Revisão ATIVADO. Novas digitações ficarão em vermelho e sublinhadas.");
-                // Força o estilo no ponto atual do cursor
-                quill.format('color', 'red');
-                quill.format('underline', true);
-            } else {
-                btn.classList.remove('active');
-                alert("Modo Revisão DESATIVADO.");
-                // Remove o estilo no ponto atual do cursor
-                quill.format('color', false);
-                quill.format('underline', false);
-            }
-        }
-
-        // Assinatura Digital no Canvas
-        const canvas = document.getElementById('quadro-assinatura');
-        const ctx = canvas.getContext('2d');
-        let desenhando = false;
-
-        window.abrirModalAssinatura = function() {
-            document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show')); 
-            document.getElementById('modal-assinatura').style.display = 'flex';
-            limparAssinatura();
-        }
-
-        window.limparAssinatura = function() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-        }
-
-        canvas.addEventListener('mousedown', (e) => { desenhando = true; ctx.beginPath(); ctx.moveTo(e.offsetX, e.offsetY); });
-        canvas.addEventListener('mousemove', (e) => { if(desenhando) { ctx.lineWidth = 2; ctx.lineCap = "round"; ctx.lineTo(e.offsetX, e.offsetY); ctx.stroke(); } });
-        canvas.addEventListener('mouseup', () => { desenhando = false; });
-        canvas.addEventListener('mouseleave', () => { desenhando = false; });
-
-        window.inserirAssinatura = function() {
-            const base64 = canvas.toDataURL('image/png');
-            const range = quill.getSelection(true);
-            quill.insertEmbed(range.index, 'image', base64, Quill.sources.USER);
-            quill.setSelection(range.index + 1, Quill.sources.SILENT);
-            document.getElementById('modal-assinatura').style.display = 'none';
-            salvarNaNuvemManual();
-        }
-
-        // Lógica de Pintar Forma selecionada
-        let formaSelecionadaAtiva = null;
-
-        // Listener global para saber em qual forma o usuário clicou
-        document.addEventListener('click', function(e) {
-            const clicouNaForma = e.target.closest('.forma-agora');
-            if(clicouNaForma) {
-                formaSelecionadaAtiva = clicouNaForma;
-                // Coloca um brilho sutil pra mostrar que selecionou
-                document.querySelectorAll('.forma-agora').forEach(f => f.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)');
-                formaSelecionadaAtiva.style.boxShadow = '0 0 10px #8e44ad';
-            } else if (!e.target.closest('.dropdown-container')) {
-                // Clicou fora da forma e fora do menu de pintura
-                if(formaSelecionadaAtiva) {
-                    formaSelecionadaAtiva.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
-                    formaSelecionadaAtiva = null;
-                }
-            }
-        });
-
-        window.pintarForma = function(cor) {
-            if(formaSelecionadaAtiva) {
-                formaSelecionadaAtiva.style.backgroundColor = cor;
-                // Se a cor for igual a transparente, a linha fica preta, senão a linha fica um pouco mais escura
-                if(cor === 'transparent') {
-                    formaSelecionadaAtiva.style.borderColor = '#000';
-                } else {
-                    formaSelecionadaAtiva.style.borderColor = 'rgba(0,0,0,0.5)';
-                }
-                salvarNaNuvemManual();
-            } else {
-                alert("Por favor, clique em uma forma geométrica no texto primeiro para selecioná-la, depois escolha a cor.");
-            }
-            document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show'));
-        }
-
-        // Outras Funções do Ribbon
-        window.mudarCorPagina = function(corHex) { 
-            document.querySelector('.ql-editor').style.backgroundColor = corHex; 
-            document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show')); 
-        }
-
-        window.mudarBorda = function(tipo) { 
-            const editor = document.querySelector('.ql-editor'); 
-            editor.style.border = 'none'; 
-            if(tipo === 'simples') editor.style.border = '1px solid #000'; 
-            if(tipo === 'dupla') editor.style.border = '3px double #000'; 
-            if(tipo === 'tracejada') editor.style.border = '1px dashed #000'; 
-            document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show')); 
-        }
-
-        window.inserirMarcaDagua = function() { 
-            if(meuCargo === 'leitor') return; 
-            const texto = prompt("Texto da Marca D'água (Deixe vazio para remover):"); 
-            const editor = document.querySelector('.ql-editor'); 
-            if(!texto) { 
-                editor.style.backgroundImage = 'none'; 
-                return; 
-            } 
-            const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400"><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="40" font-family="Arial" font-weight="bold" fill="rgba(150,150,150,0.15)" transform="rotate(-45 200 200)">${texto}</text></svg>`; 
-            const b64 = "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(svg))); 
-            editor.style.backgroundImage = `url('${b64}')`; 
-            editor.style.backgroundRepeat = 'repeat'; 
-            document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show')); 
-        }
-
-        window.traduzirDocumento = function() { 
-            const texto = encodeURIComponent(quill.getText().substring(0, 1500)); 
-            window.open(`https://translate.google.com/?sl=auto&tl=en&text=${texto}&op=translate`, '_blank'); 
-            document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show')); 
-        }
-
-        window.colarTextoPuro = async function() { 
-            try { 
-                const text = await navigator.clipboard.readText(); 
-                const range = quill.getSelection(true); 
-                quill.insertText(range.index, text, Quill.sources.USER); 
-            } catch (err) { 
-                alert("O navegador bloqueou o acesso à área de transferência. Por favor, use Ctrl+Shift+V no teclado."); 
-            } 
-            document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show')); 
-        }
-
-        window.toggleRegua = function() { 
-            document.getElementById('regua-h').classList.toggle('reguas-ocultas'); 
-            document.getElementById('regua-v').classList.toggle('reguas-ocultas'); 
-        }
-
-        window.contarPalavras = function() { 
-            const texto = quill.getText().trim(); 
-            const numCaracteres = texto.length; 
-            const numPalavras = texto.split(/\s+/).filter(word => word.length > 0).length; 
-            alert(`📝 Estatísticas do Documento:\n\nPalavras: ${numPalavras}\nCaracteres: ${numCaracteres}`); 
-        }
-
-        window.mudarMargem = function(tipo) { 
-            const editor = document.querySelector('.ql-editor'); 
-            if(tipo === 'normal') editor.style.padding = '3cm 2cm 2cm 3cm'; 
-            if(tipo === 'estreita') editor.style.padding = '1.27cm'; 
-            if(tipo === 'larga') editor.style.padding = '3cm 4cm 2cm 4cm'; 
-            document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show')); 
-        };
-
-        window.mudarOrientacao = function(tipo) { 
-            const container = document.getElementById('editor-container'); 
-            if(tipo === 'paisagem') { 
-                container.classList.add('orientacao-paisagem'); 
-            } else { 
-                container.classList.remove('orientacao-paisagem'); 
-            } 
-            document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show')); 
-        };
-
-        window.toggleOrtografia = function() { 
-            const editor = document.querySelector('.ql-editor'); 
-            const isSpellcheck = editor.getAttribute('spellcheck') === 'true'; 
-            editor.setAttribute('spellcheck', !isSpellcheck); 
-            alert("Corretor Ortográfico " + (!isSpellcheck ? "ATIVADO" : "DESATIVADO")); 
-        };
-
-        window.mudarLayout = function(tipo) { 
-            if(tipo === 'web') { 
-                document.body.classList.add('layout-web'); 
-            } else { 
-                document.body.classList.remove('layout-web'); 
-            } 
-        };
-
-        window.inserirTexto = function(texto) { 
-            if(meuCargo === 'leitor') return; 
-            const range = quill.getSelection(true); 
-            quill.insertText(range.index, texto, Quill.sources.USER); 
-            quill.setSelection(range.index + texto.length, Quill.sources.SILENT); 
-            document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show')); 
-        };
-
-        window.limparFormatacao = function() { 
-            if(meuCargo === 'leitor') return; 
-            const range = quill.getSelection(); 
-            if(range) { quill.removeFormat(range.index, range.length); } 
-            document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show')); 
-        }
-
-        // ==========================================
-        // 4. CONFIGURAÇÃO QUILL E CUSTOM BLOTS
-        // ==========================================
-        const Parchment = Quill.import('parchment'); 
-        const Font = Quill.import('formats/font'); 
-        Font.whitelist = ['roboto', 'open-sans', 'lato', 'montserrat', 'oswald', 'merriweather', 'nunito', 'poppins', 'dancing']; 
-        Quill.register(Font, true); 
-        
-        const Size = Quill.import('attributors/style/size'); 
-        Size.whitelist = ['10px', '12px', '16px', '20px', '24px', '32px']; 
-        Quill.register(Size, true); 
-        
-        const LineHeightStyle = new Parchment.Attributor.Style('lineHeight', 'line-height', { 
-            scope: Parchment.Scope.BLOCK, 
-            whitelist: ['1.0', '1.15', '1.5', '2.0', '2.5', '3.0'] 
-        }); 
-        Quill.register(LineHeightStyle, true);
-        
-        const BlockEmbed = Quill.import('blots/block/embed');
-        
-        class QuebraDePaginaBlot extends BlockEmbed { 
-            static create(value) { 
-                const node = super.create(); 
-                node.setAttribute('contenteditable', 'false'); 
-                return node; 
-            } 
-        } 
-        QuebraDePaginaBlot.blotName = 'quebra-pagina'; 
-        QuebraDePaginaBlot.tagName = 'hr'; 
-        QuebraDePaginaBlot.className = 'quebra-de-pagina'; 
-        Quill.register(QuebraDePaginaBlot);
-        
-        // Tabela Aprimorada (O básico que resolve para hoje)
-        class TabelaBlot extends BlockEmbed { 
-            static create(value) { 
-                const node = super.create(); 
-                node.innerHTML = `
-                <table class="tabela-agora">
-                    <tbody>
-                        <tr><td><br></td><td><br></td><td><br></td></tr>
-                        <tr><td><br></td><td><br></td><td><br></td></tr>
-                        <tr><td><br></td><td><br></td><td><br></td></tr>
-                    </tbody>
-                </table><p><br></p>`; 
-                node.setAttribute('contenteditable', 'true'); 
-                return node; 
-            } 
-        } 
-        TabelaBlot.blotName = 'tabela-basica'; 
-        TabelaBlot.tagName = 'div'; 
-        TabelaBlot.className = 'tabela-wrapper'; 
-        Quill.register(TabelaBlot);
-        
-        // Formas Livres - Agora com fundo transparente e resize nativo CSS
-        class FormaBlot extends BlockEmbed { 
-            static create(value) { 
-                const node = super.create(); 
-                node.setAttribute('contenteditable', 'false'); 
-                
-                // Base das formas: fundo transparente e borda preta
-                if (value === 'retangulo') node.innerHTML = '<div class="forma-agora" style="width:150px; height:80px; background:transparent; border:2px solid #000;"></div>'; 
-                if (value === 'circulo') node.innerHTML = '<div class="forma-agora" style="width:100px; height:100px; background:transparent; border-radius:50%; border:2px solid #000;"></div>'; 
-                if (value === 'seta') node.innerHTML = '<div class="forma-agora" style="font-size:60px; color:#000; margin-top:-10px; border:none; resize:none;">➔</div>'; 
-                if (value === 'triangulo') node.innerHTML = '<div class="forma-agora" style="width: 0; height: 0; border-left: 50px solid transparent; border-right: 50px solid transparent; border-bottom: 100px solid #000; background:transparent; border-top:none;"></div>'; 
-                if (value === 'estrela') node.innerHTML = '<div class="forma-agora" style="font-size:60px; color:#000; margin-top:-10px; border:none; resize:none;">★</div>'; 
-
-                return node; 
-            } 
-        } 
-        FormaBlot.blotName = 'forma-visual'; 
-        FormaBlot.tagName = 'span'; 
-        Quill.register(FormaBlot);
-
-        window.quill = new Quill('#editor-container', { 
-            theme: 'snow', 
-            placeholder: 'A tela está em branco. Escreva ou use o Gerador Acadêmico...', 
-            modules: { toolbar: false, history: { delay: 1000, maxStack: 500, userOnly: true } } 
-        });
-        document.querySelector('.ql-editor').setAttribute('spellcheck', 'true');
-
-        window.inserirQuebraDePagina = function() { 
-            if(meuCargo === 'leitor') return; 
-            const range = quill.getSelection(true); 
-            if (range) { 
-                quill.insertEmbed(range.index, 'quebra-pagina', true, Quill.sources.USER); 
-                quill.setSelection(range.index + 1, Quill.sources.SILENT); 
-                salvarNaNuvemManual(); 
-            } 
-        }
-        
-        window.inserirTabelaBasica = function() { 
-            if(meuCargo === 'leitor') return; 
-            const range = quill.getSelection(true); 
-            if (range) { 
-                quill.insertEmbed(range.index, 'tabela-basica', true, Quill.sources.USER); 
-                quill.setSelection(range.index + 1, Quill.sources.SILENT); 
-                salvarNaNuvemManual(); 
-            } 
-            document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show')); 
-        }
-        
-        window.inserirFormaVisivel = function(tipoForma) { 
-            if(meuCargo === 'leitor') return; 
-            const range = quill.getSelection(true); 
-            if (range) { 
-                quill.insertEmbed(range.index, 'forma-visual', tipoForma, Quill.sources.USER); 
-                quill.setSelection(range.index + 1, Quill.sources.SILENT); 
-                salvarNaNuvemManual(); 
-            } 
-            document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show')); 
-        }
-        
-        window.aplicarFormato = function(formato, valor = null) { 
-            if(meuCargo === 'leitor') return; 
-            const formatoAtual = quill.getFormat()[formato]; 
-            if(valor === null) { quill.format(formato, !formatoAtual); } 
-            else if (valor === false) { quill.removeFormat(quill.getSelection().index, quill.getSelection().length); } 
-            else { quill.format(formato, formatoAtual === valor ? false : valor); } 
-            document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show')); 
-        }
-        
-        window.inserirLinkVisivel = function() { 
-            let url = prompt("URL:"); 
-            if (url) quill.insertText(quill.getSelection(true).index, url, 'link', url); 
-        }
-        
-        window.inserirVideoVisivel = function() { 
-            let url = prompt("YouTube URL:"); 
-            if (url) { 
-                const r = quill.getSelection(true); 
-                quill.insertEmbed(r.index, 'video', url); 
-                quill.insertText(r.index + 1, '\nFonte: ', 'bold', true); 
-                quill.insertText(r.index + 8, url, 'link', url); 
-            } 
-        }
-
-        // UPLOAD DE IMAGEM NO FIREBASE
-        document.getElementById('btn-upload-imagem').addEventListener('click', () => document.getElementById('input-imagem-firebase').click());
-        document.getElementById('input-imagem-firebase').addEventListener('change', async function(e) { 
-            const file = e.target.files[0]; 
-            if (!file || meuCargo === 'leitor') return; 
-            document.getElementById('btn-upload-imagem').innerHTML = "⏳ Enviando..."; 
-            const storageRef = ref(storage, `projetos/${idProjeto}/imagens/${Date.now()}_${file.name}`); 
-            try { 
-                await uploadBytes(storageRef, file); 
-                const url = await getDownloadURL(storageRef); 
-                quill.insertEmbed(quill.getSelection(true).index, 'image', url); 
-                document.getElementById('btn-upload-imagem').innerHTML = '<span class="material-symbols-outlined">image</span><span>Imagem</span>'; 
-            } catch (error) { 
-                alert("Erro ao enviar a imagem."); 
-            } 
-            this.value = ''; 
-        });
-
-        // ==========================================
-        // 5. NÚCLEO DO SISTEMA E SINCRONIZAÇÃO
-        // ==========================================
-        let meuNome = "Anônimo", meuEmail = "", minhaFoto = "", meuCargo = "leitor";
-        let carregamentoInicial = true, isAtualizandoPelaNuvem = false, timeoutSalvar;
-        let permissoesAtuais = {}, donoProjeto = "";
-
-        onAuthStateChanged(auth, (user) => { 
-            if (user) { 
-                meuEmail = user.email; 
-                meuNome = user.displayName || user.email.split('@')[0]; 
-                minhaFoto = user.photoURL || `https://ui-avatars.com/api/?name=${meuNome}&background=ecf0f1&color=8e44ad`; 
-                iniciarSala(); 
-                carregarChat(); 
-            } 
-        });
-
-        function iniciarSala() {
-            document.getElementById('link-gerado').value = window.location.href;
-            
-            onSnapshot(doc(db, "projetos", idProjeto), (snap) => {
-                if (!snap.exists()) return; 
-                const dados = snap.data(); 
-                document.getElementById('titulo-projeto-topo').innerText = dados.nome;
-                
-                donoProjeto = dados.dono || "";
-                permissoesAtuais = dados.permissoes || {};
-                meuCargo = permissoesAtuais[meuEmail] || "leitor"; 
-                if (meuCargo === "leitor") quill.disable(); else quill.enable();
-                renderizarEquipe();
-                
-                if (carregamentoInicial && dados.conteudo) { 
-                    isAtualizandoPelaNuvem = true; 
-                    quill.clipboard.dangerouslyPasteHTML(dados.conteudo); 
-                    atualizarMiniaturasPaginas(); 
-                    carregamentoInicial = false; 
-                    setTimeout(() => isAtualizandoPelaNuvem = false, 500); 
-                } else if (!carregamentoInicial && dados.conteudo && !quill.hasFocus()) { 
-                    isAtualizandoPelaNuvem = true; 
-                    quill.clipboard.dangerouslyPasteHTML(dados.conteudo); 
-                    atualizarMiniaturasPaginas(); 
-                    setTimeout(() => isAtualizandoPelaNuvem = false, 500); 
-                }
-            });
-            
-            quill.on('text-change', function(delta, oldDelta, source) { 
-                atualizarMiniaturasPaginas();
-
-                // Lógica de Rastrear Alterações (Fica vermelho se estiver ativo)
-                if (rastreando && source === 'user') {
-                    // Impede o loop infinito não rastreando mudanças feitas pela própria formatação
-                }
-
-                if (source == 'user' && !isAtualizandoPelaNuvem && meuCargo !== "leitor") { 
-                    document.getElementById('status-nuvem').innerText = "⏳ A Salvar..."; 
-                    clearTimeout(timeoutSalvar); 
-                    timeoutSalvar = setTimeout(salvarNaNuvemManual, 1000); 
-                } 
-            });
-        }
-
-        window.salvarNaNuvemManual = async function() { 
-            await updateDoc(doc(db, "projetos", idProjeto), { conteudo: quill.root.innerHTML }); 
-            document.getElementById('status-nuvem').innerText = "☁️ Salvo"; 
-        }
-
-        // ==========================================
-        // GERAÇÃO DOS QUADRINHOS DE PÁGINAS (Com BUG de Scroll Corrigido)
-        // ==========================================
-        window.atualizarMiniaturasPaginas = function() {
-            const lista = document.getElementById('lista-miniaturas');
-            const quebras = document.querySelectorAll('.quebra-de-pagina');
-            const totalPaginas = quebras.length + 1; 
-            
-            let html = '';
-            for(let i = 1; i <= totalPaginas; i++) {
-                html += `
-                    <div class="miniatura-pagina" onclick="rolarParaPagina(${i})">
-                        <div class="miniatura-folha">
-                            <span style="font-size: 10px; color: #cbd5e1; font-weight: bold;">Pág ${i}</span>
-                        </div>
-                        <span class="miniatura-numero">${i}</span>
-                    </div>
-                `;
-            }
-            lista.innerHTML = html;
-        }
-
-        window.rolarParaPagina = function(numeroPagina) {
-            // CORREÇÃO MATEMÁTICA DO SCROLL (Sem scrollIntoView travando a tela inteira)
-            const scrollContainer = document.querySelector('.container-editor-scroll');
-            
-            if (numeroPagina === 1) {
-                scrollContainer.scrollTo({ top: 0, behavior: 'smooth' });
-            } else {
-                const quebras = document.querySelectorAll('.quebra-de-pagina');
-                const quebraAlvo = quebras[numeroPagina - 2]; 
-                if (quebraAlvo) {
-                    // Calcula a posição exata da quebra de página subtraindo a altura dela
-                    const topPos = quebraAlvo.offsetTop - 50; 
-                    scrollContainer.scrollTo({ top: topPos, behavior: 'smooth' });
-                }
-            }
-            
-            if(window.innerWidth <= 768) {
-                document.getElementById('gaveta-mapa').classList.add('fechada');
-            }
-        }
-
-        // ==========================================
-        // 6. GESTÃO DE EQUIPE (O Painel de Convites)
-        // ==========================================
-        window.renderizarEquipe = function() {
-            const lista = document.getElementById('lista-membros');
-            lista.innerHTML = '';
-            for (const [email, cargo] of Object.entries(permissoesAtuais)) {
-                const isMe = email === meuEmail;
-                const isAdmin = meuCargo === 'admin' || meuEmail === donoProjeto;
-                let btnRemover = '';
-                if (isAdmin && email !== donoProjeto && !isMe) {
-                    btnRemover = `<button onclick="removerMembro('${email}')" style="background:none; border:none; color:#e74c3c; cursor:pointer;" title="Remover Membro"><span class="material-symbols-outlined" style="font-size:18px;">person_remove</span></button>`;
-                }
-                let badgeCargo = cargo === 'admin' ? '👑 Admin' : (cargo === 'editor' ? '✏️ Editor' : '👁️ Leitor');
-                if (email === donoProjeto) badgeCargo = '🌟 Criador';
-                
-                lista.innerHTML += `
-                    <div class="membro-item">
-                        <div style="display:flex; flex-direction:column;">
-                            <span style="font-weight:bold; font-size:13px; color:#2c3e50;">${email} ${isMe ? '(Você)' : ''}</span>
-                            <span style="font-size:11px; color:#7f8c8d;">${badgeCargo}</span>
-                        </div>
-                        <div style="display:flex; align-items:center;">
-                            ${btnRemover}
-                        </div>
-                    </div>`;
-            }
-        }
-
-        document.getElementById('btn-add-membro').addEventListener('click', async () => {
-            const email = document.getElementById('email-convidado').value.trim().toLowerCase();
-            const cargo = document.getElementById('cargo-convidado').value;
-            if (!email || !email.includes('@')) return alert('Digite um e-mail válido.');
-            if (meuCargo !== 'admin' && meuEmail !== donoProjeto) return alert('Apenas administradores podem convidar membros.');
-            
-            try {
-                document.getElementById('btn-add-membro').innerText = "...";
-                await updateDoc(doc(db, "projetos", idProjeto), { [`permissoes.${email}`]: cargo });
-                document.getElementById('email-convidado').value = '';
-                document.getElementById('btn-add-membro').innerText = "Convidar";
-            } catch (error) { 
-                console.error(error); 
-                alert("Erro ao adicionar membro."); 
-                document.getElementById('btn-add-membro').innerText = "Convidar"; 
-            }
-        });
-
-        window.removerMembro = async function(emailRemover) {
-            if(confirm(`Remover ${emailRemover} do projeto?`)) {
-                const novasPermissoes = { ...permissoesAtuais };
-                delete novasPermissoes[emailRemover];
-                await updateDoc(doc(db, "projetos", idProjeto), { permissoes: novasPermissoes });
-            }
-        }
-
-        window.copiarLinkProjeto = function() {
-            const input = document.getElementById('link-gerado');
-            input.select(); 
-            document.execCommand('copy');
-            alert('Link copiado para a área de transferência!');
-        }
-
-        // ==========================================
-        // 7. GERADOR ACADÊMICO
-        // ==========================================
-        window.fecharTodosModais = function() { 
-            document.querySelectorAll('.fundo-modal').forEach(m => m.style.display = 'none'); 
-            document.querySelectorAll('.painel-opcoes').forEach(p => p.style.display = 'none'); 
-            document.querySelectorAll('.cartao-modelo').forEach(c => c.classList.remove('ativo')); 
-        }
-        
-        window.abrirPainelGenerico = function(elementoCard, idPaisnel) { 
-            document.querySelectorAll('.painel-opcoes').forEach(p => p.style.display = 'none'); 
-            document.querySelectorAll('.cartao-modelo').forEach(c => c.classList.remove('ativo')); 
-            elementoCard.classList.add('ativo'); 
-            document.getElementById(idPaisnel).style.display = 'flex'; 
-        }
-
-        window.aplicarTemplateDireto = async function(tipo) {
-            if(meuCargo === "leitor") return;
-            const t = {
-                'resumo': `<h2 class="ql-align-center">RESUMO</h2><p><br></p><p class="ql-align-justify">O resumo é uma apresentação concisa de todos os pontos relevantes de um documento. De acordo com a ABNT NBR 6028, o resumo de trabalhos acadêmicos deve ter de 150 a 500 palavras. Deve ser escrito em parágrafo único, sem recuo na primeira linha, em voz ativa e na terceira pessoa do singular. O texto deve apresentar, de forma sequencial, o tema tratado, o problema de pesquisa, os objetivos, a metodologia utilizada, os principais resultados alcançados e as conclusões do trabalho. Evite o uso de citações diretas ou siglas não conhecidas.</p><p><br></p><p><strong>Palavras-chave: </strong> Palavra 1. Palavra 2. Palavra 3.</p>`,
-                'resenha': `<h2 class="ql-align-center">RESENHA CRÍTICA</h2><p><br></p><p class="ql-align-center"><strong>REFERÊNCIA DA OBRA</strong></p><p class="ql-align-center" style="font-size: 10pt;">SOBRENOME, Nome do Autor. <strong>Título da Obra em Negrito:</strong> subtítulo sem negrito. Cidade: Editora, Ano. Total de páginas.</p><p><br></p><h2>1. CREDENCIAIS DO AUTOR</h2><p class="ql-align-justify" style="text-indent: 1.25cm;">Apresente brevemente quem é o autor da obra. Qual a sua formação acadêmica? Quais são suas principais influências e em qual contexto histórico ou social ele está inserido? Isso ajuda o leitor a entender o ponto de vista defendido no texto.</p><p><br></p><h2>2. RESUMO DA OBRA</h2><p class="ql-align-justify" style="text-indent: 1.25cm;">Descreva detalhadamente do que trata o livro ou artigo. Quais são as ideias principais? Faça um apanhado geral dos capítulos, explicando os conceitos fundamentais que o autor tentou transmitir, mas sem ainda colocar a sua opinião pessoal.</p><p><br></p><h2>3. ANÁLISE CRÍTICA</h2><p class="ql-align-justify" style="text-indent: 1.25cm;">Este é o núcleo da resenha. Apresente sua avaliação sobre o texto. O autor conseguiu provar sua tese? Os argumentos são válidos, coerentes e bem fundamentados? A linguagem é acessível ou muito técnica? Compare a obra com outras do mesmo tema.</p>`,
-                'relatorio': `<h2 class="ql-align-center">RELATÓRIO TÉCNICO DE ATIVIDADES</h2><p><br></p><h2>1. INTRODUÇÃO</h2><p class="ql-align-justify" style="text-indent: 1.25cm;">Nesta seção, você deve apresentar o contexto que motivou a realização deste relatório. Descreva o ambiente (laboratório, estágio, setor da empresa) e indique o período em que as atividades foram realizadas. Deixe claro qual é o objetivo central do documento.</p><p><br></p><h2>2. DESENVOLVIMENTO (MÉTODOS E MATERIAIS)</h2><p class="ql-align-justify" style="text-indent: 1.25cm;">Descreva de maneira minuciosa as atividades que foram executadas. Responda: O que foi feito? Como foi feito? Quais materiais, ferramentas ou softwares foram utilizados? Se houve alguma dificuldade ou desafio durante a execução técnica, relate aqui e explique como o problema foi solucionado.</p><p><br></p><h2>3. CONCLUSÃO</h2><p class="ql-align-justify" style="text-indent: 1.25cm;">Faça as considerações finais. Os objetivos iniciais foram atingidos? Qual o aprendizado ou retorno técnico adquirido durante o período relatado? Sugira, se houver, passos futuros para a continuação do projeto.</p>`
-            };
-            if(confirm("Substituir o texto por este modelo profissional?")) { 
-                isAtualizandoPelaNuvem = true; 
-                quill.clipboard.dangerouslyPasteHTML(t[tipo]); 
-                await salvarNaNuvemManual(); 
-                fecharTodosModais(); 
-                atualizarMiniaturasPaginas(); 
-                setTimeout(() => isAtualizandoPelaNuvem = false, 500); 
-            }
-        }
-
-        window.gerarDocumentoComplexo = async function(tipo) {
-            if(meuCargo === "leitor") return; 
-            if(!confirm("Isto apagará o texto atual para gerar as múltiplas páginas nas normas. Continuar?")) return;
-            
-            let htmlDoc = ""; 
-            const qp = `<hr class="quebra-de-pagina" contenteditable="false">`;
-            
-            if(tipo === 'tcc') {
-                if(document.getElementById('tcc-capa').checked) { 
-                    htmlDoc += `<h2 class="ql-align-center">NOME DA UNIVERSIDADE / INSTITUIÇÃO<br>NOME DA FACULDADE OU DEPARTAMENTO<br>NOME DO CURSO</h2><p><br></p><p><br></p><p><br></p><h2 class="ql-align-center">NOME COMPLETO DO ALUNO</h2><p><br></p><p><br></p><p><br></p><p><br></p><h1 class="ql-align-center">TÍTULO DO TRABALHO: SUBTÍTULO (SE HOUVER)</h1><p><br></p><p><br></p><p><br></p><p><br></p><p><br></p><p><br></p><p><br></p><p><br></p><h3 class="ql-align-center">CIDADE - UF<br>ANO DE ENTREGA</h3>${qp}`; 
-                    htmlDoc += `<h2 class="ql-align-center">NOME COMPLETO DO ALUNO</h2><p><br></p><p><br></p><p><br></p><p><br></p><h1 class="ql-align-center">TÍTULO DO TRABALHO: SUBTÍTULO (SE HOUVER)</h1><p><br></p><p><br></p><p class="ql-align-right" style="margin-left: 40%; font-size: 10pt; line-height: 1.0;">Trabalho de Conclusão de Curso apresentado ao curso de [Nome do Curso] da [Nome da Instituição], como requisito parcial para a obtenção do título de Bacharel / Licenciado em [Área de Formação].<br><br>Orientador(a): Prof. / Profa. [Titulação e Nome do Orientador].</p><p><br></p><p><br></p><p><br></p><p><br></p><p><br></p><p><br></p><p><br></p><h3 class="ql-align-center">CIDADE - UF<br>ANO DE ENTREGA</h3>${qp}`; 
-                }
-                if(document.getElementById('tcc-resumo').checked) { 
-                    htmlDoc += `<h2 class="ql-align-center">RESUMO</h2><p><br></p><p class="ql-align-justify">O resumo deve conter de 150 a 500 palavras, redigido em parágrafo único e sem recuo. Apresente o problema de pesquisa, os objetivos gerais, a metodologia empregada e as principais conclusions obtidas pela monografia.</p><p><br></p><p><strong>Palavras-chave: </strong> Palavra 1. Palavra 2. Palavra 3. Palavra 4.</p>${qp}`; 
-                }
-                if(document.getElementById('tcc-desenv').checked) { 
-                    htmlDoc += `<h1>1 INTRODUÇÃO</h1><p class="ql-align-justify" style="text-indent: 1.25cm;">A introdução é o cartão de visita do seu TCC. Apresente o tema de forma clara, delimitando o problema de pesquisa (a pergunta que o seu trabalho quer responder). Em seguida, escreva a justificativa: por que esta pesquisa é importante para a sociedade ou para o meio acadêmico? Finalize o capítulo listando o Objetivo Geral e os Objetivos Específicos.</p><p><br></p>${qp}`; 
-                    htmlDoc += `<h1>2 FUNDAMENTAÇÃO TEÓRICA</h1><p class="ql-align-justify" style="text-indent: 1.25cm;">Este é o embasamento do seu trabalho. Quais autores, livros e artigos sustentam a sua pesquisa? Lembre-se das regras de citação. Citações curtas (até 3 linhas) ficam dentro do parágrafo, com aspas. Citações longas exigem um tratamento especial:</p><p class="ql-align-justify" style="margin-left: 4cm; font-size: 10pt; line-height: 1.0;">Recuo de 4cm da margem esquerda, tamanho 10 e espaçamento simples. O objetivo do Desenvolvimento é situar o leitor no contexto pesquisado, relacionando os teóricos com a dúvida que você está investigando (AUTOR, Ano, p. 10).</p><p><br></p>${qp}`; 
-                    htmlDoc += `<h1>3 METODOLOGIA</h1><p class="ql-align-justify" style="text-indent: 1.25cm;">Como você fez a pesquisa? Foi uma pesquisa bibliográfica, estudo de caso, ou pesquisa de campo? Descreva a natureza do estudo (qualitativa ou quantitativa), quem foram os participantes (se houver), e como os dados foram coletados e analisados.</p><p><br></p>${qp}`; 
-                    htmlDoc += `<h1>4 CONCLUSÃO</h1><p class="ql-align-justify" style="text-indent: 1.25cm;">Momento de fechar o trabalho. Responda claramente à pergunta problema formulada na introdução. Verifique se os objetivos propostos foram alcançados. Seja honesto e aponte as limitações da sua pesquisa, sugerindo novos caminhos para estudantes que quiserem continuar o seu estudo no futuro.</p>${qp}`; 
-                    htmlDoc += `<h2 class="ql-align-center">REFERÊNCIAS</h2><p><br></p><p>SOBRENOME, Nome do Autor. <strong>Título do Livro em Negrito</strong>: subtítulo sem negrito. Edição. Cidade: Editora, Ano.</p><p><br></p><p>SOBRENOME, Nome. Título do artigo científico. <strong>Nome da Revista em Negrito</strong>, Cidade, v. X, n. Y, p. inicial-final, Mês. Ano.</p>`; 
-                }
-            } else if(tipo === 'artigo') {
-                htmlDoc += `<h1 class="ql-align-center">TÍTULO DO ARTIGO CIENTÍFICO: SUBTÍTULO SE HOUVER DEVE ESTAR SEPARADO POR DOIS PONTOS E CENTRALIZADO</h1><p class="ql-align-center" style="font-style: italic;">Title of the article in English (optional)</p><p><br></p><p class="ql-align-right" style="font-size: 10pt;">Nomes dos Autores 1<br>Nomes dos Autores 2<br>Nomes dos Autores 3</p><p><br></p><p><br></p><h2 class="ql-align-center">RESUMO</h2><p class="ql-align-justify" style="font-size: 10pt; line-height: 1.0;">Texto, com uma quantidade predeterminada de palavras, onde se expõe o objetivo do artigo, a metodologia utilizada para solucionar o problema e os resultados alcançados. não deve ultrapassar 250 palavras, constituído de uma sequência de frases concisas e objetivas em parágrafo único.</p><p><br></p><p style="font-size: 10pt;"><strong>Palavras-chave: </strong> São palavras características do tema que servem para indexar o artigo, até 5 palavras separadas por ponto final.</p><p><br></p><h2 class="ql-align-center">ABSTRACT</h2><p class="ql-align-justify" style="font-size: 10pt; line-height: 1.0;">Uma tradução ao Inglês do resumo feito acima.</p><p><br></p><p style="font-size: 10pt;"><strong>Keywords: </strong> Tradução das palavras-chave.</p>${qp}`; 
-                htmlDoc += `<h1>1. INTRODUÇÃO</h1><p class="ql-align-justify" style="text-indent: 1.25cm;">Parte inicial do artigo, deve conter a delimitação do assunto e os objetivos da pesquisa. Segundo a NBR 14724, o texto deve ser digitado no anverso da folha, utilizando-se papel formato A4, fonte tamanho 12 e espaçamento 1,5. O objetivo da Introdução é situar o leitor no contexto do tema pesquisado, oferecendo uma visão global do estudo realizado, esclarecendo as delimitações e as justificativas para em seguida apontar as questões de pesquisa. Em suma: apresenta e delimita a dúvida investigada (o quê), os objetivos (para que serviu o estudo) e a metodologia utilizada (como).</p><p><br></p>${qp}`; 
-                if(document.getElementById('art-20pag').checked) { 
-                    htmlDoc += `<h1>2. DESENVOLVIMENTO E FUNDAMENTAÇÃO</h1><p class="ql-align-justify" style="text-indent: 1.25cm;">Parte mais importante do artigo, deve conter a exposição do assunto tratado. Nesta parte, o autor deve fazer uma exposição e uma discussão das teorias que foram utilizadas para entender e esclarecer o problema, apresentando-as e relacionando-as com a dúvida investigada. As citações curtas (até três linhas) diretas são incluídas no texto destacadas entre "aspas", precedidas ou sucedidas da indicação de autoria (CHIAVENATO, 2000, p. 310).</p><p><br></p>${qp}`; 
-                    for(let i=3; i<=15; i++) { 
-                        htmlDoc += `<h2>2.${i-1} Subtítulo de Desenvolvimento</h2><p class="ql-align-justify" style="text-indent: 1.25cm;">Página destinada ao desenvolvimento dos argumentos explicativos ou demonstrativos da pesquisa.</p><p><br></p>${qp}`; 
-                    } 
-                } else { 
-                    htmlDoc += `<h1>2. DESENVOLVIMENTO</h1><p class="ql-align-justify" style="text-indent: 1.25cm;">Parte mais importante do artigo. O corpo do artigo pode ser dividido em itens necessários. É importante expor os argumentos onde o autor demonstra ter conhecimento da literatura básica.</p><p class="ql-align-justify" style="margin-left: 4cm; font-size: 10pt; line-height: 1.0;">As citações longas (mais de três linhas) devem ser transcritas em bloco separado do texto, com recuo esquerdo de 4 cm a partir da margem, justificado, com a mesma fonte do texto, em tamanho 10 e espaçamento simples (SOBRENOME, Ano, p. XX).</p><p><br></p>${qp}`; 
-                } 
-                htmlDoc += `<h1>3. CONSIDERAÇÕES FINAIS</h1><p class="ql-align-justify" style="text-indent: 1.25cm;">Parte em que se apresenta as conclusões correspondentes aos objetivos e hipóteses propostos. Após a análise e discussões dos resultados, são apresentadas as conclusões e as descobertas do texto, evidenciando com clareza as deduções extraídas. A conclusão é um fechamento do trabalho estudado, respondendo às hipóteses enunciadas na Introdução, onde não se permite que nesta seção sejam incluídos dados novos.</p>${qp}`; 
-                htmlDoc += `<h1 class="ql-align-center">REFERÊNCIAS</h1><p>Todo documento utilizado e citado no trabalho deve constar na lista de referências.</p><p><br></p><p>SOBRENOME, Nome. Título do livro: subtítulo (se houver). Número da edição. Local/Cidade: Editora, Ano.</p><p><br></p><p>SOBRENOME DO AUTOR, Nome. Título do texto. In.: Nome da revista ou site em que o texto se encontra. Data da Publicação. Disponível em: &lt;website visitado&gt;. Acesso em: dia, mês abreviado, ano.</p>`;
-            } else if(tipo === 'pesquisa') {
-                htmlDoc += `<h2 class="ql-align-center">PROJETO DE PESQUISA ACADÊMICA</h2><p><br></p><h1>1. TEMA E PROBLEMA DE PESQUISA</h1><p class="ql-align-justify" style="text-indent: 1.25cm;"><strong>Tema:</strong> A grande área de estudo onde seu projeto se encaixa.</p><p class="ql-align-justify" style="text-indent: 1.25cm;"><strong>Problema:</strong> Qual a dúvida exata que seu trabalho quer resolver? Formule na estrutura de uma pergunta clara e objetiva.</p><p><br></p>${qp}`; 
-                htmlDoc += `<h1>2. JUSTIFICATIVA E HIPÓTESE</h1><p class="ql-align-justify" style="text-indent: 1.25cm;">Venda o seu projeto. Explique para a banca examinadora o porquê desta pesquisa precisar ser feita. Que lacuna ela preenche? Apresente também a <strong>Hipótese</strong>: qual a resposta provisória que você acredita que irá confirmar ao fim da pesquisa?</p><p><br></p>${qp}`; 
-                htmlDoc += `<h1>3. OBJETIVOS</h1><p class="ql-align-justify" style="text-indent: 1.25cm;"><strong>Objetivo Geral:</strong> (Use verbos no infinitivo: Analisar, Compreender, Desenvolver...).</p><p class="ql-align-justify" style="text-indent: 1.25cm;"><strong>Objetivos Específicos:</strong><br>- Levantar dados teóricos sobre X;<br>- Aplicar questionário com Y;<br>- Comparar os resultados de X e Y.</p><p><br></p>${qp}`; 
-                htmlDoc += `<h1>4. METODOLOGIA E CRONOGRAMA DE EXECUÇÃO</h1><p class="ql-align-justify" style="text-indent: 1.25cm;">Defina o roteiro. Onde a pesquisa será feita? Haverá coleta de dados de campo? Apresente também as etapas em formato de cronograma (Ex: Mês 1 - Revisão Teórica; Mês 2 - Aplicação de Entrevistas; Mês 3 - Análise de Dados; Mês 4 - Entrega do Texto Final).</p>`;
-            }
-            
-            isAtualizandoPelaNuvem = true; 
-            quill.clipboard.dangerouslyPasteHTML(htmlDoc); 
-            await salvarNaNuvemManual(); 
-            atualizarMiniaturasPaginas(); 
-            fecharTodosModais(); 
-            setTimeout(() => isAtualizandoPelaNuvem = false, 500);
-        }
-        
-        // ==========================================
-        // 8. CHAT DA EQUIPE
-        // ==========================================
-        const inputChat = document.getElementById('input-chat'); 
-        const btnEnviarMsg = document.getElementById('btn-enviar-msg'); 
-        const painelMensagens = document.getElementById('chat-mensagens');
-        
-        function rolarChatParaFim() { 
-            painelMensagens.scrollTop = painelMensagens.scrollHeight; 
-        }
-        
-        async function enviarMensagem() { 
-            const texto = inputChat.value.trim(); 
-            if (!texto || !idProjeto || meuNome === "Anônimo") return; 
-            inputChat.value = ""; 
-            try { 
-                await addDoc(collection(db, "projetos", idProjeto, "mensagens"), { 
-                    texto: texto, 
-                    autor: meuNome, 
-                    email: meuEmail, 
-                    foto: minhaFoto, 
-                    timestamp: new Date().getTime() 
-                }); 
-            } catch (erro) { 
-                console.error("Erro ao enviar mensagem: ", erro); 
-            } 
-        }
-
-        btnEnviarMsg.addEventListener('click', enviarMensagem); 
-        inputChat.addEventListener('keypress', (e) => { 
-            if (e.key === 'Enter') enviarMensagem(); 
-        });
-
-        function carregarChat() { 
-            if (!idProjeto) return; 
-            const q = query(collection(db, "projetos", idProjeto, "mensagens"), orderBy("timestamp", "asc")); 
-            onSnapshot(q, (snapshot) => { 
-                painelMensagens.innerHTML = ""; 
-                snapshot.forEach((docSnap) => { 
-                    const msg = docSnap.data(); 
-                    const ehMinha = msg.email === meuEmail; 
-                    const htmlMsg = `
-                    <div class="mensagem-linha ${ehMinha ? 'minha' : ''}">
-                        <img src="${msg.foto}" class="foto-perfil-chat" alt="Foto">
-                        <div style="display: flex; flex-direction: column; max-width: 80%;">
-                            <span class="nome-user">${msg.autor}</span>
-                            <div class="msg ${ehMinha ? 'msg-minha' : 'msg-outro'}">${msg.texto}</div>
-                        </div>
-                    </div>`; 
-                    painelMensagens.innerHTML += htmlMsg; 
-                }); 
-                rolarChatParaFim(); 
-            }); 
-        }
-
-        // ==========================================
-        // 9. VIDEOCHAMADA (JITSI) E EVENTOS FINAIS
-        // ==========================================
-        let apiJitsi = null;
-        document.getElementById('btn-iniciar-chamada').addEventListener('click', () => { 
-            const containerVideo = document.getElementById('container-video'); 
-            containerVideo.classList.remove('escondido'); 
-            containerVideo.classList.remove('minimizado'); 
-            if (!apiJitsi) { 
-                const domain = 'meet.jit.si'; 
-                const options = { 
-                    roomName: 'ProjetoAgora_' + (idProjeto || 'ReuniaoGeral'), 
-                    width: '100%', 
-                    height: '100%', 
-                    parentNode: document.querySelector('#jitsi-iframe'), 
-                    userInfo: { displayName: meuNome } 
-                }; 
-                apiJitsi = new JitsiMeetExternalAPI(domain, options); 
-            } 
-        });
-
-        document.getElementById('btn-fechar-video').addEventListener('click', () => { 
-            document.getElementById('container-video').classList.add('escondido'); 
-            if (apiJitsi) { 
-                apiJitsi.dispose(); 
-                apiJitsi = null; 
-            } 
-        });
-
-        document.getElementById('btn-minimizar-video').addEventListener('click', () => { 
-            document.getElementById('container-video').classList.toggle('minimizado'); 
-        });
-
-        document.getElementById('btn-abrir-equipe').addEventListener('click', () => { 
-            document.getElementById('modal-equipe').style.display = 'flex'; 
-        });
-
-        const caixaChat = document.getElementById('caixa-do-chat'); 
-        document.getElementById('btn-reabrir-chat').addEventListener('click', () => { 
-            caixaChat.classList.add('aberto'); 
-        }); 
-        document.getElementById('btn-minimizar-chat').addEventListener('click', () => { 
-            caixaChat.classList.remove('aberto'); 
-        });
-        
-        const btnTema = document.getElementById('btn-tema-quadro'); 
-        let isDark = localStorage.getItem('tema-agora') === 'escuro'; 
-        if(isDark) document.body.classList.add('dark-mode');
-        
-        btnTema.addEventListener('click', () => { 
-            isDark = !isDark; 
-            if(isDark) { 
-                document.body.classList.add('dark-mode'); 
-                localStorage.setItem('tema-agora', 'escuro'); 
-            } else { 
-                document.body.classList.remove('dark-mode'); 
-                localStorage.setItem('tema-agora', 'claro'); 
-            } 
-        });
-    </script>
 </body>
 </html>
