@@ -57,7 +57,7 @@ function iniciarSala() {
         donoProjeto = dados.dono || ""; 
         permissoesAtuais = dados.permissoes || {}; 
         
-        // CORREÇÃO: Garante que o dono do projeto seja sempre Admin
+        // Garante que o dono do projeto seja sempre Admin
         if (window.meuEmail === donoProjeto) {
             window.meuCargo = "admin";
         } else {
@@ -80,11 +80,26 @@ function iniciarSala() {
             carregamentoInicial = false; 
             setTimeout(() => window.isAtualizandoPelaNuvem = false, 500); 
         } 
-        else if (!carregamentoInicial && dados.conteudo && window.quill && !window.quill.hasFocus()) { 
-            window.isAtualizandoPelaNuvem = true; 
-            window.quill.clipboard.dangerouslyPasteHTML(dados.conteudo); 
-            if(window.atualizarMiniaturasPaginas) window.atualizarMiniaturasPaginas(); 
-            setTimeout(() => window.isAtualizandoPelaNuvem = false, 500); 
+        // CORREÇÃO DO PULO DA TELA (SCROLL SILENCIOSO) E FILTRO DE ESPELHO
+        else if (!carregamentoInicial && dados.conteudo && window.quill) { 
+            const conteudoAtual = window.quill.root.innerHTML;
+            
+            // Só executa o recarregamento visual se o texto que veio da nuvem for realmente diferente do seu
+            if (dados.conteudo !== conteudoAtual && !window.quill.hasFocus()) {
+                window.isAtualizandoPelaNuvem = true; 
+                
+                // Grava a posição exata da sua barra de rolagem atual
+                const scrollContainer = document.querySelector('.container-editor-scroll');
+                const scrollSalvo = scrollContainer ? scrollContainer.scrollTop : 0;
+                
+                window.quill.clipboard.dangerouslyPasteHTML(dados.conteudo); 
+                if(window.atualizarMiniaturasPaginas) window.atualizarMiniaturasPaginas(); 
+                
+                // Devolve a tela pro exato lugar onde você estava lendo/mexendo
+                if(scrollContainer) scrollContainer.scrollTop = scrollSalvo;
+                
+                setTimeout(() => window.isAtualizandoPelaNuvem = false, 500); 
+            }
         }
     });
     
@@ -101,6 +116,7 @@ function iniciarSala() {
     }
 }
 
+// O processo de enviar os dados agora só altera a nuvem, sem forçar um refresh na sua tela
 window.salvarNaNuvemManual = async function() { 
     if(!window.quill || !idProjeto) return;
     await updateDoc(doc(db, "projetos", idProjeto), { conteudo: window.quill.root.innerHTML }); 

@@ -54,6 +54,9 @@ body {
 .tool-btn-large .material-symbols-outlined { font-size: 28px; margin-bottom: 2px; color: #8e44ad;}
 .tool-select { padding: 4px; border: 1px solid #cbd5e1; border-radius: 4px; background: white; color: #334155; font-size: 12px; outline: none; cursor: pointer; }
 
+/* ========================================== */
+/* DROPDOWNS E MENU DE CONTEXTO               */
+/* ========================================== */
 .dropdown-container { position: relative; display: inline-block; }
 .dropdown-menu { display: none; position: absolute; top: 100%; left: 0; background-color: white; min-width: 180px; box-shadow: 0 8px 16px rgba(0,0,0,0.15); border-radius: 6px; border: 1px solid #e2e8f0; z-index: 200; padding: 5px 0; margin-top: 2px; }
 .dropdown-menu.show { display: block; animation: fadeIn 0.2s ease-in-out; }
@@ -62,7 +65,19 @@ body {
 .dropdown-item .material-symbols-outlined { font-size: 18px; color: #64748b; }
 .dropdown-divider { height: 1px; background-color: #e2e8f0; margin: 5px 0; } 
 .dropdown-title { padding: 5px 15px; font-size: 10px; font-weight: bold; color: #94a3b8; text-transform: uppercase; }
+
+/* CSS dos Menus do Botão Direito */
+.menu-contexto {
+    position: fixed; display: none; background: white;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2); border-radius: 6px;
+    border: 1px solid #cbd5e1; z-index: 9999; padding: 5px 0; min-width: 200px;
+}
+
 @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Animação Giratória do Tradutor VIP */
+.spin-anim { animation: spin 1.5s linear infinite; } 
+@keyframes spin { 100% { transform: rotate(360deg); } }
 
 /* ========================================== */
 /* MODAIS ÁGORA PRO                           */
@@ -101,7 +116,6 @@ body {
 .container-editor-scroll { flex-grow: 1; overflow-y: auto; display: flex; justify-content: center; padding: 40px 20px 40px 40px; transition: 0.3s; scroll-behavior: auto; position: relative;}
 #editor-container { width: 100%; max-width: 850px; border: none !important; margin-bottom: 50px; transition: max-width 0.3s;}
 
-/* === AQUI ESTÁ A CORREÇÃO DO SCROLL (QUEBRANDO A GAIOLA DO QUILL) === */
 .ql-container { font-family: 'Arial', sans-serif; border: none !important; height: auto !important; overflow: visible !important; }
 .ql-editor { background: white; box-shadow: 0 5px 15px rgba(0,0,0,0.05); padding: 3cm 2cm 2cm 3cm; line-height: 1.5; min-height: 29.7cm; height: auto !important; overflow: visible !important; color: #2c3e50; font-size: 12pt; transition: padding 0.3s, min-height 0.3s, background-color 0.3s, border 0.3s;}
 
@@ -109,10 +123,29 @@ body {
 .quebra-de-pagina::after { content: "Página " counter(pagina_editor); position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #94a3b8; color: white; padding: 2px 15px; font-size: 11px; font-weight: bold; border-radius: 12px; letter-spacing: 1px;}
 .ql-editor::before { content: "Página 1"; position: absolute; top: -20px; right: 0; color: #94a3b8; font-size: 11px; font-weight: bold; }
 
+/* TABELAS E FORMAS COM SUB-LINHA (WRAP INTELIGENTE) */
 .tabela-wrapper { width: 100%; overflow-x: auto; margin-bottom: 15px; }
-.tabela-agora { width: 100%; border-collapse: collapse; background-color: white; }
-.tabela-agora td, .tabela-agora th { border: 1px solid #94a3b8; padding: 10px; min-width: 50px; text-align: left; }
-.forma-agora { display: inline-flex; align-items: center; justify-content: center; margin: 10px; vertical-align: middle; box-shadow: 0 4px 6px rgba(0,0,0,0.1); resize: both; overflow: hidden; min-width: 50px; min-height: 50px;}
+.tabela-agora { width: 100%; border-collapse: collapse; background-color: white; table-layout: fixed; }
+.tabela-agora td, .tabela-agora th { 
+    border: 1px solid #94a3b8; 
+    padding: 10px; 
+    min-width: 50px; 
+    text-align: left; 
+    word-break: break-word; 
+    overflow-wrap: break-word; 
+    white-space: pre-wrap; 
+}
+.forma-agora { display: inline-flex; align-items: center; justify-content: center; margin: 10px; vertical-align: middle; box-shadow: 0 4px 6px rgba(0,0,0,0.1); resize: both; overflow: hidden; min-width: 50px; min-height: 50px; background: transparent; }
+
+/* CSS DA PIRÂMIDE (TRIÂNGULO) */
+.piramide-agora {
+    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+    background-color: #8e44ad;
+    display: flex;
+    flex-direction: column;
+    width: 200px;
+    height: 200px;
+}
 
 /* Modos Visuais */
 body.layout-web .container-editor-scroll { background: white; padding: 20px; justify-content: stretch;}
@@ -198,10 +231,12 @@ body.dark-mode .tabela-agora { background-color: #1e1e1e; }
 body.dark-mode .tabela-agora td, body.dark-mode .tabela-agora th { border-color: #444; } 
 body.dark-mode #quadro-assinatura { background-color: #1e1e1e; border-color: #444; } 
 body.dark-mode .painel-estatisticas { background: #2a2a2a; border-color: #444; }
+body.dark-mode .menu-contexto { background-color: #1e1e1e; border-color: #333; }
+body.dark-mode .piramide-agora { border-color: #444; }
 
 @media print {
     html, body { background: white !important; height: auto !important; overflow: visible !important; display: block !important; margin: 0 !important; padding: 0 !important; overscroll-behavior: auto; }
-    .ribbon-container, .gaveta-esquerda, .gaveta-lateral, .container-video, .regua-topo, .regua-esquerda, .fundo-modal { display: none !important; }
+    .ribbon-container, .gaveta-esquerda, .gaveta-lateral, .container-video, .regua-topo, .regua-esquerda, .fundo-modal, .menu-contexto { display: none !important; }
     .workspace, .container-editor-scroll, #editor-container, .ql-container { display: block !important; height: auto !important; overflow: visible !important; position: static !important; padding: 0 !important; margin: 0 !important; box-shadow: none !important; border: none !important; }
     .ql-editor { height: auto !important; overflow: visible !important; padding: 0 !important; box-shadow: none !important; background-image: none !important;}
     .quebra-de-pagina, .quebra-de-pagina::after, .ql-editor::before { display: none !important; } 

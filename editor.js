@@ -53,8 +53,16 @@ btnTema.addEventListener('click', () => {
     } 
 });
 
+// Botão de Miniaturas (Gaveta)
+const btnToggleMapa = document.getElementById('btn-toggle-mapa');
+if (btnToggleMapa) {
+    btnToggleMapa.addEventListener('click', () => {
+        document.getElementById('gaveta-mapa').classList.toggle('fechada');
+    });
+}
+
 // ==========================================
-// 2. CONFIGURAÇÃO QUILL E CUSTOM BLOTS
+// 2. CONFIGURAÇÃO QUILL E FORMAS AVANÇADAS
 // ==========================================
 const Parchment = Quill.import('parchment'); 
 const Font = Quill.import('formats/font'); 
@@ -88,10 +96,15 @@ Quill.register(QuebraDePaginaBlot);
 class TabelaBlot extends BlockEmbed { 
     static create(value) { 
         const node = super.create(); 
-        node.innerHTML = '<table class="tabela-agora"><tbody><tr><td><br></td><td><br></td><td><br></td></tr><tr><td><br></td><td><br></td><td><br></td></tr><tr><td><br></td><td><br></td><td><br></td></tr></tbody></table><p><br></p>'; 
+        if (value === true) {
+            node.innerHTML = '<table class="tabela-agora" style="width: 100%; border-collapse: collapse; table-layout: fixed;"><tbody><tr><td><br></td><td><br></td><td><br></td></tr><tr><td><br></td><td><br></td><td><br></td></tr><tr><td><br></td><td><br></td><td><br></td></tr></tbody></table>'; 
+        } else {
+            node.innerHTML = value;
+        }
         node.setAttribute('contenteditable', 'true'); 
         return node; 
     } 
+    static value(node) { return node.innerHTML; }
 } 
 TabelaBlot.blotName = 'tabela-basica'; 
 TabelaBlot.tagName = 'div'; 
@@ -102,19 +115,42 @@ class FormaBlot extends BlockEmbed {
     static create(value) { 
         const node = super.create(); 
         node.setAttribute('contenteditable', 'false'); 
-        if (value === 'retangulo') node.innerHTML = '<div class="forma-agora" style="width:150px; height:80px; background:transparent; border:2px solid #000;"></div>'; 
-        if (value === 'circulo') node.innerHTML = '<div class="forma-agora" style="width:100px; height:100px; background:transparent; border-radius:50%; border:2px solid #000;"></div>'; 
+        
+        if (typeof value === 'string' && value.includes('<div')) {
+            node.innerHTML = value;
+            return node;
+        }
+        
+        if (value === 'retangulo') node.innerHTML = '<div class="forma-agora" style="width:150px; height:80px; border:2px solid #000;"><div contenteditable="true" style="width:100%; height:100%; padding:5px; word-break:break-word; white-space:pre-wrap; overflow:hidden;"></div></div>'; 
+        if (value === 'circulo') node.innerHTML = '<div class="forma-agora" style="width:100px; height:100px; border-radius:50%; border:2px solid #000; text-align:center;"><div contenteditable="true" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; word-break:break-word; white-space:pre-wrap; overflow:hidden;"></div></div>'; 
         if (value === 'seta') node.innerHTML = '<div class="forma-agora" style="font-size:60px; color:#000; margin-top:-10px; border:none; resize:none;">➔</div>'; 
-        if (value === 'triangulo') node.innerHTML = '<div class="forma-agora" style="width: 0; height: 0; border-left: 50px solid transparent; border-right: 50px solid transparent; border-bottom: 100px solid #000; background:transparent; border-top:none;"></div>'; 
-        if (value === 'estrela') node.innerHTML = '<div class="forma-agora" style="font-size:60px; color:#000; margin-top:-10px; border:none; resize:none;">★</div>'; 
+        
+        if (value === 'piramide') {
+            node.innerHTML = `
+            <div class="forma-agora piramide-agora" style="display:flex; flex-direction:column; align-items:center; width:250px; height:200px; clip-path: polygon(50% 0%, 0% 100%, 100% 100%); background-color: #8e44ad; resize:both; overflow:hidden; padding-top:20px;">
+                <div class="piramide-nivel" contenteditable="true" style="width: 30%; flex:1; display:flex; align-items:flex-end; justify-content:center; padding-bottom:5px; border-bottom:2px solid black; color:white; font-weight:bold; word-break:break-word; white-space:pre-wrap; text-align:center;">Nível 1</div>
+                <div class="piramide-nivel" contenteditable="true" style="width: 60%; flex:1; display:flex; align-items:flex-end; justify-content:center; padding-bottom:5px; border-bottom:2px solid black; color:white; font-weight:bold; word-break:break-word; white-space:pre-wrap; text-align:center;">Nível 2</div>
+                <div class="piramide-nivel" contenteditable="true" style="width: 90%; flex:1; display:flex; align-items:flex-end; justify-content:center; padding-bottom:5px; color:white; font-weight:bold; word-break:break-word; white-space:pre-wrap; text-align:center;">Nível 3</div>
+            </div>`;
+        }
+        
+        if (value === 'grafico-barras') {
+            node.innerHTML = `
+            <div class="forma-agora" style="display:flex; align-items:flex-end; justify-content:space-around; gap:10px; height:150px; width:300px; border-left:3px solid #000; border-bottom:3px solid #000; padding:10px; background:transparent;">
+                <div contenteditable="true" style="background:#3498db; flex:1; height:40%; text-align:center; color:white; font-size:12px; display:flex; align-items:flex-end; justify-content:center; padding-bottom:5px; word-break:break-word; white-space:pre-wrap; overflow:hidden;">40%</div>
+                <div contenteditable="true" style="background:#e74c3c; flex:1; height:70%; text-align:center; color:white; font-size:12px; display:flex; align-items:flex-end; justify-content:center; padding-bottom:5px; word-break:break-word; white-space:pre-wrap; overflow:hidden;">70%</div>
+                <div contenteditable="true" style="background:#2ecc71; flex:1; height:100%; text-align:center; color:white; font-size:12px; display:flex; align-items:flex-end; justify-content:center; padding-bottom:5px; word-break:break-word; white-space:pre-wrap; overflow:hidden;">100%</div>
+            </div>`;
+        }
+
         return node; 
     } 
+    static value(node) { return node.innerHTML; }
 } 
 FormaBlot.blotName = 'forma-visual'; 
 FormaBlot.tagName = 'span'; 
 Quill.register(FormaBlot);
 
-// Inicializa o Editor na variável Global (Sendo seguro, sem imageResize por enquanto)
 window.quill = new Quill('#editor-container', { 
     theme: 'snow', 
     placeholder: 'A tela está em branco...', 
@@ -126,10 +162,22 @@ window.quill = new Quill('#editor-container', {
 document.querySelector('.ql-editor').setAttribute('spellcheck', 'true');
 
 // ==========================================
-// 3. FUNÇÕES DO EDITOR E FERRAMENTAS
+// 3. FERRAMENTAS DO EDITOR E INSERÇÃO
 // ==========================================
 window.aplicarFormato = function(formato, valor = null) { 
     if(window.meuCargo === 'leitor') return; 
+
+    // Lida com Recuo (Indentação) matematicamente
+    if (formato === 'indent') {
+        const formatoAtual = quill.getFormat()[formato] || 0;
+        if (valor === '+1') {
+            quill.format('indent', formatoAtual + 1);
+        } else if (valor === '-1') {
+            quill.format('indent', formatoAtual - 1 < 0 ? 0 : formatoAtual - 1);
+        }
+        return;
+    }
+
     const formatoAtual = quill.getFormat()[formato]; 
     if(valor === null) { quill.format(formato, !formatoAtual); } 
     else if (valor === false) { quill.removeFormat(quill.getSelection().index, quill.getSelection().length); } 
@@ -195,39 +243,163 @@ window.inserirFormaVisivel = function(tipoForma) {
     document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show')); 
 }
 
-// Pintar Forma Selecionada
+// ==========================================
+// 4. MENUS DE CONTEXTO (TABELAS E PIRÂMIDES)
+// ==========================================
+let celulaAtivaTabela = null;
+let nivelAtivoPiramide = null;
+
+const menuContextoTabela = document.getElementById('menu-contexto-tabela');
+const menuContextoPiramide = document.getElementById('menu-contexto-piramide');
+
+document.addEventListener('contextmenu', function(e) {
+    const td = e.target.closest('td');
+    const nivelPiramide = e.target.closest('.piramide-nivel');
+    
+    if (td) {
+        e.preventDefault(); 
+        celulaAtivaTabela = td;
+        menuContextoTabela.style.left = e.clientX + 'px';
+        menuContextoTabela.style.top = e.clientY + 'px';
+        menuContextoTabela.style.display = 'block';
+        if(menuContextoPiramide) menuContextoPiramide.style.display = 'none';
+    } 
+    else if (nivelPiramide) {
+        e.preventDefault(); 
+        nivelAtivoPiramide = nivelPiramide;
+        if(menuContextoPiramide) {
+            menuContextoPiramide.style.left = e.clientX + 'px';
+            menuContextoPiramide.style.top = e.clientY + 'px';
+            menuContextoPiramide.style.display = 'block';
+        }
+        menuContextoTabela.style.display = 'none';
+    } 
+    else {
+        menuContextoTabela.style.display = 'none';
+        if(menuContextoPiramide) menuContextoPiramide.style.display = 'none';
+    }
+});
+
+window.modificarTabela = function(acao) {
+    if(window.meuCargo === 'leitor' || !celulaAtivaTabela) return;
+
+    const trAtiva = celulaAtivaTabela.parentElement;
+    const tbodyAtivo = trAtiva.parentElement;
+    const tabelaAtiva = tbodyAtivo.parentElement;
+    const indexColuna = Array.from(trAtiva.children).indexOf(celulaAtivaTabela);
+
+    if (acao === 'add-linha') {
+        const novaLinha = document.createElement('tr');
+        const numColunas = trAtiva.children.length;
+        for(let i=0; i<numColunas; i++) { novaLinha.innerHTML += '<td><br></td>'; }
+        if (trAtiva.nextSibling) { tbodyAtivo.insertBefore(novaLinha, trAtiva.nextSibling); } 
+        else { tbodyAtivo.appendChild(novaLinha); }
+    } 
+    else if (acao === 'add-coluna') {
+        Array.from(tbodyAtivo.children).forEach(tr => {
+            const novaCelula = document.createElement('td');
+            novaCelula.innerHTML = '<br>';
+            if (tr.children[indexColuna].nextSibling) { tr.insertBefore(novaCelula, tr.children[indexColuna].nextSibling); } 
+            else { tr.appendChild(novaCelula); }
+        });
+    }
+    else if (acao === 'del-linha') {
+        if(tbodyAtivo.children.length > 1) { trAtiva.remove(); } 
+        else { tabelaAtiva.closest('.tabela-wrapper').remove(); }
+    }
+    else if (acao === 'del-coluna') {
+        if(trAtiva.children.length > 1) {
+            Array.from(tbodyAtivo.children).forEach(tr => { tr.children[indexColuna].remove(); });
+        } else { tabelaAtiva.closest('.tabela-wrapper').remove(); }
+    }
+    else if (acao === 'del-tabela') {
+        tabelaAtiva.closest('.tabela-wrapper').remove();
+    }
+
+    menuContextoTabela.style.display = 'none';
+    if(window.salvarNaNuvemManual) window.salvarNaNuvemManual();
+}
+
+window.modificarPiramide = function(acao) {
+    if(window.meuCargo === 'leitor' || !nivelAtivoPiramide) return;
+    
+    const piramide = nivelAtivoPiramide.parentElement;
+    
+    if(acao === 'add') {
+        const novoNivel = document.createElement('div');
+        novoNivel.className = 'piramide-nivel';
+        novoNivel.setAttribute('contenteditable', 'true');
+        novoNivel.innerHTML = 'Novo Nível';
+        piramide.appendChild(novoNivel);
+    } 
+    else if(acao === 'rem') {
+        if(piramide.children.length > 1) {
+            nivelAtivoPiramide.remove();
+        } else {
+            piramide.closest('.forma-agora').remove();
+            if(menuContextoPiramide) menuContextoPiramide.style.display = 'none';
+            if(window.salvarNaNuvemManual) window.salvarNaNuvemManual();
+            return;
+        }
+    }
+    
+    const totalNiveis = piramide.children.length;
+    Array.from(piramide.children).forEach((child, index) => {
+        const larguraIdeal = ((index + 1) / totalNiveis) * 90;
+        child.style.cssText = `width: ${larguraIdeal}%; flex:1; display:flex; align-items:flex-end; justify-content:center; padding-bottom:5px; color:white; font-weight:bold; word-break:break-word; white-space:pre-wrap; text-align:center;`;
+        
+        if(index !== totalNiveis - 1) {
+            child.style.borderBottom = '2px solid black';
+        } else {
+            child.style.borderBottom = 'none';
+        }
+    });
+
+    if(menuContextoPiramide) menuContextoPiramide.style.display = 'none';
+    if(window.salvarNaNuvemManual) window.salvarNaNuvemManual();
+}
+
 let formaSelecionadaAtiva = null;
 document.addEventListener('click', function(e) {
     const clicouNaForma = e.target.closest('.forma-agora');
+
     if(clicouNaForma) { 
         formaSelecionadaAtiva = clicouNaForma; 
         document.querySelectorAll('.forma-agora').forEach(f => f.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)'); 
         formaSelecionadaAtiva.style.boxShadow = '0 0 10px #8e44ad'; 
     } 
-    else if (!e.target.closest('.dropdown-container') && !e.target.closest('.fundo-modal')) { 
+    else if (!e.target.closest('.dropdown-container') && !e.target.closest('.fundo-modal') && !e.target.closest('.menu-contexto')) { 
         if(formaSelecionadaAtiva) { 
             formaSelecionadaAtiva.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)'; 
             formaSelecionadaAtiva = null; 
         } 
     }
+
+    if (!e.target.closest('.menu-contexto')) {
+        menuContextoTabela.style.display = 'none';
+        if(menuContextoPiramide) menuContextoPiramide.style.display = 'none';
+    }
 });
 
 window.pintarForma = function(cor) { 
     if(formaSelecionadaAtiva) { 
-        formaSelecionadaAtiva.style.backgroundColor = cor; 
-        if(cor === 'transparent') { 
-            formaSelecionadaAtiva.style.borderColor = '#000'; 
-        } else { 
-            formaSelecionadaAtiva.style.borderColor = 'rgba(0,0,0,0.5)'; 
-        } 
+        if(formaSelecionadaAtiva.classList.contains('piramide-agora')) {
+            formaSelecionadaAtiva.style.backgroundColor = cor;
+        } else {
+            formaSelecionadaAtiva.style.backgroundColor = cor; 
+            if(cor === 'transparent') { formaSelecionadaAtiva.style.borderColor = '#000'; } 
+            else { formaSelecionadaAtiva.style.borderColor = 'rgba(0,0,0,0.5)'; } 
+        }
         if(window.salvarNaNuvemManual) window.salvarNaNuvemManual(); 
     } else { 
-        alert("Por favor, clique em uma forma geométrica no texto primeiro para selecioná-la."); 
+        alert("Por favor, clique em uma forma geométrica ou pirâmide no texto primeiro para selecioná-la."); 
     } 
     document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show')); 
 }
 
-// Layout e Design
+// ==========================================
+// 5. LAYOUT, REVISÃO E DESIGN
+// ==========================================
 window.mudarCorPagina = function(corHex) { 
     document.querySelector('.ql-editor').style.backgroundColor = corHex; 
     document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show')); 
@@ -267,7 +439,6 @@ window.toggleRegua = function() {
     document.getElementById('regua-v').classList.toggle('reguas-ocultas'); 
 }
 
-// Revisão
 window.toggleOrtografia = function() { 
     const editor = document.querySelector('.ql-editor'); 
     const isSpellcheck = editor.getAttribute('spellcheck') === 'true'; 
@@ -275,11 +446,6 @@ window.toggleOrtografia = function() {
     alert("Corretor Ortográfico " + (!isSpellcheck ? "ATIVADO" : "DESATIVADO")); 
 };
 
-window.traduzirDocumento = function() { 
-    const texto = encodeURIComponent(quill.getText().substring(0, 1500)); 
-    window.open(`https://translate.google.com/?sl=auto&tl=en&text=${texto}&op=translate`, '_blank'); 
-    document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show')); 
-}
 
 let rastreando = false;
 window.toggleRastrear = function() { 
@@ -299,7 +465,7 @@ window.toggleRastrear = function() {
 }
 
 // ==========================================
-// 4. MODAIS ÁGORA PRO
+// 6. MODAIS ÁGORA PRO E TRADUTOR VIP
 // ==========================================
 let savedRange = null;
 
@@ -308,6 +474,77 @@ window.fecharTodosModais = function() {
     document.querySelectorAll('.painel-opcoes').forEach(p => p.style.display = 'none'); 
     document.querySelectorAll('.cartao-modelo').forEach(c => c.classList.remove('ativo')); 
 }
+
+// ---- MÁGICA DO TRADUTOR VIP ----
+let textoTraduzidoCache = "";
+
+window.abrirModalTraducaoVIP = function() {
+    if(window.meuCargo === 'leitor') return;
+    document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show'));
+    
+    savedRange = quill.getSelection(true);
+    if (!savedRange || savedRange.length === 0) {
+        alert("Por favor, selecione um trecho de texto no documento antes de abrir o tradutor!");
+        return;
+    }
+    
+    const textoSelecionado = quill.getText(savedRange.index, savedRange.length);
+    document.getElementById('vip-texto-origem').value = textoSelecionado;
+    document.getElementById('vip-resultado-box').innerHTML = '<em style="color: #94a3b8;">O resultado aparecerá aqui...</em>';
+    document.getElementById('btn-aplicar-vip').style.display = 'none';
+    document.getElementById('btn-executar-vip').innerHTML = 'Traduzir Agora';
+    
+    document.getElementById('modal-traducao-vip').style.display = 'flex';
+}
+
+window.executarTraducaoVIP = async function() {
+    const texto = document.getElementById('vip-texto-origem').value;
+    const origem = document.getElementById('vip-lang-origem').value;
+    const destino = document.getElementById('vip-lang-destino').value;
+    const btn = document.getElementById('btn-executar-vip');
+    const box = document.getElementById('vip-resultado-box');
+
+    if (!texto) return;
+
+    btn.innerHTML = '<span class="material-symbols-outlined spin-anim" style="font-size: 16px;">sync</span> Traduzindo...';
+    box.innerHTML = '<div style="display:flex; align-items:center; gap:5px; color:#8e44ad;"><span class="material-symbols-outlined spin-anim">autorenew</span> Conectando ao Ágora AI...</div>';
+
+    try {
+        const response = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(texto)}&langpair=${origem}|${destino}`);
+        const data = await response.json();
+        
+        if (data.responseData && data.responseData.translatedText) {
+            textoTraduzidoCache = data.responseData.translatedText;
+            box.innerHTML = textoTraduzidoCache;
+            document.getElementById('btn-aplicar-vip').style.display = 'block';
+            btn.innerHTML = 'Traduzir Novamente';
+        } else {
+            box.innerHTML = '<span style="color:#e74c3c;">Erro ao traduzir. Tente novamente mais tarde.</span>';
+            btn.innerHTML = 'Traduzir Agora';
+        }
+    } catch (error) {
+        box.innerHTML = '<span style="color:#e74c3c;">Erro de conexão com a API de tradução.</span>';
+        btn.innerHTML = 'Traduzir Agora';
+    }
+}
+
+window.aplicarTraducaoVIP = function() {
+    if (savedRange && textoTraduzidoCache) {
+        quill.deleteText(savedRange.index, savedRange.length, Quill.sources.USER);
+        quill.insertText(savedRange.index, textoTraduzidoCache, Quill.sources.USER);
+        
+        document.getElementById('modal-traducao-vip').style.display = 'none';
+        if(window.salvarNaNuvemManual) window.salvarNaNuvemManual();
+    }
+}
+
+window.traduzirDocumento = function() { 
+    const texto = encodeURIComponent(quill.getText().substring(0, 1500)); 
+    window.open(`https://translate.google.com/?sl=auto&tl=en&text=${texto}&op=translate`, '_blank'); 
+    document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show')); 
+}
+
+// ---------------------------------
 
 window.abrirModalLink = function() { 
     if(window.meuCargo === 'leitor') return; 
@@ -471,7 +708,7 @@ window.inserirAssinatura = function() {
 }
 
 // ==========================================
-// 5. NAVEGAÇÃO E MINIATURAS (SCROLL)
+// 7. GERAÇÃO DOS QUADRINHOS DE PÁGINAS E SCROLL
 // ==========================================
 window.atualizarMiniaturasPaginas = function() { 
     const lista = document.getElementById('lista-miniaturas'); 
@@ -491,31 +728,25 @@ window.atualizarMiniaturasPaginas = function() {
 
 window.rolarParaPagina = function(numeroPagina) {
     const scrollContainer = document.querySelector('.container-editor-scroll');
-    
     if (numeroPagina === 1) { 
         scrollContainer.scrollTo({ top: 0, behavior: 'auto' }); 
     } else {
         const quebras = document.querySelectorAll('.quebra-de-pagina'); 
         const quebraAlvo = quebras[numeroPagina - 2]; 
-        
         if (quebraAlvo) {
-            // Pega a exata distância da quebra até o topo visível e soma com o scroll já descido
             const containerRect = scrollContainer.getBoundingClientRect();
             const alvoRect = quebraAlvo.getBoundingClientRect();
             const posicaoExata = (alvoRect.top - containerRect.top) + scrollContainer.scrollTop - 50; 
-            
-            // Pulo seco e 100% cravado na linha
             scrollContainer.scrollTo({ top: posicaoExata, behavior: 'auto' });
         }
     }
-    
     if(window.innerWidth <= 768) {
         document.getElementById('gaveta-mapa').classList.add('fechada');
     }
 }
 
 // ==========================================
-// 6. GERADOR ACADÊMICO E MOLDES RÁPIDOS
+// 8. GERADOR ACADÊMICO E MOLDES RÁPIDOS
 // ==========================================
 window.abrirPainelGenerico = function(elementoCard, idPaisnel) { 
     document.querySelectorAll('.painel-opcoes').forEach(p => p.style.display = 'none'); 
