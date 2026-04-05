@@ -8,125 +8,173 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; display: flex; background-color: #f4f7f6; transition: background-color 0.3s, color 0.3s; overflow-x: hidden; }
+        /* ========================================== */
+        /* RESET E FUNDO PERSONALIZADO                */
+        /* ========================================== */
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; display: flex; background-color: #f2eefa; transition: background-color 0.3s, color 0.3s; overflow-x: hidden; position: relative; }
+        body::before { content: ''; position: fixed; top: 50%; left: 55%; transform: translate(-50%, -50%); width: 70vw; height: 70vw; max-width: 800px; max-height: 800px; background-image: url('icone.jpg'); background-size: contain; background-position: center; background-repeat: no-repeat; opacity: 0.05; z-index: -1; pointer-events: none; }
         
-        .menu-lateral { width: 250px; background-color: #1a252f; color: white; height: 100vh; position: fixed; padding-top: 20px; transition: 0.3s; z-index: 2000; left: 0; }
+        .menu-lateral { width: 250px; background-color: #1a252f; color: white; height: 100vh; position: fixed; padding-top: 20px; transition: 0.3s; z-index: 2000; left: 0; overflow-y: auto;}
         .overlay-mobile { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1999; }
         
-        .logo { text-align: center; font-size: 24px; font-weight: 800; margin-bottom: 40px; color: #8e44ad; }
-        .menu-lateral a { display: block; color: #bdc3c7; padding: 15px 25px; text-decoration: none; font-size: 16px; transition: 0.3s; }
-        .menu-lateral a:hover { background-color: #2c3e50; color: white; }
+        .logo { text-align: center; font-size: 24px; font-weight: 800; margin-bottom: 20px; color: #8e44ad; }
         
-        .conteudo { margin-left: 250px; padding: 40px; width: calc(100% - 250px); box-sizing: border-box; transition: 0.3s; }
+        .menu-lateral a { display: block; color: #bdc3c7; padding: 12px 25px; text-decoration: none; font-size: 15px; transition: 0.3s; display: flex; align-items: center; gap: 10px;}
+        .menu-lateral a:hover { background-color: #2c3e50; color: white; }
+        .menu-divisor { height: 1px; background: #2c3e50; margin: 15px 25px; }
+        .menu-label { color: #7f8c8d; font-size: 11px; font-weight: bold; text-transform: uppercase; margin: 10px 25px 5px 25px; letter-spacing: 1px;}
+        
+        .btn-seja-vip-lateral { margin: 15px 25px; background: linear-gradient(135deg, #f1c40f, #f39c12); color: #fff !important; padding: 12px; border-radius: 8px; text-align: center; font-weight: bold; display: flex; justify-content: center; gap: 8px; box-shadow: 0 4px 10px rgba(241, 196, 15, 0.3); transition: 0.3s; cursor: pointer; border: none; width: calc(100% - 50px);}
+        .btn-seja-vip-lateral:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(241, 196, 15, 0.5); }
+        .btn-seja-vip-lateral.escondido { display: none !important; }
+
+        .conteudo { margin-left: 250px; padding: 40px; width: calc(100% - 250px); box-sizing: border-box; transition: 0.3s; position: relative; z-index: 1;}
         
         .cabecalho { display: flex; justify-content: space-between; align-items: center; background-color: white; padding: 15px 30px; border-radius: 12px; margin-bottom: 40px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); transition: 0.3s; }
         .saudacao-area { display: flex; align-items: center; gap: 15px; }
         .cabecalho h1 { margin: 0; font-size: 22px; color: #2c3e50; transition: 0.3s; display: flex; align-items: center; gap: 10px; }
         
-        /* FOTO DE PERFIL NO TOPO */
+        .selo-vip-topo { background: #f1c40f; color: #fff; font-size: 10px; font-weight: bold; padding: 3px 8px; border-radius: 12px; letter-spacing: 1px; display: none; align-items: center; gap: 4px; box-shadow: 0 2px 5px rgba(241,196,15,0.4);}
+        .selo-vip-topo.ativo { display: flex; }
+
         .foto-perfil-topo { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid #8e44ad; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        
-        .titulo-secao { color: #34495e; margin-bottom: 20px; transition: 0.3s; }
-        
+        .titulo-secao { color: #34495e; margin-bottom: 20px; transition: 0.3s; display: flex; align-items: center; gap: 8px;}
         .btn-menu-mobile { display: none; background: none; border: none; color: #2c3e50; cursor: pointer; padding: 0; }
         
         .botao-novo-grupo { background-color: #8e44ad; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
-        .botao-novo-grupo:hover { background-color: #7d3c98; }
+        .botao-novo-grupo:hover { background-color: #7d3c98; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(142,68,173,0.3);}
         
-        .grid-grupos { display: flex; gap: 25px; flex-wrap: wrap; }
+        .grid-grupos { display: flex; gap: 25px; flex-wrap: wrap; margin-bottom: 40px; }
         .card-grupo { background-color: white; width: calc(33.333% - 25px); min-width: 250px; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border-top: 5px solid #8e44ad; position: relative; transition: 0.3s; box-sizing: border-box;}
         .card-grupo h3 { margin: 0 0 10px 0; color: #2c3e50; font-size: 18px; transition: 0.3s; display: flex; align-items: center; gap: 10px; }
         .card-grupo p { color: #7f8c8d; font-size: 14px; margin: 5px 0; transition: 0.3s; }
-        
-        .btn-entrar-sala { display: block; text-align: center; background: #8e44ad; color: white; text-decoration: none; padding: 10px; border-radius: 8px; margin-top: 15px; font-weight: bold; }
-        .btn-excluir { position: absolute; top: 15px; right: 15px; background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer; padding: 5px 8px; font-size: 12px; }
+        .btn-entrar-sala { display: block; text-align: center; background: #8e44ad; color: white; text-decoration: none; padding: 10px; border-radius: 8px; margin-top: 15px; font-weight: bold; transition: 0.2s;}
+        .btn-entrar-sala:hover { background: #7d3c98; }
+        .btn-excluir { position: absolute; top: 15px; right: 15px; background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer; padding: 5px 8px; font-size: 12px; z-index: 10;}
         .btn-excluir:hover { background: #c0392b; }
+        .btn-fav-estrela { position: absolute; top: 12px; left: 15px; background: none; border: none; cursor: pointer; transition: 0.2s; padding: 0; z-index: 10;}
+        .btn-fav-estrela:hover { transform: scale(1.1); }
 
-        /* MODAIS GERAIS */
-        .fundo-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 3000; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; }
+        .fundo-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 3000; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; backdrop-filter: blur(3px);}
         .caixa-modal { background: white; padding: 30px; border-radius: 15px; width: 100%; max-width: 400px; transition: 0.3s; max-height: 90vh; overflow-y: auto; }
         .caixa-modal h2 { margin-top: 0; color: #2c3e50; transition: 0.3s; font-size: 20px; display: flex; align-items: center; gap: 10px; }
-        .caixa-modal input[type="text"] { width: 100%; padding: 12px; margin: 10px 0 20px 0; border: 1px solid #ddd; border-radius: 8px; transition: 0.3s; box-sizing: border-box; font-size: 16px; /* Evita zoom no telemóvel */ }
-        
+        .caixa-modal input[type="text"] { width: 100%; padding: 12px; margin: 10px 0 20px 0; border: 1px solid #ddd; border-radius: 8px; transition: 0.3s; box-sizing: border-box; font-size: 16px; outline: none;}
+        .caixa-modal input[type="text"]:focus { border-color: #8e44ad; }
+
         .botoes-modal { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; flex-wrap: wrap;}
         .btn-cancelar { background: #ecf0f1; color: #2c3e50; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; flex-grow: 1; text-align: center;}
         .btn-salvar { background: #8e44ad; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; flex-grow: 1; text-align: center;}
 
-        /* SELETOR DE PROJETO */
         .grid-tipo-projeto { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 15px; margin-bottom: 5px; }
-        .opcao-tipo { border: 2px solid #ddd; border-radius: 8px; padding: 15px; text-align: center; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; align-items: center; gap: 8px; color: #2c3e50; }
+        .opcao-tipo { border: 2px solid #ddd; border-radius: 8px; padding: 15px; text-align: center; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; align-items: center; gap: 8px; color: #2c3e50; font-weight: 600; position: relative; overflow: hidden;}
         .opcao-tipo:hover { border-color: #8e44ad; background-color: #f5f0fa; }
         .opcao-tipo.ativo { border-color: #8e44ad; background-color: #8e44ad; color: white; }
+        
+        .opcao-tipo.bloqueada { opacity: 0.6; background-color: #f8f9fa; border-color: #eee; cursor: pointer; }
+        .opcao-tipo.bloqueada:hover { opacity: 1; border-color: #f1c40f; background-color: #fdf5e6; color: #f39c12; }
+        .selo-bloqueado { position: absolute; top: -10px; right: -20px; background: #f1c40f; color: white; font-size: 10px; padding: 15px 20px 5px 20px; transform: rotate(45deg); font-weight: bold;}
 
-        /* OPÇÕES DE PERFIL E CONFIGURAÇÃO */
+        /* MODAL VIP DE VENDAS - ATUALIZADO PARA R$ 10 VITALÍCIO */
+        .caixa-modal-vip { background: linear-gradient(135deg, #1e1e1e, #2c1a3b); color: white; padding: 40px 30px; border-radius: 20px; width: 100%; max-width: 450px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); border: 2px solid #8e44ad;}
+        .caixa-modal-vip h2 { color: #f1c40f; justify-content: center; font-size: 28px; margin-bottom: 5px;}
+        .lista-beneficios { text-align: left; margin: 25px 0; background: rgba(0,0,0,0.2); padding: 20px; border-radius: 12px; }
+        .lista-beneficios p { margin: 10px 0; display: flex; align-items: center; gap: 10px; font-size: 14px; color: #ecf0f1; }
+        .lista-beneficios .material-symbols-outlined { color: #2ecc71; font-size: 18px;}
+        
+        .preco-vip { font-size: 38px; font-weight: 800; color: #fff; margin-bottom: 5px; }
+        .preco-sub { font-size: 14px; color: #bdc3c7; font-weight: normal; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 1px;}
+        
+        .btn-comprar-vip { background: #f1c40f; color: #2c3e50; border: none; padding: 15px; border-radius: 12px; font-size: 18px; font-weight: 900; width: 100%; cursor: pointer; transition: 0.3s; box-shadow: 0 5px 15px rgba(241, 196, 15, 0.4);}
+        .btn-comprar-vip:hover { transform: scale(1.05); }
+        .btn-simulador-backend { background: #2ecc71; color: white; border: none; padding: 8px; border-radius: 8px; font-size: 12px; margin-top: 15px; cursor: pointer; opacity: 0.7;}
+
         .area-foto-perfil { display: flex; flex-direction: column; align-items: center; margin-bottom: 20px; }
         .foto-preview { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 3px solid #8e44ad; cursor: pointer; background-color: #ecf0f1; display: flex; justify-content: center; align-items: center; overflow: hidden; position: relative; transition: 0.3s; }
         .foto-preview:hover { opacity: 0.8; }
         .icone-camera { position: absolute; color: white; background: rgba(0,0,0,0.5); width: 100%; height: 30px; bottom: 0; display: flex; justify-content: center; align-items: center; font-size: 14px; }
-        
         .area-tema { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: #f8f9fa; border-radius: 8px; margin-bottom: 10px; border: 1px solid #ddd; transition: 0.3s; }
         .area-tema strong { color: #2c3e50; transition: 0.3s; }
-        
-        /* Toggle Switch para Modo Escuro */
+        .area-suporte { margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee; transition: 0.3s; }
+        .box-suporte { display: flex; align-items: center; gap: 10px; background: #f8f9fa; padding: 10px; border-radius: 8px; border: 1px solid #ddd; transition: 0.3s; }
+        .box-suporte a { color: #2c3e50; font-size: 13px; text-decoration: none; font-weight: bold; word-break: break-all; transition: 0.3s;}
+        .box-suporte a:hover { color: #8e44ad; text-decoration: underline;}
         .switch { position: relative; display: inline-block; width: 50px; height: 26px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
         .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
         input:checked + .slider { background-color: #8e44ad; }
         input:checked + .slider:before { transform: translateX(24px); }
+        .caixa-leitura { font-size: 13px; color: #475569; line-height: 1.6; text-align: justify; background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; max-height: 40vh; overflow-y: auto; margin-top: 15px; }
+        .caixa-leitura strong { color: #2c3e50; }
+
+        /* TUTORIAL DE ONBOARDING */
+        #tutorial-focus { position: fixed; border: 4px solid #8e44ad; border-radius: 12px; box-shadow: 0 0 0 9999px rgba(0,0,0,0.8); z-index: 9000; pointer-events: none; transition: all 0.4s ease; display: none; }
+        #tutorial-tooltip { position: fixed; background: white; padding: 20px; border-radius: 12px; width: 280px; box-shadow: 0 15px 40px rgba(0,0,0,0.3); z-index: 9001; display: none; transition: all 0.4s ease; opacity: 0; border-left: 5px solid #8e44ad; }
+        #tutorial-tooltip h3 { margin: 0 0 10px 0; color: #2c3e50; display: flex; align-items: center; gap: 8px;}
+        #tutorial-tooltip p { margin: 0 0 20px 0; font-size: 13px; color: #7f8c8d; line-height: 1.5; }
+        .tut-actions { display: flex; justify-content: space-between; align-items: center; }
+        .tut-btn-nav { background: #8e44ad; color: white; border: none; padding: 8px 15px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s;}
+        .tut-btn-skip { background: transparent; color: #e74c3c; border: none; font-size: 12px; font-weight: bold; cursor: pointer; }
+        .tut-btn-skip:hover { text-decoration: underline; }
 
         /* MODO NOTURNO */
-        body.dark-mode { background-color: #121212; color: #e0e0e0; }
-        body.dark-mode .cabecalho, body.dark-mode .card-grupo, body.dark-mode .caixa-modal { background-color: #1e1e1e; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
-        body.dark-mode .cabecalho h1, body.dark-mode .titulo-secao, body.dark-mode .card-grupo h3, body.dark-mode .caixa-modal h2 { color: #ffffff; }
-        body.dark-mode .card-grupo p { color: #aaaaaa; }
+        body.dark-mode { background-color: #1a1122 !important; color: #e0e0e0 !important; }
+        body.dark-mode::before { opacity: 0.02; } 
+        body.dark-mode .cabecalho, body.dark-mode .card-grupo, body.dark-mode .caixa-modal { background-color: #1e1e1e !important; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        body.dark-mode .cabecalho h1, body.dark-mode .titulo-secao, body.dark-mode .card-grupo h3, body.dark-mode .caixa-modal h2 { color: #ffffff !important; }
+        body.dark-mode .card-grupo p { color: #aaaaaa !important; }
         body.dark-mode .caixa-modal input[type="text"] { background-color: #2a2a2a; color: white; border-color: #444; }
         body.dark-mode .btn-cancelar { background-color: #333; color: white; }
         body.dark-mode .opcao-tipo { border-color: #444; color: #e0e0e0; }
-        body.dark-mode .opcao-tipo:hover { border-color: #8e44ad; background-color: #2a2a2a; }
-        body.dark-mode .opcao-tipo.ativo { background-color: #8e44ad; color: white; border-color: #8e44ad; }
+        body.dark-mode .opcao-tipo.bloqueada { background-color: #1a1a1a; border-color: #222; }
+        body.dark-mode .opcao-tipo.bloqueada:hover { border-color: #f1c40f; background-color: #332a00; color: #f1c40f; }
+        body.dark-mode .opcao-tipo:hover:not(.bloqueada) { border-color: #8e44ad; background-color: #2a2a2a; }
+        body.dark-mode .opcao-tipo.ativo:not(.bloqueada) { background-color: #8e44ad; color: white; border-color: #8e44ad; }
         body.dark-mode .btn-menu-mobile { color: white; }
         body.dark-mode .area-tema { background: #2a2a2a; border-color: #444; }
         body.dark-mode .area-tema strong { color: white; }
+        body.dark-mode .area-suporte { border-top-color: #444; }
+        body.dark-mode .box-suporte { background: #2a2a2a; border-color: #444; }
+        body.dark-mode .box-suporte a { color: #f8fafc; }
+        body.dark-mode .caixa-leitura { background: #2a2a2a; border-color: #444; color: #cbd5e1; }
+        body.dark-mode .caixa-leitura strong { color: #f8fafc; }
+        body.dark-mode #tutorial-tooltip { background: #1e1e1e; border-color: #8e44ad;}
+        body.dark-mode #tutorial-tooltip h3 { color: white; }
+        body.dark-mode #tutorial-tooltip p { color: #aaa; }
 
-        /* ========================================= */
-        /* 📱 RESPONSIVIDADE VIP PARA O CELULAR      */
-        /* ========================================= */
         @media (max-width: 768px) {
+            body::before { width: 100vw; height: 100vw; }
             .menu-lateral { left: -250px; }
             .menu-lateral.aberto { left: 0; }
             .overlay-mobile.ativo { display: block; }
             .conteudo { margin-left: 0; padding: 15px; width: 100%; }
-            .btn-menu-mobile { display: block; font-size: 28px; } /* Ícone maior para clicar */
-            
-            .cabecalho { 
-                flex-direction: column; 
-                align-items: stretch; 
-                gap: 20px; 
-                padding: 20px 15px; 
-            }
+            .btn-menu-mobile { display: block; font-size: 28px; } 
+            .cabecalho { flex-direction: column; align-items: stretch; gap: 20px; padding: 20px 15px; }
             .saudacao-area { justify-content: space-between; width: 100%; }
-            .cabecalho h1 { font-size: 18px; } /* Ajusta o texto de boas-vindas */
-            
-            .botao-novo-grupo { 
-                width: 100%; 
-                justify-content: center; 
-                padding: 15px; /* Mais alto para o dedão */
-                font-size: 16px;
-            }
-            
+            .cabecalho h1 { font-size: 18px; } 
+            .botao-novo-grupo { width: 100%; justify-content: center; padding: 15px; font-size: 16px; }
             .card-grupo { width: 100%; min-width: unset; padding: 20px; }
-            .grid-tipo-projeto { grid-template-columns: 1fr; } /* Empilha opções de documento/slide */
-            
-            .caixa-modal { width: 95%; padding: 20px; }
-            .botoes-modal { flex-direction: column; gap: 15px; } /* Empilha os botões do modal */
+            .grid-tipo-projeto { grid-template-columns: 1fr; } 
+            .caixa-modal, .caixa-modal-vip { width: 95%; padding: 20px; }
+            .botoes-modal { flex-direction: column; gap: 15px; } 
             .btn-cancelar, .btn-salvar { width: 100%; padding: 15px; }
+            #tutorial-tooltip { width: 80%; left: 10% !important; }
         }
     </style>
 </head>
 <body>
 
     <div id="overlay-menu" class="overlay-mobile"></div>
+
+    <div id="tutorial-focus"></div>
+    <div id="tutorial-tooltip">
+        <h3 id="tut-title">Título</h3>
+        <p id="tut-text">Texto</p>
+        <div class="tut-actions">
+            <button id="tut-skip" class="tut-btn-skip">Pular</button>
+            <button id="tut-next" class="tut-btn-nav">Próximo</button>
+        </div>
+    </div>
 
     <div class="menu-lateral" id="menu-lateral">
         <div class="logo">
@@ -143,25 +191,79 @@
                 <text x="55" y="33" font-family="Segoe UI, sans-serif" font-size="28" font-weight="800" fill="#8e44ad" letter-spacing="1">gora</text>
             </svg>
         </div>
-        <a href="dashboard.html" style="border-left: 4px solid #8e44ad; color: white;">🏠 Início</a>
-        <a href="conversor.html">📄 Conversor PDF</a>
-        <a href="#" id="btn-abrir-config">⚙️ Configurações</a>
-        <a href="#" id="btn-sair" style="margin-top: 50px;">🚪 Sair (Logout)</a>
+        
+        <button id="btn-lateral-vip" class="btn-seja-vip-lateral">
+            <span class="material-symbols-outlined">workspace_premium</span> Seja VIP
+        </button>
+
+        <a href="dashboard.html" style="border-left: 4px solid #8e44ad; color: white;"><span class="material-symbols-outlined" style="font-size:18px;">home</span> Início</a>
+        <a href="conversor.html"><span class="material-symbols-outlined" style="font-size:18px;">picture_as_pdf</span> Conversor PDF</a>
+        <a href="#" id="btn-abrir-config"><span class="material-symbols-outlined" style="font-size:18px;">settings</span> Configurações</a>
+        
+        <div class="menu-divisor"></div>
+        <div class="menu-label">Diretrizes do Ágora</div>
+        <a href="#" onclick="abrirPolitica('privacidade')"><span class="material-symbols-outlined" style="font-size:18px;">lock</span> Privacidade</a>
+        <a href="#" onclick="abrirPolitica('seguranca')"><span class="material-symbols-outlined" style="font-size:18px;">security</span> Segurança</a>
+        <a href="#" onclick="abrirPolitica('bemestar')"><span class="material-symbols-outlined" style="font-size:18px;">handshake</span> Bem-Estar e Conduta</a>
+        
+        <div class="menu-divisor"></div>
+        <a href="#" id="btn-iniciar-tutorial" style="color: #bdc3c7;"><span class="material-symbols-outlined" style="font-size:18px;">help</span> Guia Rápido</a>
+
+        <a href="#" id="btn-sair" style="margin-top: 30px;"><span class="material-symbols-outlined" style="font-size:18px;">logout</span> Sair (Logout)</a>
     </div>
 
     <div class="conteudo">
         <div class="cabecalho">
-            <div class="saudacao-area">
+            <div class="saudacao-area" id="area-perfil-tut">
                 <button id="btn-abrir-menu" class="btn-menu-mobile"><span class="material-symbols-outlined">menu</span></button>
-                <h1 id="texto-boas-vindas">A carregar utilizador...</h1>
+                <div style="display: flex; flex-direction: column;">
+                    <h1 id="texto-boas-vindas">A carregar utilizador...</h1>
+                    <span id="badge-vip-header" class="selo-vip-topo"><span class="material-symbols-outlined" style="font-size: 14px;">workspace_premium</span> MEMBRO VIP</span>
+                </div>
                 <img id="foto-topo" src="https://via.placeholder.com/150/ecf0f1/8e44ad?text=User" class="foto-perfil-topo" alt="Foto">
             </div>
             <button id="btn-abrir-modal" class="botao-novo-grupo">
                 <span class="material-symbols-outlined">add_circle</span> Criar Novo Trabalho
             </button>
         </div>
-        <h2 class="titulo-secao">Os Meus Projetos</h2>
+        
+        <h2 class="titulo-secao" id="titulo-favoritos" style="display: none;">
+            <span class="material-symbols-outlined" style="color: #f1c40f;">star</span> Projetos Fixados
+        </h2>
+        <div class="grid-grupos" id="lista-favoritos" style="display: none;"></div>
+
+        <h2 class="titulo-secao" id="area-projetos-tut">Os Meus Projetos</h2>
         <div class="grid-grupos" id="lista-de-grupos"></div>
+    </div>
+
+    <div class="fundo-modal" id="modal-politicas">
+        <div class="caixa-modal" style="max-width: 600px;">
+            <h2 id="titulo-modal-politica"><span class="material-symbols-outlined">gavel</span> Termos e Políticas</h2>
+            <div class="caixa-leitura" id="conteudo-modal-politica"></div>
+            <button class="btn-fechar-modal" onclick="document.getElementById('modal-politicas').style.display='none'" style="width: 100%; margin-top: 20px; background: #8e44ad; color: white; padding: 12px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer;">Estou ciente e concordo</button>
+        </div>
+    </div>
+
+    <div class="fundo-modal" id="modal-vip-vendas">
+        <div class="caixa-modal-vip">
+            <h2><span class="material-symbols-outlined" style="font-size: 32px; vertical-align: middle;">workspace_premium</span> Ágora VIP</h2>
+            <p style="color: #bdc3c7;">Eleve a sua produtividade e libere o poder total da plataforma.</p>
+            
+            <div class="lista-beneficios">
+                <p><span class="material-symbols-outlined">check_circle</span> Editor de Slides Completo</p>
+                <p><span class="material-symbols-outlined">check_circle</span> Reuniões de Vídeo Ilimitadas</p>
+                <p><span class="material-symbols-outlined">check_circle</span> Compartilhamento VIP de Projetos</p>
+                <p><span class="material-symbols-outlined">check_circle</span> Selo Exclusivo de Membro Pro</p>
+            </div>
+
+            <div class="preco-vip">R$ 10,00</div>
+            <div class="preco-sub">ACESSO VITALÍCIO</div>
+            
+            <button id="btn-assinar-vip" class="btn-comprar-vip">Pagar com PIX ou Cartão</button>
+            <button onclick="document.getElementById('modal-vip-vendas').style.display='none'" style="background:transparent; border:none; color:#7f8c8d; margin-top: 20px; cursor: pointer; text-decoration: underline;">Voltar para o plano grátis</button>
+            
+            <button id="btn-simular-backend" class="btn-simulador-backend">⚙️ Simular pagamento Aprovado (Testes)</button>
+        </div>
     </div>
 
     <div class="fundo-modal" id="modal-criacao">
@@ -170,8 +272,14 @@
             <p style="font-size: 13px; color: #7f8c8d; margin-top: 5px;">Selecione o tipo de trabalho que deseja criar:</p>
             
             <div class="grid-tipo-projeto">
-                <div class="opcao-tipo ativo" data-tipo="documento"><span class="material-symbols-outlined">description</span><span>Documento</span></div>
-                <div class="opcao-tipo" data-tipo="slide"><span class="material-symbols-outlined">slideshow</span><span>Apresentação</span></div>
+                <div class="opcao-tipo ativo" data-tipo="documento">
+                    <span class="material-symbols-outlined">description</span><span>Documento</span>
+                </div>
+                
+                <div class="opcao-tipo" id="opcao-slide-btn" data-tipo="slide">
+                    <div id="selo-lock-slide" class="selo-bloqueado" style="display:none;"><span class="material-symbols-outlined" style="font-size: 12px;">lock</span></div>
+                    <span class="material-symbols-outlined">slideshow</span><span>Apresentação</span>
+                </div>
             </div>
 
             <input type="text" id="nome-novo-grupo" placeholder="Ex: TCC de Engenharia">
@@ -207,6 +315,14 @@
                 </label>
             </div>
 
+            <div class="area-suporte">
+                <p style="font-size: 12px; color: #7f8c8d; margin: 0 0 5px 0; font-weight: bold;">PRECISA DE AJUDA?</p>
+                <div class="box-suporte">
+                    <span class="material-symbols-outlined" style="color: #8e44ad;">support_agent</span>
+                    <a href="mailto:pedroeliasm08@aluno.ufsj.edu.br">pedroeliasm08@aluno.ufsj.edu.br</a>
+                </div>
+            </div>
+
             <div class="botoes-modal">
                 <button id="btn-cancelar-config" class="btn-cancelar">Cancelar</button>
                 <button id="btn-salvar-config" class="btn-salvar">Guardar Tudo</button>
@@ -217,39 +333,118 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, query, where } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, updateDoc, doc, query, where, arrayUnion, arrayRemove, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
         const firebaseConfig = { apiKey: "AIzaSyCrO7jKe3ja8XJWeNTfTpv4wwEWwzzcYzo", authDomain: "agora-ea1be.firebaseapp.com", projectId: "agora-ea1be", storageBucket: "agora-ea1be.firebasestorage.app", messagingSenderId: "801313514193", appId: "1:801313514193:web:99621b133ed4ca80e89bf0" };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
+        
         let meuEmail = "";
+        let isUserVip = false; 
+        
+        // ==========================================================
+        // COMO LIGAR AO SEU NUBANK:
+        // 1. Crie uma conta no Mercado Pago.
+        // 2. Vá em "Cobrar com Link" e crie um de R$ 10,00.
+        // 3. Cole o link gerado aqui embaixo:
+        // ==========================================================
+        const LINK_DE_PAGAMENTO = "https://link.mercadopago.com.br/SEU_LINK_AQUI";
 
-        // MENU MOBILE
+        // ========================================================
+        // O CÉREBRO DO TUTORIAL DE ONBOARDING
+        // ========================================================
+        const tutFocus = document.getElementById('tutorial-focus');
+        const tutTooltip = document.getElementById('tutorial-tooltip');
+        let passoAtual = 0;
+
+        const passosTutorial = [
+            { elemento: '.botao-novo-grupo', titulo: '<span class="material-symbols-outlined">add_circle</span> Criar Projeto', texto: 'Este é o botão mais importante. Clique aqui para iniciar um novo <strong>Documento de Texto</strong> com normas ABNT ou uma <strong>Apresentação de Slides</strong> colaborativa.' },
+            { elemento: '#area-perfil-tut', titulo: '<span class="material-symbols-outlined">account_circle</span> Seu Perfil', texto: 'Aqui fica o seu cartão de visita. Você pode alterar seu Nome e Foto clicando na aba de Configurações no menu lateral.' },
+            { elemento: '#area-projetos-tut', titulo: '<span class="material-symbols-outlined">folder_open</span> Seus Trabalhos', texto: 'Todos os projetos em que você foi convidado ou criou aparecem aqui embaixo. Dica: Clique na <strong>Estrela</strong> de um projeto para fixá-lo no topo!' },
+            { elemento: '.menu-lateral', titulo: '<span class="material-symbols-outlined">menu</span> Menu e Ferramentas', texto: 'Use esta barra para acessar o Conversor PDF, ativar o Modo Escuro e ler as nossas Políticas de Segurança e Conduta da plataforma.' }
+        ];
+
+        function atualizarTutorial() {
+            if (passoAtual >= passosTutorial.length) { encerraTutorial(); return; }
+            const passo = passosTutorial[passoAtual];
+            const alvo = document.querySelector(passo.elemento);
+            if(!alvo) { encerraTutorial(); return; }
+            const rect = alvo.getBoundingClientRect();
+            
+            tutFocus.style.display = 'block';
+            tutFocus.style.top = (rect.top - 8) + 'px';
+            tutFocus.style.left = (rect.left - 8) + 'px';
+            tutFocus.style.width = (rect.width + 16) + 'px';
+            tutFocus.style.height = (rect.height + 16) + 'px';
+
+            document.getElementById('tut-title').innerHTML = passo.titulo;
+            document.getElementById('tut-text').innerHTML = passo.texto;
+            
+            tutTooltip.style.display = 'block';
+            setTimeout(() => { tutTooltip.style.opacity = '1'; }, 50);
+
+            if(window.innerWidth > 768) {
+                tutTooltip.style.top = (rect.bottom + 20) + 'px';
+                tutTooltip.style.left = rect.left + 'px';
+            } else {
+                tutTooltip.style.top = '50%';
+                tutTooltip.style.transform = 'translateY(-50%)';
+            }
+            document.getElementById('tut-next').innerText = passoAtual === passosTutorial.length - 1 ? 'Concluir' : 'Próximo';
+        }
+
+        function iniciaTutorial() {
+            passoAtual = 0;
+            document.getElementById('menu-lateral').classList.remove('aberto');
+            document.getElementById('overlay-menu').classList.remove('ativo');
+            window.scrollTo(0,0);
+            atualizarTutorial();
+        }
+
+        function encerraTutorial() {
+            tutFocus.style.display = 'none';
+            tutTooltip.style.opacity = '0';
+            setTimeout(() => { tutTooltip.style.display = 'none'; }, 400);
+            localStorage.setItem('tutorial_agora_visto', 'sim');
+        }
+
+        document.getElementById('tut-next').addEventListener('click', () => { passoAtual++; atualizarTutorial(); });
+        document.getElementById('tut-skip').addEventListener('click', encerraTutorial);
+        document.getElementById('btn-iniciar-tutorial').addEventListener('click', iniciaTutorial);
+
+        // MENU MOBILE E TEMA
         const btnMenu = document.getElementById('btn-abrir-menu');
         const menuLateral = document.getElementById('menu-lateral');
         const overlay = document.getElementById('overlay-menu');
         btnMenu.addEventListener('click', () => { menuLateral.classList.add('aberto'); overlay.classList.add('ativo'); });
         overlay.addEventListener('click', () => { menuLateral.classList.remove('aberto'); overlay.classList.remove('ativo'); });
 
-        // LÓGICA DO MODO ESCURO
         const toggleTema = document.getElementById('toggle-tema');
-        if(localStorage.getItem('tema-agora') === 'escuro') { 
-            document.body.classList.add('dark-mode'); 
-            toggleTema.checked = true; 
-        }
-        
+        if(localStorage.getItem('tema-agora') === 'escuro') { document.body.classList.add('dark-mode'); toggleTema.checked = true; }
         toggleTema.addEventListener('change', () => {
-            if(toggleTema.checked) {
-                document.body.classList.add('dark-mode');
-                localStorage.setItem('tema-agora', 'escuro');
-            } else {
-                document.body.classList.remove('dark-mode');
-                localStorage.setItem('tema-agora', 'claro');
-            }
+            if(toggleTema.checked) { document.body.classList.add('dark-mode'); localStorage.setItem('tema-agora', 'escuro'); } 
+            else { document.body.classList.remove('dark-mode'); localStorage.setItem('tema-agora', 'claro'); }
         });
 
-        // LÓGICA DA FOTO DE PERFIL
+        // POLÍTICAS
+        const conteudosPoliticas = {
+            privacidade: `<strong>1. Coleta Mínima de Dados:</strong> O Ágora Pro respeita a sua privacidade. Coletamos apenas as informações estritamente necessárias para o funcionamento do sistema.<br><br><strong>2. Proteção de Arquivos:</strong> Seus documentos pertencem a você. O Ágora não vende, não analisa e não compartilha dados com terceiros.<br><br><strong>3. Controle:</strong> Você detém o poder de excluir permanentemente seus dados do banco.`,
+            seguranca: `<strong>1. Criptografia em Trânsito:</strong> Conexões feitas no Ágora Pro utilizam protocolos de segurança modernos do Google Cloud.<br><br><strong>2. Isolamento de Salas:</strong> Apenas usuários com convite explícito podem acessar uma sala.<br><br><strong>3. Senhas:</strong> A segurança da sua conta começa com você.`,
+            bemestar: `O Ágora Pro é um ambiente profissional.<br><br><strong>1. Tolerância Zero:</strong> É proibido o uso das salas para disseminação de discurso de ódio, racismo, assédio ou pirataria.<br><br><strong>2. Respeito Mútuo:</strong> Evite apagar o trabalho de colegas sem permissão.<br><br><strong>3. Sanções:</strong> A violação implicará no banimento imediato e definitivo do infrator.`
+        };
+
+        window.abrirPolitica = function(tipo) {
+            const modal = document.getElementById('modal-politicas');
+            const titulo = document.getElementById('titulo-modal-politica');
+            const conteudo = document.getElementById('conteudo-modal-politica');
+            if(tipo === 'privacidade') { titulo.innerHTML = '<span class="material-symbols-outlined" style="color:#3498db;">lock</span> Políticas de Privacidade'; conteudo.innerHTML = conteudosPoliticas.privacidade; } 
+            else if(tipo === 'seguranca') { titulo.innerHTML = '<span class="material-symbols-outlined" style="color:#2ecc71;">security</span> Políticas de Segurança'; conteudo.innerHTML = conteudosPoliticas.seguranca; } 
+            else if(tipo === 'bemestar') { titulo.innerHTML = '<span class="material-symbols-outlined" style="color:#e67e22;">handshake</span> Bem-Estar e Conduta'; conteudo.innerHTML = conteudosPoliticas.bemestar; }
+            menuLateral.classList.remove('aberto'); overlay.classList.remove('ativo'); modal.style.display = 'flex';
+        }
+
+        // FOTO DE PERFIL
         let fotoBase64ParaSalvar = null;
         document.getElementById('btn-trocar-foto').addEventListener('click', () => { document.getElementById('input-foto').click(); });
         document.getElementById('input-foto').addEventListener('change', function(e) {
@@ -259,14 +454,12 @@
                 reader.onload = function(eventoReader) {
                     const img = new Image();
                     img.onload = function() {
-                        const canvas = document.createElement('canvas');
-                        const ctx = canvas.getContext('2d');
-                        canvas.width = 120; canvas.height = 120;
+                        const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d');
+                        canvas.width = 100; canvas.height = 100;
                         const tamanhoMinimo = Math.min(img.width, img.height);
-                        const startX = (img.width - tamanhoMinimo) / 2;
-                        const startY = (img.height - tamanhoMinimo) / 2;
+                        const startX = (img.width - tamanhoMinimo) / 2; const startY = (img.height - tamanhoMinimo) / 2;
                         ctx.drawImage(img, startX, startY, tamanhoMinimo, tamanhoMinimo, 0, 0, canvas.width, canvas.height);
-                        fotoBase64ParaSalvar = canvas.toDataURL('image/jpeg', 0.8);
+                        fotoBase64ParaSalvar = canvas.toDataURL('image/jpeg', 0.5); 
                         document.getElementById('preview-imagem').src = fotoBase64ParaSalvar;
                     };
                     img.src = eventoReader.target.result;
@@ -275,104 +468,197 @@
             }
         });
 
-        // AUTENTICAÇÃO E DADOS DE PERFIL
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                meuEmail = user.email;
-                const nomeUsuario = user.displayName || user.email.split('@')[0];
-                const fotoUsuario = user.photoURL || `https://ui-avatars.com/api/?name=${nomeUsuario}&background=ecf0f1&color=8e44ad&size=150`;
-                
-                document.getElementById('texto-boas-vindas').innerHTML = `Olá, ${nomeUsuario}! 👋`;
-                document.getElementById('input-nome-perfil').value = nomeUsuario;
-                document.getElementById('foto-topo').src = fotoUsuario;
-                document.getElementById('preview-imagem').src = fotoUsuario;
-                
-                carregarMeusGrupos();
-            } else { window.location.href = "index.html"; }
-        });
-
-        document.getElementById('btn-sair').addEventListener('click', () => { signOut(auth).then(() => { window.location.href = "index.html"; }); });
-        
-        document.getElementById('btn-abrir-config').addEventListener('click', () => { document.getElementById('modal-config').style.display = 'flex'; });
-        document.getElementById('btn-cancelar-config').addEventListener('click', () => { document.getElementById('modal-config').style.display = 'none'; });
-        
         document.getElementById('btn-salvar-config').addEventListener('click', async () => {
             const novoNome = document.getElementById('input-nome-perfil').value.trim();
             if(novoNome === "") return;
             document.getElementById('btn-salvar-config').innerText = "A guardar...";
             try { 
                 let atualizacao = { displayName: novoNome };
-                if (fotoBase64ParaSalvar) atualizacao.photoURL = fotoBase64ParaSalvar;
+                if (fotoBase64ParaSalvar) {
+                    atualizacao.photoURL = fotoBase64ParaSalvar;
+                    await setDoc(doc(db, "perfis_agora", meuEmail), { foto: fotoBase64ParaSalvar, nome: novoNome }, { merge: true });
+                }
                 await updateProfile(auth.currentUser, atualizacao); 
                 location.reload(); 
-            } catch (erro) { 
-                alert("Erro: " + erro.message); 
-                document.getElementById('btn-salvar-config').innerText = "Guardar Tudo";
+            } catch (erro) { alert("Erro ao salvar a imagem."); document.getElementById('btn-salvar-config').innerText = "Guardar Tudo"; }
+        });
+
+        // AUTENTICAÇÃO E CHECAGEM DE VIP
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                meuEmail = user.email;
+                let nomeUsuario = user.displayName || user.email.split('@')[0];
+                let fotoUsuario = user.photoURL || `https://ui-avatars.com/api/?name=${nomeUsuario}&background=ecf0f1&color=8e44ad&size=150`;
+                
+                try { 
+                    const docSnap = await getDoc(doc(db, "perfis_agora", meuEmail)); 
+                    if(docSnap.exists()) {
+                        if(docSnap.data().foto) fotoUsuario = docSnap.data().foto; 
+                        if(docSnap.data().isVip === true) { isUserVip = true; } 
+                    } 
+                } catch(e) {} 
+                
+                // MODO DEUS RETIRADO AQUI: Você não ganha VIP de graça mais. 
+                // Vai poder ver a tela do Cadeado.
+
+                if(isUserVip) {
+                    document.getElementById('badge-vip-header').classList.add('ativo'); 
+                    document.getElementById('btn-lateral-vip').classList.add('escondido'); 
+                    document.getElementById('opcao-slide-btn').classList.remove('bloqueada');
+                    document.getElementById('selo-lock-slide').style.display = 'none';
+                } else {
+                    document.getElementById('opcao-slide-btn').classList.add('bloqueada');
+                    document.getElementById('selo-lock-slide').style.display = 'block';
+                }
+
+                document.getElementById('texto-boas-vindas').innerHTML = `Olá, ${nomeUsuario}! 👋`;
+                document.getElementById('input-nome-perfil').value = nomeUsuario;
+                document.getElementById('foto-topo').src = fotoUsuario;
+                document.getElementById('preview-imagem').src = fotoUsuario;
+                
+                carregarMeusGrupos();
+
+                if(!localStorage.getItem('tutorial_agora_visto')) { setTimeout(iniciaTutorial, 1000); }
+            } else { window.location.href = "index.html"; }
+        });
+
+        document.getElementById('btn-sair').addEventListener('click', () => { signOut(auth).then(() => { window.location.href = "index.html"; }); });
+        document.getElementById('btn-abrir-config').addEventListener('click', () => { document.getElementById('modal-config').style.display = 'flex'; });
+        document.getElementById('btn-cancelar-config').addEventListener('click', () => { document.getElementById('modal-config').style.display = 'none'; });
+
+        // ========================================================
+        // O SISTEMA DE VENDAS E BLOQUEIO DE VIP
+        // ========================================================
+        
+        document.getElementById('btn-lateral-vip').addEventListener('click', () => {
+            document.getElementById('menu-lateral').classList.remove('aberto');
+            document.getElementById('overlay-menu').classList.remove('ativo');
+            document.getElementById('modal-vip-vendas').style.display = 'flex';
+        });
+
+        document.getElementById('btn-assinar-vip').addEventListener('click', () => {
+            if(LINK_DE_PAGAMENTO.includes("SEU_LINK_AQUI")) {
+                alert("O Desenvolvedor ainda precisa colar o Link do Mercado Pago no código-fonte!");
+            } else {
+                window.open(LINK_DE_PAGAMENTO, '_blank');
             }
         });
 
-        // CRIAÇÃO DE PROJETO E CARREGAMENTO DE GRUPOS
+        document.getElementById('btn-simular-backend').addEventListener('click', async () => {
+            const btnComprar = document.getElementById('btn-simular-backend');
+            btnComprar.innerText = "Aguarde...";
+            
+            try {
+                await setDoc(doc(db, "perfis_agora", meuEmail), { isVip: true }, { merge: true });
+                alert("Pagamento Simulado Aprovado! Agora você é VIP.");
+                location.reload(); 
+            } catch(e) {
+                alert("Erro na simulação.");
+                btnComprar.innerText = "⚙️ Simular pagamento Aprovado";
+            }
+        });
+
+        // CRIAÇÃO DE PROJETO
         let tipoProjetoSelecionado = 'documento';
         const cartoesTipo = document.querySelectorAll('.opcao-tipo');
-
+        
         cartoesTipo.forEach(cartao => {
-            cartao.addEventListener('click', () => {
-                cartoesTipo.forEach(c => c.classList.remove('ativo'));
-                cartao.classList.add('ativo');
-                tipoProjetoSelecionado = cartao.getAttribute('data-tipo');
+            cartao.addEventListener('click', () => { 
+                const tipoClicado = cartao.getAttribute('data-tipo');
+                
+                if(tipoClicado === 'slide' && !isUserVip) {
+                    document.getElementById('modal-criacao').style.display = 'none';
+                    document.getElementById('modal-vip-vendas').style.display = 'flex';
+                    return; 
+                }
+
+                cartoesTipo.forEach(c => c.classList.remove('ativo')); 
+                cartao.classList.add('ativo'); 
+                tipoProjetoSelecionado = tipoClicado; 
             });
         });
 
-        document.getElementById('btn-abrir-modal').addEventListener('click', () => { document.getElementById('modal-criacao').style.display = 'flex'; });
-        document.getElementById('btn-cancelar').addEventListener('click', () => { document.getElementById('modal-criacao').style.display = 'none'; });
+        document.getElementById('btn-abrir-modal').addEventListener('click', () => { 
+            cartoesTipo.forEach(c => c.classList.remove('ativo'));
+            document.querySelector('[data-tipo="documento"]').classList.add('ativo');
+            tipoProjetoSelecionado = 'documento';
+            document.getElementById('modal-criacao').style.display = 'flex'; 
+            document.getElementById('nome-novo-grupo').focus(); 
+        });
+        document.getElementById('btn-cancelar').addEventListener('click', () => { document.getElementById('modal-criacao').style.display = 'none'; document.getElementById('nome-novo-grupo').value = '';});
 
         document.getElementById('btn-salvar-grupo').addEventListener('click', async () => {
             const nomeDigitado = document.getElementById('nome-novo-grupo').value;
             if(nomeDigitado.trim() === "") return;
+            const btnSalvar = document.getElementById('btn-salvar-grupo'); btnSalvar.innerText = "Criando...";
             
-            let dadosProjeto = { nome: nomeDigitado, status: "Em andamento", criador: meuEmail, usuarios: [meuEmail], permissoes: { [meuEmail]: "admin" }, tipo: tipoProjetoSelecionado };
-            if (tipoProjetoSelecionado === 'documento') { dadosProjeto.conteudo = ""; } 
-            else { dadosProjeto.slides = [ { id: "s1", dadosGraficos: '{"version":"5.3.0","objects":[],"background":"white"}' } ]; }
+            let dadosProjeto = { nome: nomeDigitado, status: "Em andamento", criador: meuEmail, usuarios: [meuEmail], permissoes: { [meuEmail]: "admin" }, tipo: tipoProjetoSelecionado, favoritos: [] };
+            if (tipoProjetoSelecionado === 'documento') { dadosProjeto.conteudo = ""; } else { dadosProjeto.slides = [ { id: "s1", dadosGraficos: '{"version":"5.3.0","objects":[],"background":"white"}' } ]; }
 
-            await addDoc(collection(db, "projetos"), dadosProjeto);
-            document.getElementById('modal-criacao').style.display = 'none';
-            document.getElementById('nome-novo-grupo').value = '';
+            try {
+                const docRef = await addDoc(collection(db, "projetos"), dadosProjeto);
+                const destino = tipoProjetoSelecionado === 'slide' ? 'slide.html' : 'grupo.html';
+                window.location.href = `${destino}?id=${docRef.id}`;
+            } catch (err) { alert("Erro de conexão. Tente novamente."); btnSalvar.innerText = "Criar Projeto"; }
         });
 
+        // CARREGAMENTO (COM MODO DEUS VISUALIZADOR)
         function carregarMeusGrupos() {
-            const consultaVIP = query(collection(db, "projetos"), where("usuarios", "array-contains", meuEmail));
-            onSnapshot(consultaVIP, (snapshot) => {
-                const area = document.getElementById('lista-de-grupos');
-                area.innerHTML = '';
+            let consultaProjetos;
+            
+            // Você ainda puxa todos os projetos do banco de dados (Mas não é VIP automaticamente)
+            if (meuEmail === "pedroeliasm08@gmail.com") { consultaProjetos = query(collection(db, "projetos")); } 
+            else { consultaProjetos = query(collection(db, "projetos"), where("usuarios", "array-contains", meuEmail)); }
+            
+            onSnapshot(consultaProjetos, (snapshot) => {
+                const areaNormal = document.getElementById('lista-de-grupos'); const areaFavoritos = document.getElementById('lista-favoritos'); const tituloFavoritos = document.getElementById('titulo-favoritos');
+                areaNormal.innerHTML = ''; areaFavoritos.innerHTML = ''; let temFavorito = false;
+
                 snapshot.forEach((documento) => {
                     const projeto = documento.data(); const idDoProjeto = documento.id;
                     const ehSlide = projeto.tipo === 'slide';
                     const iconeTitulo = ehSlide ? '<span class="material-symbols-outlined" style="color:#8e44ad;">slideshow</span>' : '<span class="material-symbols-outlined" style="color:#27ae60;">description</span>';
-                    const linkDestino = ehSlide ? 'slides.html' : 'grupo.html';
-                    const meuCargo = projeto.permissoes[meuEmail] || "membro";
+                    const linkDestino = ehSlide ? 'slide.html' : 'grupo.html';
+                    
+                    const permissoesSeguras = projeto.permissoes || {};
+                    let meuCargo = permissoesSeguras[meuEmail] || "membro";
+                    let nomeDoCargo = meuCargo.toUpperCase();
+
+                    // MANTIDO: O poder de visualizar as salas como Desenvolvedor
+                    if (meuEmail === "pedroeliasm08@gmail.com") { meuCargo = "admin"; nomeDoCargo = "DESENVOLVEDOR GERAL"; }
+
                     let corCargo = meuCargo === "admin" ? "#8e44ad" : (meuCargo === "editor" ? "#27ae60" : "#7f8c8d");
                     let botaoExcluir = meuCargo === "admin" ? `<button class="btn-excluir" onclick="deletarProjeto('${idDoProjeto}')">🗑️ Excluir</button>` : "";
                     
-                    area.innerHTML += `
+                    const listaFavs = projeto.favoritos || []; const isFavorito = listaFavs.includes(meuEmail);
+                    if(isFavorito) temFavorito = true;
+                    const classFav = isFavorito ? "ativo" : ""; const iconFavFilled = isFavorito ? "'FILL' 1" : "'FILL' 0";
+
+                    const cartaoHTML = `
                         <div class="card-grupo">
+                            <button class="btn-fav-estrela ${classFav}" onclick="toggleFavorito('${idDoProjeto}', ${isFavorito})"><span class="material-symbols-outlined" style="font-variation-settings: ${iconFavFilled}; font-size: 26px;">star</span></button>
                             ${botaoExcluir}
-                            <h3>${iconeTitulo} ${projeto.nome}</h3>
-                            <p><strong>O Meu Cargo:</strong> <span style="color: ${corCargo}; font-weight: bold; text-transform: uppercase;">${meuCargo}</span></p>
-                            <p><strong>Total de Membros:</strong> ${projeto.usuarios.length}</p>
+                            <h3 style="margin-top: 25px;">${iconeTitulo} ${projeto.nome}</h3>
+                            <p><strong>O Meu Cargo:</strong> <span style="color: ${corCargo}; font-weight: bold;">${nomeDoCargo}</span></p>
+                            <p><strong>Total de Membros:</strong> ${projeto.usuarios ? projeto.usuarios.length : 1}</p>
                             <a href="${linkDestino}?id=${idDoProjeto}" class="btn-entrar-sala">Entrar na Sala</a>
-                        </div>
-                    `;
+                        </div>`;
+                    
+                    if(isFavorito) { areaFavoritos.innerHTML += cartaoHTML; } else { areaNormal.innerHTML += cartaoHTML; }
                 });
+                
+                if(temFavorito) { tituloFavoritos.style.display = 'flex'; areaFavoritos.style.display = 'flex'; } 
+                else { tituloFavoritos.style.display = 'none'; areaFavoritos.style.display = 'none'; }
             });
         }
-        window.deletarProjeto = async (id) => { if(confirm("Deseja excluir o projeto?")) { await deleteDoc(doc(db, "projetos", id)); } };
+        
+        window.deletarProjeto = async (id) => { if(confirm("Deseja excluir o projeto? Esta ação não pode ser desfeita.")) { await deleteDoc(doc(db, "projetos", id)); } };
+        window.toggleFavorito = async (id, isFavAtualmente) => { const docRef = doc(db, "projetos", id); if(isFavAtualmente) { await updateDoc(docRef, { favoritos: arrayRemove(meuEmail) }); } else { await updateDoc(docRef, { favoritos: arrayUnion(meuEmail) }); } };
     </script>
     <script>
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-            navigator.serviceWorker.register('sw.js')
-                .then(reg => console.log('Cérebro Offline ativado!', reg.scope))
-                .catch(err => console.log('Falha no Service Worker:', err));
+            navigator.serviceWorker.register('sw.js').then(reg => console.log('Cérebro Offline ativado!', reg.scope)).catch(err => console.log('Falha no Service Worker:', err));
         });
     }
 </script>
