@@ -81,6 +81,20 @@
                     </div>
                     <span class="group-label">Exportar / Arquivar</span>
                 </div>
+
+                <div class="ribbon-group">
+                    <div class="group-tools">
+                        <button class="tool-btn tool-btn-large" onclick="baixarDocumento('txt')">
+                            <span class="material-symbols-outlined" style="color:#34495e;">text_snippet</span>
+                            <span>.TXT</span>
+                        </button>
+                        <button class="tool-btn tool-btn-large" onclick="baixarDocumento('html')">
+                            <span class="material-symbols-outlined" style="color:#e67e22;">html</span>
+                            <span>.HTML</span>
+                        </button>
+                    </div>
+                    <span class="group-label">Salvar Local (Backup)</span>
+                </div>
             </div>
 
             <div id="tab-editar" class="tab-pane active">
@@ -152,7 +166,6 @@
                                 <button class="dropdown-item" onclick="aplicarFormato('lineHeight', '2.0')">2.0</button>
                             </div>
                         </div>
-                        
                         <div class="dropdown-container">
                             <button class="tool-btn dropdown-toggle" title="Estilos de Texto">
                                 <div style="display:flex; align-items:center;"><span class="material-symbols-outlined" style="font-size: 16px; color:#3498db;">match_case</span><span>Estilos</span><span class="material-symbols-outlined" style="font-size: 12px;">arrow_drop_down</span></div>
@@ -251,6 +264,14 @@
                     </div>
                     <span class="group-label">Ilustrações Avançadas</span>
                 </div>
+
+                <div class="ribbon-group">
+                    <div class="group-tools">
+                        <button class="tool-btn tool-btn-large" onclick="aplicarFormato('blockquote', true)"><span class="material-symbols-outlined" style="color:#8e44ad;">format_quote</span><span>Citação ABNT</span></button>
+                        <button class="tool-btn tool-btn-large" onclick="inserirLinhaHorizontal()"><span class="material-symbols-outlined" style="color:#7f8c8d;">horizontal_rule</span><span>Separador</span></button>
+                    </div>
+                    <span class="group-label">Estrutura</span>
+                </div>
                 
                 <div class="ribbon-group">
                     <div class="group-tools">
@@ -328,7 +349,7 @@
                         <div class="dropdown-container">
                             <button class="tool-btn tool-btn-large dropdown-toggle"><span class="material-symbols-outlined">margin</span><span>Margens <span class="material-symbols-outlined" style="font-size: 14px;">arrow_drop_down</span></span></button>
                             <div class="dropdown-menu">
-                                <button class="dropdown-item" onclick="mudarMargem('normal')"><span class="material-symbols-outlined">crop_square</span> Normal (ABNT)</button>
+                                <button class="dropdown-item" onclick="mudarMargem('normal')"><span class="material-symbols-outlined">crop_square</span> Normal (3cm/2cm)</button>
                                 <button class="dropdown-item" onclick="mudarMargem('estreita')"><span class="material-symbols-outlined">crop_din</span> Estreita</button>
                                 <button class="dropdown-item" onclick="mudarMargem('larga')"><span class="material-symbols-outlined">crop_landscape</span> Larga</button>
                             </div>
@@ -340,8 +361,25 @@
                                 <button class="dropdown-item" onclick="mudarOrientacao('paisagem')"><span class="material-symbols-outlined">landscape</span> Paisagem (Horizontal)</button>
                             </div>
                         </div>
+                        <div class="dropdown-container">
+                            <button class="tool-btn tool-btn-large dropdown-toggle"><span class="material-symbols-outlined" style="color:#2980b9;">aspect_ratio</span><span>Tamanho <span class="material-symbols-outlined" style="font-size: 14px;">arrow_drop_down</span></span></button>
+                            <div class="dropdown-menu">
+                                <button class="dropdown-item" onclick="mudarTamanhoPapel('a4')"><span class="material-symbols-outlined">description</span> Papel A4</button>
+                                <button class="dropdown-item" onclick="mudarTamanhoPapel('carta')"><span class="material-symbols-outlined">note</span> Papel Carta</button>
+                            </div>
+                        </div>
                     </div>
                     <span class="group-label">Configurar Página</span>
+                </div>
+
+                <div class="ribbon-group">
+                    <div class="group-tools">
+                        <button class="tool-btn tool-btn-large" onclick="aplicarPadraoABNT()">
+                            <span class="material-symbols-outlined" style="color:#8e44ad;">school</span>
+                            <span>Padrão ABNT</span>
+                        </button>
+                    </div>
+                    <span class="group-label">Formatação Acadêmica</span>
                 </div>
             </div>
 
@@ -378,6 +416,12 @@
                 </div>
                 <div class="ribbon-group">
                     <div class="group-tools">
+                        <button class="tool-btn tool-btn-large" onclick="lerEmVozAlta()"><span class="material-symbols-outlined" style="color:#3498db;">record_voice_over</span><span>Ler Texto</span></button>
+                    </div>
+                    <span class="group-label">Voz</span>
+                </div>
+                <div class="ribbon-group">
+                    <div class="group-tools">
                         <button class="tool-btn tool-btn-large" id="btn-rastrear" onclick="toggleRastrear()"><span class="material-symbols-outlined" style="color:#e74c3c;">track_changes</span><span>Rastrear</span></button>
                     </div>
                     <span class="group-label">Alterações</span>
@@ -398,6 +442,19 @@
                         <button class="tool-btn tool-btn-large" id="btn-toggle-mapa"><span class="material-symbols-outlined" style="color:#8e44ad;">grid_view</span><span>Miniaturas</span></button>
                     </div>
                     <span class="group-label">Mostrar</span>
+                </div>
+                <div class="ribbon-group">
+                    <div class="group-tools">
+                        <div class="dropdown-container">
+                            <button class="tool-btn tool-btn-large dropdown-toggle"><span class="material-symbols-outlined" style="color:#2ecc71;">zoom_in</span><span>Zoom <span class="material-symbols-outlined" style="font-size: 14px;">arrow_drop_down</span></span></button>
+                            <div class="dropdown-menu" style="min-width: 100px;">
+                                <button class="dropdown-item" onclick="mudarZoom(1)">100% (Normal)</button>
+                                <button class="dropdown-item" onclick="mudarZoom(1.25)">125%</button>
+                                <button class="dropdown-item" onclick="mudarZoom(1.5)">150%</button>
+                            </div>
+                        </div>
+                    </div>
+                    <span class="group-label">Tamanho Visual</span>
                 </div>
                 <div class="ribbon-group">
                     <div class="group-tools">

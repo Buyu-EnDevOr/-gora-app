@@ -66,16 +66,8 @@ body {
 .dropdown-divider { height: 1px; background-color: #e2e8f0; margin: 5px 0; } 
 .dropdown-title { padding: 5px 15px; font-size: 10px; font-weight: bold; color: #94a3b8; text-transform: uppercase; }
 
-/* CSS dos Menus do Botão Direito */
-.menu-contexto {
-    position: fixed; display: none; background: white;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2); border-radius: 6px;
-    border: 1px solid #cbd5e1; z-index: 9999; padding: 5px 0; min-width: 200px;
-}
-
+.menu-contexto { position: fixed; display: none; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.2); border-radius: 6px; border: 1px solid #cbd5e1; z-index: 9999; padding: 5px 0; min-width: 200px; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
-
-/* Animação Giratória do Tradutor VIP */
 .spin-anim { animation: spin 1.5s linear infinite; } 
 @keyframes spin { 100% { transform: rotate(360deg); } }
 
@@ -114,10 +106,25 @@ body {
 .reguas-ocultas { display: none !important; }
 
 .container-editor-scroll { flex-grow: 1; overflow-y: auto; display: flex; justify-content: center; padding: 40px 20px 40px 40px; transition: 0.3s; scroll-behavior: auto; position: relative;}
+
+/* Controle do Papel A4 / Carta */
 #editor-container { width: 100%; max-width: 850px; border: none !important; margin-bottom: 50px; transition: max-width 0.3s;}
+#editor-container.papel-carta { max-width: 816px; }
 
 .ql-container { font-family: 'Arial', sans-serif; border: none !important; height: auto !important; overflow: visible !important; }
 .ql-editor { background: white; box-shadow: 0 5px 15px rgba(0,0,0,0.05); padding: 3cm 2cm 2cm 3cm; line-height: 1.5; min-height: 29.7cm; height: auto !important; overflow: visible !important; color: #2c3e50; font-size: 12pt; transition: padding 0.3s, min-height 0.3s, background-color 0.3s, border 0.3s;}
+#editor-container.papel-carta .ql-editor { min-height: 27.9cm; }
+
+/* Citação Acadêmica */
+.ql-editor blockquote {
+    margin-left: 4cm;
+    font-size: 10pt;
+    line-height: 1.0;
+    border-left: 3px solid #8e44ad;
+    padding-left: 10px;
+    color: #475569;
+    text-align: justify;
+}
 
 .quebra-de-pagina { display: block; height: 30px; background-color: #e2e8f0; border: none; margin: 2cm -3cm 3cm -3cm; position: relative; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05), inset 0 -2px 4px rgba(0,0,0,0.05); counter-increment: pagina_editor; }
 .quebra-de-pagina::after { content: "Página " counter(pagina_editor); position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #94a3b8; color: white; padding: 2px 15px; font-size: 11px; font-weight: bold; border-radius: 12px; letter-spacing: 1px;}
@@ -126,26 +133,9 @@ body {
 /* TABELAS E FORMAS COM SUB-LINHA (WRAP INTELIGENTE) */
 .tabela-wrapper { width: 100%; overflow-x: auto; margin-bottom: 15px; }
 .tabela-agora { width: 100%; border-collapse: collapse; background-color: white; table-layout: fixed; }
-.tabela-agora td, .tabela-agora th { 
-    border: 1px solid #94a3b8; 
-    padding: 10px; 
-    min-width: 50px; 
-    text-align: left; 
-    word-break: break-word; 
-    overflow-wrap: break-word; 
-    white-space: pre-wrap; 
-}
+.tabela-agora td, .tabela-agora th { border: 1px solid #94a3b8; padding: 10px; min-width: 50px; text-align: left; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap; }
 .forma-agora { display: inline-flex; align-items: center; justify-content: center; margin: 10px; vertical-align: middle; box-shadow: 0 4px 6px rgba(0,0,0,0.1); resize: both; overflow: hidden; min-width: 50px; min-height: 50px; background: transparent; }
-
-/* CSS DA PIRÂMIDE (TRIÂNGULO) */
-.piramide-agora {
-    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
-    background-color: #8e44ad;
-    display: flex;
-    flex-direction: column;
-    width: 200px;
-    height: 200px;
-}
+.piramide-agora { clip-path: polygon(50% 0%, 0% 100%, 100% 100%); background-color: #8e44ad; display: flex; flex-direction: column; width: 200px; height: 200px; }
 
 /* Modos Visuais */
 body.layout-web .container-editor-scroll { background: white; padding: 20px; justify-content: stretch;}

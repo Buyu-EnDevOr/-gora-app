@@ -53,7 +53,6 @@ btnTema.addEventListener('click', () => {
     } 
 });
 
-// Botão de Miniaturas (Gaveta)
 const btnToggleMapa = document.getElementById('btn-toggle-mapa');
 if (btnToggleMapa) {
     btnToggleMapa.addEventListener('click', () => {
@@ -167,7 +166,6 @@ document.querySelector('.ql-editor').setAttribute('spellcheck', 'true');
 window.aplicarFormato = function(formato, valor = null) { 
     if(window.meuCargo === 'leitor') return; 
 
-    // Lida com Recuo (Indentação) matematicamente
     if (formato === 'indent') {
         const formatoAtual = quill.getFormat()[formato] || 0;
         if (valor === '+1') {
@@ -192,6 +190,16 @@ window.inserirTexto = function(texto) {
     quill.setSelection(range.index + texto.length, Quill.sources.SILENT); 
     document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show')); 
 };
+
+window.inserirLinhaHorizontal = function() {
+    if(window.meuCargo === 'leitor') return; 
+    const range = quill.getSelection(true);
+    quill.insertText(range.index, '\n', Quill.sources.USER);
+    quill.insertText(range.index + 1, '────────────────────────────────────────────────────────', 'bold', true);
+    quill.insertText(range.index + 58, '\n', Quill.sources.USER);
+    quill.setSelection(range.index + 59, Quill.sources.SILENT);
+    if(window.salvarNaNuvemManual) window.salvarNaNuvemManual();
+}
 
 window.limparFormatacao = function() { 
     if(window.meuCargo === 'leitor') return; 
@@ -241,6 +249,18 @@ window.inserirFormaVisivel = function(tipoForma) {
         if(window.salvarNaNuvemManual) window.salvarNaNuvemManual(); 
     } 
     document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show')); 
+}
+
+window.baixarDocumento = function(tipo) {
+    const texto = tipo === 'txt' ? quill.getText() : quill.root.innerHTML;
+    const mime = tipo === 'txt' ? 'text/plain' : 'text/html';
+    const blob = new Blob([texto], { type: mime });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `AgoraPro_Documento.${tipo}`;
+    a.click();
+    URL.revokeObjectURL(url);
 }
 
 // ==========================================
@@ -429,10 +449,35 @@ window.mudarOrientacao = function(tipo) {
     document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show')); 
 };
 
+window.mudarTamanhoPapel = function(tamanho) {
+    const container = document.getElementById('editor-container'); 
+    if(tamanho === 'carta') container.classList.add('papel-carta');
+    else container.classList.remove('papel-carta');
+    document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show')); 
+}
+
+window.aplicarPadraoABNT = function() {
+    if(window.meuCargo === 'leitor') return; 
+    const editor = document.querySelector('.ql-editor'); 
+    
+    editor.style.padding = '3cm 2cm 2cm 3cm';
+    quill.format('font', '');
+    quill.format('size', '16px'); 
+    quill.format('lineHeight', '1.5');
+    quill.format('align', 'justify');
+    
+    alert("Padrão ABNT (Margem 3x2x3x2, Espaçamento 1.5, Arial 12) aplicado ao texto selecionado/atual.");
+}
+
 window.mudarLayout = function(tipo) { 
     if(tipo === 'web') document.body.classList.add('layout-web'); 
     else document.body.classList.remove('layout-web'); 
 };
+
+window.mudarZoom = function(nivel) {
+    document.querySelector('.container-editor-scroll').style.zoom = nivel;
+    document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show')); 
+}
 
 window.toggleRegua = function() { 
     document.getElementById('regua-h').classList.toggle('reguas-ocultas'); 
@@ -446,6 +491,20 @@ window.toggleOrtografia = function() {
     alert("Corretor Ortográfico " + (!isSpellcheck ? "ATIVADO" : "DESATIVADO")); 
 };
 
+window.lerEmVozAlta = function() {
+    const texto = quill.getText().trim();
+    if(!texto) return alert("Não há texto para ler.");
+    
+    if(window.speechSynthesis.speaking) {
+        window.speechSynthesis.cancel();
+        return;
+    }
+    
+    const leitura = new SpeechSynthesisUtterance(texto);
+    leitura.lang = 'pt-BR';
+    leitura.rate = 1.0;
+    window.speechSynthesis.speak(leitura);
+}
 
 let rastreando = false;
 window.toggleRastrear = function() { 
@@ -475,7 +534,6 @@ window.fecharTodosModais = function() {
     document.querySelectorAll('.cartao-modelo').forEach(c => c.classList.remove('ativo')); 
 }
 
-// ---- MÁGICA DO TRADUTOR VIP ----
 let textoTraduzidoCache = "";
 
 window.abrirModalTraducaoVIP = function() {
@@ -543,8 +601,6 @@ window.traduzirDocumento = function() {
     window.open(`https://translate.google.com/?sl=auto&tl=en&text=${texto}&op=translate`, '_blank'); 
     document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show')); 
 }
-
-// ---------------------------------
 
 window.abrirModalLink = function() { 
     if(window.meuCargo === 'leitor') return; 
@@ -665,7 +721,6 @@ window.executarMalaDireta = function() {
     if(window.salvarNaNuvemManual) window.salvarNaNuvemManual(); 
 }
 
-// Assinatura
 const canvas = document.getElementById('quadro-assinatura'); 
 const ctx = canvas.getContext('2d'); 
 let desenhando = false;
