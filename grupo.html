@@ -10,7 +10,29 @@
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto&family=Open+Sans&family=Lato&family=Montserrat&family=Oswald&family=Source+Sans+Pro&family=Raleway&family=PT+Sans&family=Merriweather&family=Nunito&family=Playfair+Display&family=Lora&family=Rubik&family=Work+Sans&family=Fira+Sans&family=Quicksand&family=Barlow&family=Inconsolata&family=Ubuntu&family=Poppins&family=Dancing+Script&display=swap" rel="stylesheet">
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+
     <link rel="stylesheet" href="style.css">
+
+    <script>
+        // ==========================================
+        // A CHAVE MESTRA VIP E WHATSAPP
+        // ==========================================
+        window.isUserVip = false; 
+
+        window.executarAcaoVIP = function(acao) {
+            if (window.isUserVip) {
+                if (acao === 'modelos') document.getElementById('modal-modelos').style.display = 'flex';
+                else if (acao === 'tradutor') document.getElementById('modal-traducao-vip').style.display = 'flex';
+                else if (acao === 'importar-pdf') document.getElementById('input-importar-pdf').click();
+                else if (acao === 'leitura') alert("Inicializando Motor Neural de Leitura Ágora AI..."); 
+                else alert("Esta função extra está em desenvolvimento.");
+            } else {
+                document.getElementById('modal-alerta-vip').style.display = 'flex';
+            }
+        };
+    </script>
 </head>
 <body>
 
@@ -55,7 +77,7 @@
             <div id="tab-arquivo" class="tab-pane">
                 <div class="ribbon-group">
                     <div class="group-tools">
-                        <button class="tool-btn tool-btn-large" onclick="alertaVIP()">
+                        <button class="tool-btn tool-btn-large" onclick="executarAcaoVIP('modelos')">
                             <span class="material-symbols-outlined" style="color: #f1c40f;">auto_awesome</span>
                             <span>Novo por Molde (VIP)</span>
                         </button>
@@ -71,11 +93,11 @@
                                 <span>PDF <span class="material-symbols-outlined" style="font-size: 14px; margin-left: 2px;">arrow_drop_down</span></span>
                             </button>
                             <div class="dropdown-menu">
-                                <button class="dropdown-item" onclick="window.print()"><span class="material-symbols-outlined" style="color:#e74c3c;">file_download</span> Exportar para PDF</button>
-                                <button class="dropdown-item" onclick="alertaVIP()"><span class="material-symbols-outlined" style="color:#f1c40f;">file_upload</span> Importar de PDF (VIP)</button>
+                                <button class="dropdown-item" onclick="exportarPDF()"><span class="material-symbols-outlined" style="color:#e74c3c;">file_download</span> Exportar para PDF</button>
+                                <button class="dropdown-item" onclick="executarAcaoVIP('importar-pdf')"><span class="material-symbols-outlined" style="color:#f1c40f;">file_upload</span> Importar de PDF (VIP)</button>
+                                <input type="file" id="input-importar-pdf" accept="application/pdf" style="display:none;" onchange="processarPDF(event)">
                                 <div class="dropdown-divider"></div>
                                 <button class="dropdown-item" onclick="abrirModalAssinatura()"><span class="material-symbols-outlined" style="color:#2c3e50;">draw</span> Assinar como PDF</button>
-                                <button class="dropdown-item" onclick="alertaVIP()"><span class="material-symbols-outlined" style="color:#f1c40f;">share</span> Compartilhar como PDF (VIP)</button>
                             </div>
                         </div>
                     </div>
@@ -210,16 +232,6 @@
                     </div>
                     <span class="group-label">Cores</span>
                 </div>
-
-                <div class="ribbon-group">
-                    <div class="group-tools">
-                        <button class="tool-btn" onclick="aplicarFormato('strike')" title="Tachado"><span class="material-symbols-outlined" style="text-decoration: line-through;">strikethrough_s</span></button>
-                        <button class="tool-btn" onclick="aplicarFormato('script', 'super')" title="Sobrescrito"><span class="material-symbols-outlined">superscript</span></button>
-                        <button class="tool-btn" onclick="aplicarFormato('script', 'sub')" title="Subscrito"><span class="material-symbols-outlined">subscript</span></button>
-                    </div>
-                    <span class="group-label">Efeitos</span>
-                </div>
-
             </div>
 
             <div id="tab-inserir" class="tab-pane">
@@ -245,52 +257,8 @@
                         <button class="tool-btn tool-btn-large" id="btn-upload-imagem"><span class="material-symbols-outlined">image</span><span>Imagem</span></button>
                         <input type="file" id="input-imagem-firebase" accept="image/*" style="display: none;">
                         <button class="tool-btn tool-btn-large" onclick="abrirModalVideo()"><span class="material-symbols-outlined">smart_display</span><span>Vídeo Online</span></button>
-                        
-                        <div class="dropdown-container">
-                            <button class="tool-btn dropdown-toggle" style="margin-top: 5px;">
-                                <div style="display:flex; align-items:center;"><span class="material-symbols-outlined" style="font-size: 16px; color:#e67e22;">category</span><span>Formas e Gráficos</span><span class="material-symbols-outlined" style="font-size: 12px;">arrow_drop_down</span></div>
-                            </button>
-                            <div class="dropdown-menu">
-                                <div class="dropdown-title">Avançados (Redimensionáveis)</div>
-                                <button class="dropdown-item" onclick="inserirFormaVisivel('piramide')"><span class="material-symbols-outlined">change_history</span> Pirâmide Hierárquica</button>
-                                <button class="dropdown-item" onclick="inserirFormaVisivel('grafico-barras')"><span class="material-symbols-outlined">bar_chart</span> Gráfico de Barras</button>
-                                <div class="dropdown-divider"></div>
-                                <div class="dropdown-title">Formas Básicas</div>
-                                <button class="dropdown-item" onclick="inserirFormaVisivel('retangulo')"><span class="material-symbols-outlined">rectangle</span> Retângulo Vazado</button>
-                                <button class="dropdown-item" onclick="inserirFormaVisivel('circulo')"><span class="material-symbols-outlined">circle</span> Círculo Vazado</button>
-                                <button class="dropdown-item" onclick="inserirFormaVisivel('seta')"><span class="material-symbols-outlined">trending_flat</span> Seta</button>
-                            </div>
-                        </div>
                     </div>
-                    <span class="group-label">Ilustrações Avançadas</span>
-                </div>
-
-                <div class="ribbon-group">
-                    <div class="group-tools">
-                        <button class="tool-btn tool-btn-large" onclick="aplicarFormato('blockquote', true)"><span class="material-symbols-outlined" style="color:#8e44ad;">format_quote</span><span>Citação ABNT</span></button>
-                        <button class="tool-btn tool-btn-large" onclick="inserirLinhaHorizontal()"><span class="material-symbols-outlined" style="color:#7f8c8d;">horizontal_rule</span><span>Separador</span></button>
-                    </div>
-                    <span class="group-label">Estrutura</span>
-                </div>
-                
-                <div class="ribbon-group">
-                    <div class="group-tools">
-                        <button class="tool-btn" onclick="abrirModalLink()"><span class="material-symbols-outlined" style="color:#3498db;">link</span> Link</button>
-                        <button class="tool-btn" onclick="alertaVIP()"><span class="material-symbols-outlined" style="color:#f1c40f;">bookmark</span> Indicador (VIP)</button>
-                    </div>
-                    <div class="group-tools">
-                        <div class="dropdown-container">
-                            <button class="tool-btn dropdown-toggle"><div style="display:flex; align-items:center;"><span class="material-symbols-outlined" style="font-size: 16px;">emoji_symbols</span><span>Símbolo</span><span class="material-symbols-outlined" style="font-size: 12px;">arrow_drop_down</span></div></button>
-                            <div class="dropdown-menu" style="min-width: 120px;">
-                                <button class="dropdown-item" onclick="inserirTexto('©')">© Copyright</button>
-                                <button class="dropdown-item" onclick="inserirTexto('®')">® Registrado</button>
-                                <button class="dropdown-item" onclick="inserirTexto('™')">™ Trademark</button>
-                                <button class="dropdown-item" onclick="inserirTexto('€')">€ Euro</button>
-                                <button class="dropdown-item" onclick="inserirTexto('£')">£ Libra</button>
-                            </div>
-                        </div>
-                    </div>
-                    <span class="group-label">Extras</span>
+                    <span class="group-label">Mídia</span>
                 </div>
             </div>
 
@@ -298,80 +266,12 @@
                 <div class="ribbon-group">
                     <div class="group-tools">
                         <button class="tool-btn tool-btn-large" onclick="abrirModalMarcaDagua()"><span class="material-symbols-outlined" style="color:#1abc9c;">branding_watermark</span><span>Marca D'água</span></button>
-                        <div class="dropdown-container">
-                            <button class="tool-btn tool-btn-large dropdown-toggle"><span class="material-symbols-outlined" style="color:#f1c40f;">format_color_fill</span><span>Cor da Página <span class="material-symbols-outlined" style="font-size: 14px;">arrow_drop_down</span></span></button>
-                            <div class="dropdown-menu" style="padding: 10px; width: 150px;">
-                                <div class="dropdown-title">Cores Padrão</div>
-                                <div style="display: flex; gap: 5px; flex-wrap: wrap;">
-                                    <div style="width: 25px; height: 25px; background: white; border: 1px solid #ccc; cursor: pointer;" onclick="mudarCorPagina('white')"></div>
-                                    <div style="width: 25px; height: 25px; background: #fdf5e6; border: 1px solid #ccc; cursor: pointer;" onclick="mudarCorPagina('#fdf5e6')" title="Papiro"></div>
-                                    <div style="width: 25px; height: 25px; background: #e8f4f8; border: 1px solid #ccc; cursor: pointer;" onclick="mudarCorPagina('#e8f4f8')" title="Azul Gelo"></div>
-                                    <div style="width: 25px; height: 25px; background: #fcf3cf; border: 1px solid #ccc; cursor: pointer;" onclick="mudarCorPagina('#fcf3cf')" title="Amarelo Suave"></div>
-                                    <div style="width: 25px; height: 25px; background: #ebdef0; border: 1px solid #ccc; cursor: pointer;" onclick="mudarCorPagina('#ebdef0')" title="Roxo Claro"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="dropdown-container">
-                            <button class="tool-btn tool-btn-large dropdown-toggle"><span class="material-symbols-outlined" style="color:#e67e22;">border_outer</span><span>Bordas <span class="material-symbols-outlined" style="font-size: 14px;">arrow_drop_down</span></span></button>
-                            <div class="dropdown-menu">
-                                <button class="dropdown-item" onclick="mudarBorda('nenhuma')"><span class="material-symbols-outlined">border_clear</span> Sem Borda</button>
-                                <button class="dropdown-item" onclick="mudarBorda('simples')"><span class="material-symbols-outlined">check_box_outline_blank</span> Borda Simples</button>
-                                <button class="dropdown-item" onclick="mudarBorda('dupla')"><span class="material-symbols-outlined">filter_none</span> Borda Dupla</button>
-                                <button class="dropdown-item" onclick="mudarBorda('tracejada')"><span class="material-symbols-outlined">border_style</span> Borda Tracejada</button>
-                            </div>
-                        </div>
                     </div>
                     <span class="group-label">Fundo da Página</span>
-                </div>
-                <div class="ribbon-group">
-                    <div class="group-tools">
-                        <div class="dropdown-container">
-                            <button class="tool-btn tool-btn-large dropdown-toggle"><span class="material-symbols-outlined" style="color:#e84393;">format_paint</span><span>Pintar Forma <span class="material-symbols-outlined" style="font-size: 14px;">arrow_drop_down</span></span></button>
-                            <div class="dropdown-menu" style="padding: 10px; width: 150px;">
-                                <div class="dropdown-title">Clique na forma e escolha:</div>
-                                <div style="display: flex; gap: 5px; flex-wrap: wrap;">
-                                    <div style="width: 25px; height: 25px; background: transparent; border: 1px solid #ccc; cursor: pointer;" onclick="pintarForma('transparent')" title="Vazado"></div>
-                                    <div style="width: 25px; height: 25px; background: #3498db; border: 1px solid #ccc; cursor: pointer;" onclick="pintarForma('#3498db')"></div>
-                                    <div style="width: 25px; height: 25px; background: #e74c3c; border: 1px solid #ccc; cursor: pointer;" onclick="pintarForma('#e74c3c')"></div>
-                                    <div style="width: 25px; height: 25px; background: #2ecc71; border: 1px solid #ccc; cursor: pointer;" onclick="pintarForma('#2ecc71')"></div>
-                                    <div style="width: 25px; height: 25px; background: #f1c40f; border: 1px solid #ccc; cursor: pointer;" onclick="pintarForma('#f1c40f')"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <span class="group-label">Formas</span>
                 </div>
             </div>
 
             <div id="tab-layout" class="tab-pane">
-                <div class="ribbon-group">
-                    <div class="group-tools">
-                        <div class="dropdown-container">
-                            <button class="tool-btn tool-btn-large dropdown-toggle"><span class="material-symbols-outlined">margin</span><span>Margens <span class="material-symbols-outlined" style="font-size: 14px;">arrow_drop_down</span></span></button>
-                            <div class="dropdown-menu">
-                                <button class="dropdown-item" onclick="mudarMargem('normal')"><span class="material-symbols-outlined">crop_square</span> Normal (3cm/2cm)</button>
-                                <button class="dropdown-item" onclick="mudarMargem('estreita')"><span class="material-symbols-outlined">crop_din</span> Estreita</button>
-                                <button class="dropdown-item" onclick="mudarMargem('larga')"><span class="material-symbols-outlined">crop_landscape</span> Larga</button>
-                            </div>
-                        </div>
-                        <div class="dropdown-container">
-                            <button class="tool-btn tool-btn-large dropdown-toggle"><span class="material-symbols-outlined">screen_rotation</span><span>Orientação <span class="material-symbols-outlined" style="font-size: 14px;">arrow_drop_down</span></span></button>
-                            <div class="dropdown-menu">
-                                <button class="dropdown-item" onclick="mudarOrientacao('retrato')"><span class="material-symbols-outlined">portrait</span> Retrato (Vertical)</button>
-                                <button class="dropdown-item" onclick="mudarOrientacao('paisagem')"><span class="material-symbols-outlined">landscape</span> Paisagem (Horizontal)</button>
-                            </div>
-                        </div>
-                        <div class="dropdown-container">
-                            <button class="tool-btn tool-btn-large dropdown-toggle"><span class="material-symbols-outlined" style="color:#2980b9;">aspect_ratio</span><span>Tamanho <span class="material-symbols-outlined" style="font-size: 14px;">arrow_drop_down</span></span></button>
-                            <div class="dropdown-menu">
-                                <button class="dropdown-item" onclick="mudarTamanhoPapel('a4')"><span class="material-symbols-outlined">description</span> Papel A4</button>
-                                <button class="dropdown-item" onclick="mudarTamanhoPapel('carta')"><span class="material-symbols-outlined">note</span> Papel Carta</button>
-                            </div>
-                        </div>
-                    </div>
-                    <span class="group-label">Configurar Página</span>
-                </div>
-
                 <div class="ribbon-group">
                     <div class="group-tools">
                         <button class="tool-btn tool-btn-large" onclick="aplicarPadraoABNT()">
@@ -386,8 +286,6 @@
             <div id="tab-correio" class="tab-pane">
                 <div class="ribbon-group">
                     <div class="group-tools">
-                        <button class="tool-btn tool-btn-large" onclick="aplicarTemplateDireto('envelope')"><span class="material-symbols-outlined" style="color:#f39c12;">mail</span><span>Envelopes</span></button>
-                        <button class="tool-btn tool-btn-large" onclick="aplicarTemplateDireto('etiqueta')"><span class="material-symbols-outlined" style="color:#27ae60;">sell</span><span>Etiquetas</span></button>
                         <button class="tool-btn tool-btn-large" onclick="abrirModalMalaDireta()"><span class="material-symbols-outlined" style="color:#8e44ad;">group</span><span>Mala Direta</span></button>
                     </div>
                     <span class="group-label">Criar Documentos em Massa</span>
@@ -408,7 +306,7 @@
                             <button class="tool-btn tool-btn-large dropdown-toggle"><span class="material-symbols-outlined" style="color:#2980b9;">translate</span><span>Traduzir <span class="material-symbols-outlined" style="font-size: 14px;">arrow_drop_down</span></span></button>
                             <div class="dropdown-menu">
                                 <button class="dropdown-item" onclick="traduzirDocumento()"><span class="material-symbols-outlined">g_translate</span> Traduzir via Google</button>
-                                <button class="dropdown-item" onclick="alertaVIP()"><span class="material-symbols-outlined" style="color:#f1c40f;">auto_awesome</span> Tradução Ágora AI (VIP)</button>
+                                <button class="dropdown-item" onclick="executarAcaoVIP('tradutor')"><span class="material-symbols-outlined" style="color:#f1c40f;">auto_awesome</span> Tradução Ágora AI (VIP)</button>
                             </div>
                         </div>
                     </div>
@@ -416,15 +314,9 @@
                 </div>
                 <div class="ribbon-group">
                     <div class="group-tools">
-                        <button class="tool-btn tool-btn-large" onclick="alertaVIP()"><span class="material-symbols-outlined" style="color:#f1c40f;">record_voice_over</span><span>Ler Texto (VIP)</span></button>
+                        <button class="tool-btn tool-btn-large" onclick="executarAcaoVIP('leitura')"><span class="material-symbols-outlined" style="color:#f1c40f;">record_voice_over</span><span>Ler Texto (VIP)</span></button>
                     </div>
                     <span class="group-label">Voz</span>
-                </div>
-                <div class="ribbon-group">
-                    <div class="group-tools">
-                        <button class="tool-btn tool-btn-large" id="btn-rastrear" onclick="toggleRastrear()"><span class="material-symbols-outlined" style="color:#e74c3c;">track_changes</span><span>Rastrear</span></button>
-                    </div>
-                    <span class="group-label">Alterações</span>
                 </div>
             </div>
             
@@ -435,32 +327,6 @@
                         <button class="tool-btn tool-btn-large" onclick="mudarLayout('impressao')"><span class="material-symbols-outlined" style="color:#34495e;">print</span><span>Impressão</span></button>
                     </div>
                     <span class="group-label">Modos de Exibição</span>
-                </div>
-                <div class="ribbon-group">
-                    <div class="group-tools">
-                        <button class="tool-btn tool-btn-large" onclick="toggleRegua()"><span class="material-symbols-outlined" style="color:#f39c12;">straighten</span><span>Mostrar Régua</span></button>
-                        <button class="tool-btn tool-btn-large" id="btn-toggle-mapa"><span class="material-symbols-outlined" style="color:#8e44ad;">grid_view</span><span>Miniaturas</span></button>
-                    </div>
-                    <span class="group-label">Mostrar</span>
-                </div>
-                <div class="ribbon-group">
-                    <div class="group-tools">
-                        <div class="dropdown-container">
-                            <button class="tool-btn tool-btn-large dropdown-toggle"><span class="material-symbols-outlined" style="color:#2ecc71;">zoom_in</span><span>Zoom <span class="material-symbols-outlined" style="font-size: 14px;">arrow_drop_down</span></span></button>
-                            <div class="dropdown-menu" style="min-width: 100px;">
-                                <button class="dropdown-item" onclick="mudarZoom(1)">100% (Normal)</button>
-                                <button class="dropdown-item" onclick="mudarZoom(1.25)">125%</button>
-                                <button class="dropdown-item" onclick="mudarZoom(1.5)">150%</button>
-                            </div>
-                        </div>
-                    </div>
-                    <span class="group-label">Tamanho Visual</span>
-                </div>
-                <div class="ribbon-group">
-                    <div class="group-tools">
-                        <button class="tool-btn tool-btn-large" id="btn-tema-quadro"><span class="material-symbols-outlined">dark_mode</span><span>Modo Escuro</span></button>
-                    </div>
-                    <span class="group-label">Aparência</span>
                 </div>
             </div>
         </div>
@@ -501,92 +367,122 @@
         </div>
     </div>
 
-    <div id="menu-contexto-tabela" class="menu-contexto">
-        <button class="dropdown-item" onclick="modificarTabela('add-linha')"><span class="material-symbols-outlined">table_rows</span> Inserir Linha Abaixo</button>
-        <button class="dropdown-item" onclick="modificarTabela('add-coluna')"><span class="material-symbols-outlined">view_column</span> Inserir Coluna ao Lado</button>
-        <button class="dropdown-item" onclick="modificarTabela('del-linha')"><span class="material-symbols-outlined">delete_sweep</span> Excluir Linha Atual</button>
-        <button class="dropdown-item" onclick="modificarTabela('del-coluna')"><span class="material-symbols-outlined">backspace</span> Excluir Coluna Atual</button>
-        <div class="dropdown-divider"></div>
-        <button class="dropdown-item" style="color: #e74c3c;" onclick="modificarTabela('del-tabela')"><span class="material-symbols-outlined" style="color: #e74c3c;">delete</span> Excluir Tabela Inteira</button>
-    </div>
-
-    <div id="menu-contexto-piramide" class="menu-contexto">
-        <button class="dropdown-item" onclick="modificarPiramide('add')"><span class="material-symbols-outlined">add</span> Adicionar Nível na Base</button>
-        <button class="dropdown-item" onclick="modificarPiramide('rem')"><span class="material-symbols-outlined">remove</span> Remover Nível Atual</button>
-    </div>
-
-    <div id="container-video" class="container-video escondido"><div class="cabecalho-video" id="cabecalho-drag"><span>Reunião Ágora</span><div style="display:flex;"><button id="btn-minimizar-video" class="tool-btn" style="color:white;"><span class="material-symbols-outlined">remove</span></button><button id="btn-fechar-video" class="tool-btn" style="color:white;"><span class="material-symbols-outlined">close</span></button></div></div><div id="jitsi-iframe" style="flex:1;"></div></div>
-    
-    <div class="fundo-modal" id="modal-traducao-vip">
-        <div class="caixa-modal" style="max-width: 600px;">
-            <h2 style="margin-top: 0; display: flex; align-items: center; gap: 8px; color: #8e44ad;">
-                <span class="material-symbols-outlined" style="color: #f1c40f;">auto_awesome</span> Ágora AI Translator (VIP)
-            </h2>
-            <p style="font-size: 13px; color: #7f8c8d;">Tradução neural avançada. Selecione o texto no documento antes de abrir o tradutor.</p>
+    <div class="fundo-modal" id="modal-alerta-vip">
+        <div class="caixa-modal" style="max-width: 450px; text-align: center; border-top: 5px solid #f1c40f;">
+            <span class="material-symbols-outlined" style="font-size: 50px; color: #f1c40f;">workspace_premium</span>
+            <h2 style="margin-top: 10px; color: #2c3e50;">Ágora VIP Vitalício</h2>
+            <p style="font-size: 14px; color: #7f8c8d; line-height: 1.5;">Libere Modelos ABNT Inteligentes, Inteligência Artificial, Importação de PDF e o Editor de Apresentações para sempre.</p>
             
-            <div style="display: flex; gap: 10px; margin-top: 15px;">
-                <div style="flex: 1;">
-                    <label style="font-size: 11px; font-weight: bold; color: #34495e;">Idioma Original</label>
-                    <select id="vip-lang-origem" class="tool-select" style="width: 100%; padding: 8px;">
-                        <option value="pt">Português</option>
-                        <option value="en">Inglês</option>
-                        <option value="es">Espanhol</option>
-                    </select>
-                </div>
-                <div style="display: flex; align-items: flex-end; padding-bottom: 5px;">
-                    <span class="material-symbols-outlined" style="color: #cbd5e1;">arrow_forward</span>
-                </div>
-                <div style="flex: 1;">
-                    <label style="font-size: 11px; font-weight: bold; color: #34495e;">Traduzir para</label>
-                    <select id="vip-lang-destino" class="tool-select" style="width: 100%; padding: 8px;">
-                        <option value="en">Inglês</option>
-                        <option value="es">Espanhol</option>
-                        <option value="pt">Português</option>
-                        <option value="fr">Francês</option>
-                        <option value="de">Alemão</option>
-                    </select>
-                </div>
+            <div style="background: #f8fafc; padding: 15px; border-radius: 8px; margin: 20px 0; border: 1px solid #e2e8f0;">
+                <s style="color: #e74c3c; font-size: 14px;">R$ 199,90</s><br>
+                <span style="font-size: 32px; font-weight: 900; color: #2c3e50;">R$ 10,00</span><br>
+                <span style="font-size: 12px; font-weight: bold; color: #27ae60;">Pagamento Único (PIX)</span>
             </div>
 
-            <div style="margin-top: 15px;">
-                <label style="font-size: 11px; font-weight: bold; color: #34495e;">Texto Selecionado</label>
-                <textarea id="vip-texto-origem" class="tool-select" style="width: 100%; height: 80px; padding: 10px; resize: none; box-sizing: border-box;" readonly></textarea>
-            </div>
-
-            <div style="margin-top: 15px;">
-                <label style="font-size: 11px; font-weight: bold; color: #8e44ad;">Resultado da Inteligência Artificial</label>
-                <div id="vip-resultado-box" style="width: 100%; height: 100px; padding: 10px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f8fafc; overflow-y: auto; font-size: 13px; color: #2c3e50; box-sizing: border-box;">
-                    <em style="color: #94a3b8;">O resultado aparecerá aqui...</em>
-                </div>
-            </div>
-
-            <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
-                <button class="btn-fechar-modal" style="width: auto; margin: 0;" onclick="document.getElementById('modal-traducao-vip').style.display='none'">Cancelar</button>
-                <button class="btn-add" style="background: #34495e; width: auto;" onclick="executarTraducaoVIP()" id="btn-executar-vip">Traduzir Agora</button>
-                <button class="btn-add" style="background: #8e44ad; width: auto; display: none;" id="btn-aplicar-vip" onclick="aplicarTraducaoVIP()">Substituir no Texto</button>
-            </div>
+            <button class="btn-add" style="background: #25D366; width: 100%; font-size: 16px; padding: 12px; display: flex; justify-content: center; gap: 8px;" onclick="comprarViaWhatsApp()">
+                <span class="material-symbols-outlined">chat</span> Quero ser VIP (Via WhatsApp)
+            </button>
+            <button class="btn-fechar-modal" onclick="document.getElementById('modal-alerta-vip').style.display='none'">Agora não</button>
         </div>
     </div>
 
-    <div class="fundo-modal" id="modal-inserir-link"><div class="caixa-modal caixa-modal-pequena"><h2 style="margin-top: 0; display: flex; align-items: center; justify-content: center; gap: 8px;"><span class="material-symbols-outlined" style="color: #3498db;">link</span> Inserir Link</h2><div style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;"><input type="url" id="input-url-link" class="tool-select" style="padding: 10px;" placeholder="Cole a URL aqui (https://...)"><button class="btn-add" style="background: #3498db;" onclick="confirmarInserirLink()">Inserir no Texto</button></div><button class="btn-fechar-modal" onclick="document.getElementById('modal-inserir-link').style.display='none'">Cancelar</button></div></div>
-    <div class="fundo-modal" id="modal-inserir-video"><div class="caixa-modal caixa-modal-pequena"><h2 style="margin-top: 0; display: flex; align-items: center; justify-content: center; gap: 8px;"><span class="material-symbols-outlined" style="color: #e74c3c;">smart_display</span> Inserir Vídeo</h2><p style="font-size: 12px; color: #7f8c8d;">Cole o link de um vídeo do YouTube para incorporá-lo na página.</p><div style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;"><input type="url" id="input-url-video" class="tool-select" style="padding: 10px;" placeholder="Link do YouTube"><button class="btn-add" style="background: #e74c3c;" onclick="confirmarInserirVideo()">Incorporar Vídeo</button></div><button class="btn-fechar-modal" onclick="document.getElementById('modal-inserir-video').style.display='none'">Cancelar</button></div></div>
-    <div class="fundo-modal" id="modal-inserir-marcadagua"><div class="caixa-modal caixa-modal-pequena"><h2 style="margin-top: 0; display: flex; align-items: center; justify-content: center; gap: 8px;"><span class="material-symbols-outlined" style="color: #1abc9c;">branding_watermark</span> Marca D'água</h2><p style="font-size: 12px; color: #7f8c8d;">Digite o texto de fundo. Deixe em branco e salve para remover.</p><div style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;"><input type="text" id="input-texto-marcadagua" class="tool-select" style="padding: 10px;" placeholder="Ex: CONFIDENCIAL"><button class="btn-add" style="background: #1abc9c;" onclick="confirmarInserirMarcaDagua()">Aplicar Marca D'água</button></div><button class="btn-fechar-modal" onclick="document.getElementById('modal-inserir-marcadagua').style.display='none'">Cancelar</button></div></div>
-    <div class="fundo-modal" id="modal-contagem"><div class="caixa-modal caixa-modal-pequena"><h2 style="margin-top: 0; display: flex; align-items: center; justify-content: center; gap: 8px;"><span class="material-symbols-outlined" style="color: #34495e;">analytics</span> Estatísticas</h2><div class="painel-estatisticas"><div class="item-estatistica"><span class="numero-estatistica" id="stat-palavras">0</span><span class="label-estatistica">Palavras</span></div><div class="item-estatistica"><span class="numero-estatistica" id="stat-caracteres">0</span><span class="label-estatistica">Caracteres</span></div></div><button class="btn-fechar-modal" style="margin-top: 20px;" onclick="document.getElementById('modal-contagem').style.display='none'">Fechar</button></div></div>
-    <div class="fundo-modal" id="modal-localizar"><div class="caixa-modal caixa-modal-pequena"><h2 style="margin-top: 0; display: flex; align-items: center; justify-content: center; gap: 8px;"><span class="material-symbols-outlined" style="color: #2980b9;">find_replace</span> Localizar e Substituir</h2><div style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;"><input type="text" id="input-busca" class="tool-select" style="padding: 10px;" placeholder="Palavra para buscar..."><input type="text" id="input-substituto" class="tool-select" style="padding: 10px;" placeholder="Substituir por..."><button class="btn-add" style="background: #2980b9;" onclick="executarSubstituicao()">Substituir Tudo</button></div><button class="btn-fechar-modal" onclick="document.getElementById('modal-localizar').style.display='none'">Cancelar</button></div></div>
-    <div class="fundo-modal" id="modal-assinatura"><div class="caixa-modal" style="max-width: 500px; text-align: center;"><h2 style="margin-top: 0;">Assinar Documento</h2><p style="font-size: 12px; color: #7f8c8d;">Desenhe sua assinatura no quadro abaixo usando o mouse ou o dedo.</p><canvas id="quadro-assinatura" width="400" height="200"></canvas><div style="display: flex; gap: 10px; justify-content: center; margin-top: 10px;"><button class="btn-fechar-modal" style="margin-top: 0;" onclick="limparAssinatura()">Limpar Quadro</button><button class="btn-add" onclick="inserirAssinatura()">Inserir no Texto</button></div><button class="btn-fechar-modal" onclick="document.getElementById('modal-assinatura').style.display='none'">Cancelar</button></div></div>
-    <div class="fundo-modal" id="modal-maladireta"><div class="caixa-modal" style="max-width: 500px;"><h2 style="margin-top: 0; display: flex; align-items: center; gap: 8px;"><span class="material-symbols-outlined" style="color: #8e44ad;">group</span> Mala Direta Ágora</h2><p style="font-size: 13px; color: #333;">Digite no seu texto tags usando chaves duplas. Ex: Olá, <b>{{NOME}}</b>.</p><p style="font-size: 12px; color: #7f8c8d;">Depois, insira abaixo a variável e o valor para preencher o documento todo.</p><div style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;"><input type="text" id="input-tag" class="tool-select" style="padding: 10px;" placeholder="Nome da Tag (Ex: NOME)"><input type="text" id="input-valor" class="tool-select" style="padding: 10px;" placeholder="Valor real (Ex: Pedro Maia)"><button class="btn-add" style="background: #8e44ad;" onclick="executarMalaDireta()">Aplicar ao Documento</button></div><button class="btn-fechar-modal" onclick="document.getElementById('modal-maladireta').style.display='none'">Fechar</button></div></div>
-    
-    <div class="fundo-modal" id="modal-equipe"><div class="caixa-modal"><h2>Equipe do Projeto</h2><div class="linha-add"><input type="email" id="email-convidado" placeholder="E-mail do membro"><select id="cargo-convidado" class="tool-select"><option value="editor">Editor</option><option value="leitor">Leitor</option><option value="admin">Admin</option></select><button id="btn-add-membro" class="btn-add">Convidar</button></div><div class="lista-membros" id="lista-membros"></div><div style="margin-top: 15px; display: flex; gap: 10px; align-items: center;"><input type="text" id="link-gerado" readonly class="tool-select" style="flex-grow: 1; background: #f8fafc; padding: 10px;"><button class="btn-add" onclick="copiarLinkProjeto()" style="display: flex; align-items: center; gap: 5px;"><span class="material-symbols-outlined" style="font-size: 16px;">content_copy</span> Copiar Link</button></div><button class="btn-fechar-modal" onclick="document.getElementById('modal-equipe').style.display='none'">Fechar</button></div></div>
-    
-    <div class="fundo-modal" id="modal-alerta"><div class="caixa-modal caixa-modal-pequena"><span class="material-symbols-outlined" style="font-size: 48px; color: #f1c40f;">workspace_premium</span><h2 style="margin-top: 10px; color: #f1c40f;">Função Ágora VIP</h2><p style="font-size: 14px; color: #7f8c8d;">Esta ferramenta poderosa exige alto processamento e está disponível exclusivamente para assinantes do plano VIP.</p><button class="btn-add" style="background: #f1c40f; color: #2c3e50; font-weight: bold; width: 100%; margin-top: 10px;" onclick="window.location.href='dashboard.html'">Ver Planos</button><button class="btn-fechar-modal" onclick="document.getElementById('modal-alerta').style.display='none'">Fechar</button></div></div>
-    
-    <div class="fundo-modal" id="modal-modelos"><div class="caixa-modal" style="max-width: 800px;"><h2 style="margin-top:0;"><span class="material-symbols-outlined" style="vertical-align: middle;">school</span> Central Acadêmica Ágora</h2><p style="font-size: 13px; color: #e74c3c; font-weight: bold;">Injetar um documento substituirá todo o texto da tela.</p><div class="grid-modelos"><div class="cartao-modelo" onclick="abrirPainelGenerico(this, 'painel-tcc')"><div style="background: #f5f0fa; color: #8e44ad; padding: 10px; border-radius: 8px;"><span class="material-symbols-outlined">menu_book</span></div><div class="texto-modelo"><h3>TCC / Monografia</h3><p>Estrutura ABNT Completa.</p></div></div><div class="cartao-modelo" onclick="abrirPainelGenerico(this, 'painel-artigo')"><div style="background: #f5f0fa; color: #8e44ad; padding: 10px; border-radius: 8px;"><span class="material-symbols-outlined">article</span></div><div class="texto-modelo"><h3>Artigo Científico</h3><p>Para publicações.</p></div></div><div class="cartao-modelo" onclick="abrirPainelGenerico(this, 'painel-pesquisa')"><div style="background: #f5f0fa; color: #8e44ad; padding: 10px; border-radius: 8px;"><span class="material-symbols-outlined">biotech</span></div><div class="texto-modelo"><h3>Projeto de Pesquisa</h3><p>Estrutura acadêmica.</p></div></div><div class="cartao-modelo" onclick="aplicarTemplateDireto('resumo')"><div style="background: #f5f0fa; color: #8e44ad; padding: 10px; border-radius: 8px;"><span class="material-symbols-outlined">short_text</span></div><div class="texto-modelo"><h3>Resumo (Abstract)</h3><p>Modelo NBR 6028.</p></div></div><div class="cartao-modelo" onclick="aplicarTemplateDireto('resenha')"><div style="background: #f5f0fa; color: #8e44ad; padding: 10px; border-radius: 8px;"><span class="material-symbols-outlined">rate_review</span></div><div class="texto-modelo"><h3>Resenha Crítica</h3><p>Análise de Obras.</p></div></div><div class="cartao-modelo" onclick="aplicarTemplateDireto('relatorio')"><div style="background: #f5f0fa; color: #8e44ad; padding: 10px; border-radius: 8px;"><span class="material-symbols-outlined">assignment</span></div><div class="texto-modelo"><h3>Relatório Técnico</h3><p>Estágio / Atividades.</p></div></div></div><div id="painel-tcc" class="painel-opcoes"><label class="tcc-opcao"><input type="checkbox" id="tcc-capa" checked> Capa e Folha de Rosto</label><label class="tcc-opcao"><input type="checkbox" id="tcc-resumo" checked> Resumo / Abstract</label><label class="tcc-opcao"><input type="checkbox" id="tcc-desenv" checked> Estrutura Textual</label><button class="btn-add" style="background: #8e44ad; margin-top: 10px;" onclick="gerarDocumentoComplexo('tcc')">Gerar TCC (Multi-páginas)</button></div><div id="painel-artigo" class="painel-opcoes"><label class="tcc-opcao"><input type="checkbox" id="art-tudo" checked> Estrutura Completa do Artigo Científico</label><label class="tcc-opcao"><input type="checkbox" id="art-20pag"> Gerar 15 Páginas em branco de Desenvolvimento</label><button class="btn-add" style="background: #8e44ad; margin-top: 10px;" onclick="gerarDocumentoComplexo('artigo')">Gerar Artigo Científico</button></div><div id="painel-pesquisa" class="painel-opcoes"><label class="tcc-opcao"><input type="checkbox" id="pesq-tudo" checked> Projeto de Pesquisa Completo</label><button class="btn-add" style="background: #8e44ad; margin-top: 10px;" onclick="gerarDocumentoComplexo('pesquisa')">Gerar Projeto</button></div><button class="btn-fechar-modal" onclick="fecharTodosModais()">Cancelar</button></div></div>
+    <div class="fundo-modal" id="modal-modelos"><div class="caixa-modal" style="max-width: 800px;"><h2 style="margin-top:0;"><span class="material-symbols-outlined" style="vertical-align: middle;">school</span> Central Acadêmica Ágora</h2><p style="font-size: 13px; color: #e74c3c; font-weight: bold;">Injetar um documento substituirá todo o texto da tela.</p><div class="grid-modelos"><div class="cartao-modelo" onclick="abrirPainelGenerico(this, 'painel-tcc')"><div style="background: #f5f0fa; color: #8e44ad; padding: 10px; border-radius: 8px;"><span class="material-symbols-outlined">menu_book</span></div><div class="texto-modelo"><h3>TCC / Monografia</h3><p>Estrutura ABNT Completa.</p></div></div><div class="cartao-modelo" onclick="abrirPainelGenerico(this, 'painel-artigo')"><div style="background: #f5f0fa; color: #8e44ad; padding: 10px; border-radius: 8px;"><span class="material-symbols-outlined">article</span></div><div class="texto-modelo"><h3>Artigo Científico</h3><p>Para publicações.</p></div></div></div><div id="painel-tcc" class="painel-opcoes"><button class="btn-add" style="background: #8e44ad; margin-top: 10px;" onclick="gerarDocumentoComplexo('tcc')">Gerar TCC (Multi-páginas)</button></div><button class="btn-fechar-modal" onclick="fecharTodosModais()">Cancelar</button></div></div>
+    <div class="fundo-modal" id="modal-traducao-vip"><div class="caixa-modal" style="max-width: 600px;"><h2 style="margin-top: 0; color: #8e44ad;"><span class="material-symbols-outlined" style="color: #f1c40f;">auto_awesome</span> Ágora AI Translator</h2><button class="btn-fechar-modal" onclick="document.getElementById('modal-traducao-vip').style.display='none'">Fechar</button></div></div>
 
     <script src="https://meet.jit.si/external_api.js"></script>
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
-    
     <script src="editor.js"></script>
     <script type="module" src="firebase.js"></script>
 
+    <script type="module">
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        
+        let emailUsuarioLogado = "";
+
+        setTimeout(() => {
+            try {
+                const auth = getAuth();
+                const db = getFirestore();
+                onAuthStateChanged(auth, async (user) => {
+                    if (user) {
+                        emailUsuarioLogado = user.email;
+                        try {
+                            const docSnap = await getDoc(doc(db, "perfis_agora", user.email));
+                            if (docSnap.exists() && docSnap.data().isVip === true) {
+                                window.isUserVip = true; 
+                            }
+                        } catch(e) {}
+                    }
+                });
+            } catch(e) {}
+        }, 1000);
+
+        // ===============================================
+        // INSIRA SEU NÚMERO DE WHATSAPP AQUI (Com DDI e DDD)
+        // Exemplo: 5511999999999
+        // ===============================================
+        const MEU_NUMERO_WHATSAPP = "+55(32)9926-6546"; 
+
+        window.comprarViaWhatsApp = function() {
+            const mensagem = `Olá! Tenho interesse em assinar o plano VIP Vitalício do Ágora Pro por R$ 10,00. Meu e-mail de cadastro é: ${emailUsuarioLogado}`;
+            const linkWhatsApp = `https://wa.me/${MEU_NUMERO_WHATSAPP}?text=${encodeURIComponent(mensagem)}`;
+            window.open(linkWhatsApp, '_blank');
+        };
+    </script>
+
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+
+        window.exportarPDF = function() {
+            const elemento = document.querySelector('.ql-editor'); 
+            if(!elemento || elemento.innerText.trim() === "") return alert("O documento está vazio!");
+
+            const opt = {
+                margin:       15,
+                filename:     'Documento_Agora.pdf',
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2 },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(elemento).save();
+        };
+
+        window.processarPDF = async function(e) {
+            const file = e.target.files[0];
+            if(!file) return;
+
+            alert("Lendo PDF e transferindo texto para o editor. Aguarde um instante...");
+            
+            const fileReader = new FileReader();
+            fileReader.onload = async function() {
+                try {
+                    const typedarray = new Uint8Array(this.result);
+                    const pdf = await pdfjsLib.getDocument(typedarray).promise;
+                    let textoExtraido = "";
+
+                    for(let i = 1; i <= pdf.numPages; i++) {
+                        const page = await pdf.getPage(i);
+                        const textContent = await page.getTextContent();
+                        const strings = textContent.items.map(item => item.str);
+                        textoExtraido += strings.join(" ") + "\n\n";
+                    }
+
+                    if(window.quill) {
+                        const range = window.quill.getSelection() || { index: window.quill.getLength() };
+                        window.quill.insertText(range.index, textoExtraido);
+                    } else {
+                        // Se por algum motivo o Quill não carregar na variável, tenta injetar no HTML direto
+                        document.querySelector('.ql-editor').innerHTML += `<p>${textoExtraido.replace(/\n/g, '<br>')}</p>`;
+                    }
+                    alert("Texto importado com sucesso!");
+                } catch (error) {
+                    console.error(error);
+                    alert("Erro ao ler o PDF. Ele pode estar corrompido ou ser uma imagem sem texto digital.");
+                }
+            };
+            fileReader.readAsArrayBuffer(file);
+        };
+    </script>
 </body>
 </html>

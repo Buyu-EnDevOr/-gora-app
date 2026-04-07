@@ -41,7 +41,6 @@
         .titulo-secao { color: #34495e; margin-bottom: 20px; transition: 0.3s; display: flex; align-items: center; gap: 8px;}
         .btn-menu-mobile { display: none; background: none; border: none; color: #2c3e50; cursor: pointer; padding: 0; }
         
-        /* NOVO BOTÃO DE UPGRADE VIP NO CABEÇALHO */
         .area-botoes-topo { display: flex; gap: 10px; align-items: center; }
         .btn-upgrade-header { background: linear-gradient(135deg, #f1c40f, #f39c12); color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 10px rgba(241, 196, 15, 0.3); }
         .btn-upgrade-header:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(241, 196, 15, 0.5); }
@@ -61,8 +60,8 @@
         .btn-fav-estrela { position: absolute; top: 12px; left: 15px; background: none; border: none; cursor: pointer; transition: 0.2s; padding: 0; z-index: 10;}
         .btn-fav-estrela:hover { transform: scale(1.1); }
 
-        .fundo-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 3000; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; backdrop-filter: blur(3px);}
-        .caixa-modal { background: white; padding: 30px; border-radius: 15px; width: 100%; max-width: 400px; transition: 0.3s; max-height: 90vh; overflow-y: auto; }
+        .fundo-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 3000; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; backdrop-filter: blur(5px);}
+        .caixa-modal { background: white; padding: 30px; border-radius: 15px; width: 100%; max-width: 400px; transition: 0.3s; max-height: 90vh; overflow-y: auto; position: relative;}
         .caixa-modal h2 { margin-top: 0; color: #2c3e50; transition: 0.3s; font-size: 20px; display: flex; align-items: center; gap: 10px; }
         .caixa-modal input[type="text"] { width: 100%; padding: 12px; margin: 10px 0 20px 0; border: 1px solid #ddd; border-radius: 8px; transition: 0.3s; box-sizing: border-box; font-size: 16px; outline: none;}
         .caixa-modal input[type="text"]:focus { border-color: #8e44ad; }
@@ -79,39 +78,6 @@
         .opcao-tipo.bloqueada { opacity: 0.6; background-color: #f8f9fa; border-color: #eee; cursor: pointer; }
         .opcao-tipo.bloqueada:hover { opacity: 1; border-color: #f1c40f; background-color: #fdf5e6; color: #f39c12; }
         .selo-bloqueado { position: absolute; top: -10px; right: -20px; background: #f1c40f; color: white; font-size: 10px; padding: 15px 20px 5px 20px; transform: rotate(45deg); font-weight: bold;}
-
-        /* MODAL VIP DE VENDAS + PLANO ATIVO */
-        .modal-planos-container { width: 100%; max-width: 900px; background: white; border-radius: 20px; padding: 40px; box-shadow: 0 20px 50px rgba(0,0,0,0.3); text-align: center; position: relative; max-height: 90vh; overflow-y: auto;}
-        .modal-planos-container h2 { color: #2c3e50; margin-top: 0; font-size: 32px; margin-bottom: 10px; }
-        .modal-planos-container > p { color: #7f8c8d; margin-bottom: 20px; font-size: 16px;}
-        
-        /* Banner de Plano Ativo */
-        .banner-plano-ativo { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px 20px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; text-align: left; }
-        .banner-plano-ativo .info-plano h4 { margin: 0; color: #2c3e50; font-size: 16px; display:flex; align-items:center; gap:8px;}
-        .banner-plano-ativo .info-plano p { margin: 5px 0 0 0; color: #7f8c8d; font-size: 13px; }
-        .badge-status { background: #95a5a6; color: white; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;}
-        
-        .grid-planos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px; }
-        .card-plano { border: 2px solid #e2e8f0; border-radius: 12px; padding: 30px 20px; cursor: pointer; transition: 0.3s; position: relative; background: white; display: flex; flex-direction: column; }
-        .card-plano:hover { border-color: #8e44ad; box-shadow: 0 10px 25px rgba(142,68,173,0.15); transform: translateY(-5px); }
-        .card-plano.ativo { border-color: #8e44ad; background: #fcf9ff; box-shadow: 0 0 0 2px #8e44ad; }
-        .badge-oferta { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: #e74c3c; color: white; font-size: 12px; font-weight: bold; padding: 6px 15px; border-radius: 20px; text-transform: uppercase; letter-spacing: 1px; white-space: nowrap;}
-        .plano-titulo { font-size: 20px; color: #2c3e50; font-weight: bold; margin-bottom: 5px; }
-        .plano-sub { font-size: 13px; color: #8e44ad; font-weight: bold; text-transform: uppercase; margin-bottom: 15px;}
-        .plano-preco { font-size: 40px; font-weight: 900; color: #2c3e50; margin: 15px 0; }
-        .plano-preco span { font-size: 14px; color: #7f8c8d; font-weight: normal; }
-        .plano-preco s { font-size: 16px; color: #e74c3c; font-weight: normal; margin-right: 5px; display: block; margin-bottom: -5px;} 
-        .plano-features { list-style: none; padding: 0; margin: 20px 0 0 0; text-align: left; font-size: 14px; color: #475569; border-top: 1px solid #eee; padding-top: 20px; flex-grow: 1;}
-        .plano-features li { margin-bottom: 12px; display: flex; align-items: flex-start; gap: 8px; line-height: 1.4;}
-        .plano-features li .material-symbols-outlined { font-size: 18px; color: #27ae60; flex-shrink: 0;}
-        .icones-apps { display: flex; justify-content: center; gap: 15px; margin: 15px 0; color: #8e44ad;}
-        
-        .btn-comprar-plano { background: #27ae60; color: white; border: none; padding: 18px 40px; border-radius: 30px; font-size: 18px; font-weight: 900; cursor: pointer; transition: 0.3s; width: 100%; max-width: 400px; box-shadow: 0 10px 20px rgba(39, 174, 96, 0.3);}
-        .btn-comprar-plano:hover { background: #219653; transform: scale(1.05); }
-        .btn-comprar-plano:disabled { background: #bdc3c7; cursor: not-allowed; transform: none; box-shadow: none; color: #7f8c8d;}
-
-        .btn-fechar-planos { position: absolute; top: 20px; right: 20px; background: transparent; border: none; color: #7f8c8d; cursor: pointer; font-size: 24px; transition: 0.2s;}
-        .btn-fechar-planos:hover { color: #e74c3c; }
 
         .area-foto-perfil { display: flex; flex-direction: column; align-items: center; margin-bottom: 20px; }
         .foto-preview { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 3px solid #8e44ad; cursor: pointer; background-color: #ecf0f1; display: flex; justify-content: center; align-items: center; overflow: hidden; position: relative; transition: 0.3s; }
@@ -136,16 +102,6 @@
         .caixa-leitura { font-size: 13px; color: #475569; line-height: 1.6; text-align: justify; background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; max-height: 40vh; overflow-y: auto; margin-top: 15px; }
         .caixa-leitura strong { color: #2c3e50; }
 
-        /* TUTORIAL DE ONBOARDING */
-        #tutorial-focus { position: fixed; border: 4px solid #8e44ad; border-radius: 12px; box-shadow: 0 0 0 9999px rgba(0,0,0,0.8); z-index: 9000; pointer-events: none; transition: all 0.4s ease; display: none; }
-        #tutorial-tooltip { position: fixed; background: white; padding: 20px; border-radius: 12px; width: 280px; box-shadow: 0 15px 40px rgba(0,0,0,0.3); z-index: 9001; display: none; transition: all 0.4s ease; opacity: 0; border-left: 5px solid #8e44ad; }
-        #tutorial-tooltip h3 { margin: 0 0 10px 0; color: #2c3e50; display: flex; align-items: center; gap: 8px;}
-        #tutorial-tooltip p { margin: 0 0 20px 0; font-size: 13px; color: #7f8c8d; line-height: 1.5; }
-        .tut-actions { display: flex; justify-content: space-between; align-items: center; }
-        .tut-btn-nav { background: #8e44ad; color: white; border: none; padding: 8px 15px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s;}
-        .tut-btn-skip { background: transparent; color: #e74c3c; border: none; font-size: 12px; font-weight: bold; cursor: pointer; }
-        .tut-btn-skip:hover { text-decoration: underline; }
-
         /* MODO NOTURNO */
         body.dark-mode { background-color: #1a1122 !important; color: #e0e0e0 !important; }
         body.dark-mode::before { opacity: 0.02; } 
@@ -156,7 +112,7 @@
         body.dark-mode .btn-cancelar { background-color: #333; color: white; }
         body.dark-mode .opcao-tipo { border-color: #444; color: #e0e0e0; }
         body.dark-mode .opcao-tipo.bloqueada { background-color: #1a1a1a; border-color: #222; }
-        body.dark-mode .opcao-tipo.bloqueada:hover { border-color: #8e44ad; background-color: #332a40; color: #8e44ad; }
+        body.dark-mode .opcao-tipo.bloqueada:hover { border-color: #f1c40f; background-color: #332a00; color: #f1c40f; }
         body.dark-mode .opcao-tipo:hover:not(.bloqueada) { border-color: #8e44ad; background-color: #2a2a2a; }
         body.dark-mode .opcao-tipo.ativo:not(.bloqueada) { background-color: #8e44ad; color: white; border-color: #8e44ad; }
         body.dark-mode .btn-menu-mobile { color: white; }
@@ -167,27 +123,13 @@
         body.dark-mode .box-suporte a { color: #f8fafc; }
         body.dark-mode .caixa-leitura { background: #2a2a2a; border-color: #444; color: #cbd5e1; }
         body.dark-mode .caixa-leitura strong { color: #f8fafc; }
-        body.dark-mode #tutorial-tooltip { background: #1e1e1e; border-color: #8e44ad;}
-        body.dark-mode #tutorial-tooltip h3 { color: white; }
-        body.dark-mode #tutorial-tooltip p { color: #aaa; }
 
-        /* Dark Mode Modal VIP */
-        body.dark-mode .modal-planos-container { background: #1e1e1e; border: 1px solid #333; }
-        body.dark-mode .modal-planos-container h2 { color: #fff; }
-        body.dark-mode .card-plano { background: #2a2a2a; border-color: #444; }
-        body.dark-mode .card-plano:hover { border-color: #8e44ad; }
-        body.dark-mode .card-plano.ativo { background: #332a40; border-color: #8e44ad; }
-        body.dark-mode .plano-titulo, body.dark-mode .plano-preco { color: #fff; }
-        body.dark-mode .plano-features { color: #cbd5e1; border-color: #444;}
-        body.dark-mode .btn-fechar-planos:hover { color: #e74c3c; }
-        body.dark-mode .banner-plano-ativo { background: #2a2a2a; border-color: #444; }
-        body.dark-mode .banner-plano-ativo .info-plano h4 { color: #fff; }
+        /* Dark Mode Especial VIP Modal */
+        body.dark-mode #modal-vip-vendas .caixa-modal { background-color: #1e1e1e; border-top-color: #f1c40f; }
+        body.dark-mode #modal-vip-vendas h2 { color: #fff !important; }
+        body.dark-mode #modal-vip-vendas div[style*="background: #f8fafc"] { background: #2a2a2a !important; border-color: #444 !important; }
+        body.dark-mode #modal-vip-vendas span[style*="color: #2c3e50"] { color: #fff !important; }
 
-        @media (max-width: 900px) {
-            .grid-planos { grid-template-columns: 1fr; }
-            .modal-planos-container { padding: 25px; }
-            .card-plano { padding: 20px 15px; }
-        }
         @media (max-width: 768px) {
             body::before { width: 100vw; height: 100vw; }
             .menu-lateral { left: -250px; }
@@ -205,23 +147,12 @@
             .caixa-modal { width: 95%; padding: 20px; }
             .botoes-modal { flex-direction: column; gap: 15px; } 
             .btn-cancelar, .btn-salvar { width: 100%; padding: 15px; }
-            #tutorial-tooltip { width: 80%; left: 10% !important; }
         }
     </style>
 </head>
 <body>
 
     <div id="overlay-menu" class="overlay-mobile"></div>
-
-    <div id="tutorial-focus"></div>
-    <div id="tutorial-tooltip">
-        <h3 id="tut-title">Título</h3>
-        <p id="tut-text">Texto</p>
-        <div class="tut-actions">
-            <button id="tut-skip" class="tut-btn-skip">Pular</button>
-            <button id="tut-next" class="tut-btn-nav">Próximo</button>
-        </div>
-    </div>
 
     <div class="menu-lateral" id="menu-lateral">
         <div class="logo">
@@ -239,7 +170,7 @@
             </svg>
         </div>
         
-        <button id="btn-lateral-vip" class="btn-seja-vip-lateral">
+        <button id="btn-lateral-vip" class="btn-seja-vip-lateral" onclick="abrirLojaVip()">
             <span class="material-symbols-outlined">workspace_premium</span> Seja VIP
         </button>
 
@@ -253,15 +184,12 @@
         <a href="#" onclick="abrirPolitica('seguranca')"><span class="material-symbols-outlined" style="font-size:18px;">security</span> Segurança</a>
         <a href="#" onclick="abrirPolitica('bemestar')"><span class="material-symbols-outlined" style="font-size:18px;">handshake</span> Bem-Estar e Conduta</a>
         
-        <div class="menu-divisor"></div>
-        <a href="#" id="btn-iniciar-tutorial" style="color: #bdc3c7;"><span class="material-symbols-outlined" style="font-size:18px;">help</span> Guia Rápido</a>
-
-        <a href="#" id="btn-sair" style="margin-top: 30px;"><span class="material-symbols-outlined" style="font-size:18px;">logout</span> Sair (Logout)</a>
+        <a href="#" id="btn-sair" style="margin-top: 50px;"><span class="material-symbols-outlined" style="font-size:18px;">logout</span> Sair (Logout)</a>
     </div>
 
     <div class="conteudo">
         <div class="cabecalho">
-            <div class="saudacao-area" id="area-perfil-tut">
+            <div class="saudacao-area">
                 <button id="btn-abrir-menu" class="btn-menu-mobile"><span class="material-symbols-outlined">menu</span></button>
                 <div style="display: flex; flex-direction: column;">
                     <h1 id="texto-boas-vindas">A carregar utilizador...</h1>
@@ -271,7 +199,7 @@
             </div>
             
             <div class="area-botoes-topo">
-                <button id="btn-header-vip" class="btn-upgrade-header">
+                <button id="btn-header-vip" class="btn-upgrade-header" onclick="abrirLojaVip()">
                     <span class="material-symbols-outlined">star</span> Assinar VIP
                 </button>
                 <button id="btn-abrir-modal" class="botao-novo-grupo">
@@ -285,7 +213,7 @@
         </h2>
         <div class="grid-grupos" id="lista-favoritos" style="display: none;"></div>
 
-        <h2 class="titulo-secao" id="area-projetos-tut">Os Meus Projetos</h2>
+        <h2 class="titulo-secao">Os Meus Projetos</h2>
         <div class="grid-grupos" id="lista-de-grupos"></div>
     </div>
 
@@ -298,72 +226,24 @@
     </div>
 
     <div class="fundo-modal" id="modal-vip-vendas">
-        <div class="modal-planos-container">
-            <button class="btn-fechar-planos" onclick="document.getElementById('modal-vip-vendas').style.display='none'"><span class="material-symbols-outlined">close</span></button>
+        <div class="caixa-modal" style="max-width: 450px; text-align: center; border-top: 5px solid #f1c40f; position: relative;">
+            <button class="btn-fechar-planos" style="position:absolute; top: 15px; right: 15px; background: none; border: none; cursor: pointer; font-size: 20px; color: #7f8c8d;" onclick="document.getElementById('modal-vip-vendas').style.display='none'"><span class="material-symbols-outlined">close</span></button>
             
-            <h2>Planos Ágora Pro</h2>
-            <p>Eleve a sua produtividade e libere o poder total da plataforma.</p>
+            <span class="material-symbols-outlined" style="font-size: 50px; color: #f1c40f;">workspace_premium</span>
+            <h2 style="margin-top: 10px; color: #2c3e50; justify-content: center;">Ágora VIP Vitalício</h2>
+            <p style="font-size: 14px; color: #7f8c8d; line-height: 1.5;">Libere Apresentações de Slides, Modelos ABNT, Inteligência Artificial e Importação de PDF para sempre.</p>
             
-            <div class="banner-plano-ativo">
-                <div class="info-plano">
-                    <h4 id="texto-nome-plano-ativo"><span class="material-symbols-outlined">account_circle</span> Carregando plano...</h4>
-                    <p id="texto-desc-plano-ativo">Verificando status da sua conta no sistema.</p>
-                </div>
-                <div class="badge-status" id="badge-plano-ativo">Aguarde</div>
-            </div>
-            
-            <div class="grid-planos">
-                <div class="card-plano" onclick="selecionarPlano(this, 'mensal')">
-                    <div class="plano-titulo">Ágora Mensal</div>
-                    <div class="plano-sub">1 Usuário VIP</div>
-                    <div class="icones-apps">
-                        <span class="material-symbols-outlined">description</span>
-                        <span class="material-symbols-outlined">slideshow</span>
-                    </div>
-                    <div class="plano-preco">R$ 4,90<br><span>/mês</span></div>
-                    <ul class="plano-features">
-                        <li><span class="material-symbols-outlined">check</span> Acesso ao Editor de Slides</li>
-                        <li><span class="material-symbols-outlined">check</span> Reuniões Ilimitadas</li>
-                        <li><span class="material-symbols-outlined">check</span> Upload de Imagens</li>
-                    </ul>
-                </div>
-
-                <div class="card-plano" onclick="selecionarPlano(this, 'equipe')">
-                    <div class="plano-titulo">Ágora Turma</div>
-                    <div class="plano-sub">Até 5 Usuários</div>
-                    <div class="icones-apps">
-                        <span class="material-symbols-outlined">description</span>
-                        <span class="material-symbols-outlined">slideshow</span>
-                    </div>
-                    <div class="plano-preco">R$ 14,90<br><span>/mês</span></div>
-                    <ul class="plano-features">
-                        <li><span class="material-symbols-outlined">check</span> VIP para você e seu grupo</li>
-                        <li><span class="material-symbols-outlined">check</span> Editor de Slides Completo</li>
-                        <li><span class="material-symbols-outlined">check</span> Suporte Prioritário</li>
-                    </ul>
-                </div>
-
-                <div class="card-plano ativo" onclick="selecionarPlano(this, 'vitalicio')">
-                    <div class="badge-oferta">Oferta de Lançamento</div>
-                    <div class="plano-titulo">Ágora Vitalício</div>
-                    <div class="plano-sub">Acesso Definitivo</div>
-                    <div class="icones-apps">
-                        <span class="material-symbols-outlined">description</span>
-                        <span class="material-symbols-outlined">slideshow</span>
-                        <span class="material-symbols-outlined">workspace_premium</span>
-                    </div>
-                    <div class="plano-preco"><s>R$ 199,90</s><br>R$ 20,00<br><span>/único</span></div>
-                    <ul class="plano-features">
-                        <li><span class="material-symbols-outlined">check</span> Pague uma vez, use para sempre</li>
-                        <li><span class="material-symbols-outlined">check</span> Todas as funções VIP</li>
-                        <li><span class="material-symbols-outlined">check</span> Atualizações futuras inclusas</li>
-                    </ul>
-                </div>
+            <div style="background: #f8fafc; padding: 15px; border-radius: 8px; margin: 20px 0; border: 1px solid #e2e8f0;">
+                <s style="color: #e74c3c; font-size: 14px;">R$ 199,90</s><br>
+                <span style="font-size: 32px; font-weight: 900; color: #2c3e50;">R$ 10,00</span><br>
+                <span style="font-size: 12px; font-weight: bold; color: #27ae60;">Pagamento Único (PIX)</span>
             </div>
 
-            <button id="btn-assinar-vip" class="btn-comprar-plano">Atualizar Agora</button>
-            <br>
-            <button id="btn-simular-backend" style="background: transparent; color: #2ecc71; border: none; font-size: 12px; margin-top: 15px; cursor: pointer; text-decoration: underline;">Simular Pagamento (Dev)</button>
+            <button class="btn-add" id="btn-assinar-vip" style="background: #25D366; width: 100%; font-size: 16px; padding: 12px; display: flex; justify-content: center; align-items: center; gap: 8px; border:none; border-radius:8px; color:white; font-weight:bold; cursor:pointer;" onclick="comprarViaWhatsApp()">
+                <span class="material-symbols-outlined">chat</span> Quero ser VIP (Via WhatsApp)
+            </button>
+            
+            <button id="btn-simular-backend" style="background: transparent; color: #2ecc71; border: none; font-size: 12px; margin-top: 15px; cursor: pointer; text-decoration: underline;">⚙️ Simular pagamento Aprovado (Testes)</button>
         </div>
     </div>
 
@@ -443,75 +323,24 @@
         
         let meuEmail = "";
         let isUserVip = false; 
-        
-        const LINK_DE_PAGAMENTO = "https://link.mercadopago.com.br/SEU_LINK_AQUI";
 
-        // ========================================================
-        // A LÓGICA DE ABRIR A LOJA VIP
-        // ========================================================
-        const abrirLojaVip = () => {
+        // ===============================================
+        // INSIRA SEU NÚMERO DE WHATSAPP AQUI (Com DDI e DDD)
+        // Exemplo: 5532999999999
+        // ===============================================
+        const MEU_NUMERO_WHATSAPP = "+55(32)9926-6546"; 
+
+        window.comprarViaWhatsApp = function() {
+            const mensagem = `Olá! Tenho interesse em assinar o plano VIP Vitalício do Ágora Pro por R$ 10,00. Meu e-mail de cadastro é: ${meuEmail}`;
+            const linkWhatsApp = `https://wa.me/${MEU_NUMERO_WHATSAPP}?text=${encodeURIComponent(mensagem)}`;
+            window.open(linkWhatsApp, '_blank');
+        };
+
+        window.abrirLojaVip = function() {
             document.getElementById('menu-lateral').classList.remove('aberto');
             document.getElementById('overlay-menu').classList.remove('ativo');
             document.getElementById('modal-vip-vendas').style.display = 'flex';
         };
-
-        document.getElementById('btn-lateral-vip').addEventListener('click', abrirLojaVip);
-        document.getElementById('btn-header-vip').addEventListener('click', abrirLojaVip);
-
-        window.selecionarPlano = function(elementoClicado, plano) {
-            const cartoes = document.querySelectorAll('.card-plano');
-            cartoes.forEach(c => c.classList.remove('ativo'));
-            elementoClicado.classList.add('ativo');
-        }
-
-        // ========================================================
-        // O CÉREBRO DO TUTORIAL
-        // ========================================================
-        const tutFocus = document.getElementById('tutorial-focus');
-        const tutTooltip = document.getElementById('tutorial-tooltip');
-        let passoAtual = 0;
-
-        const passosTutorial = [
-            { elemento: '.botao-novo-grupo', titulo: '<span class="material-symbols-outlined">add_circle</span> Criar Projeto', texto: 'Este é o botão mais importante. Clique aqui para iniciar um novo <strong>Documento de Texto</strong> ou uma <strong>Apresentação de Slides</strong> colaborativa.' },
-            { elemento: '#area-perfil-tut', titulo: '<span class="material-symbols-outlined">account_circle</span> Seu Perfil', texto: 'Aqui fica o seu cartão de visita. Você pode alterar seu Nome e Foto clicando na aba de Configurações no menu lateral.' },
-            { elemento: '#area-projetos-tut', titulo: '<span class="material-symbols-outlined">folder_open</span> Seus Trabalhos', texto: 'Todos os projetos em que você foi convidado ou criou aparecem aqui. Dica: Clique na <strong>Estrela</strong> de um projeto para fixá-lo no topo!' },
-            { elemento: '.menu-lateral', titulo: '<span class="material-symbols-outlined">menu</span> Menu e Ferramentas', texto: 'Use esta barra para acessar o Conversor PDF, ativar o Modo Escuro e ler as nossas Políticas de Segurança e Conduta.' }
-        ];
-
-        function atualizarTutorial() {
-            if (passoAtual >= passosTutorial.length) { encerraTutorial(); return; }
-            const passo = passosTutorial[passoAtual];
-            const alvo = document.querySelector(passo.elemento);
-            if(!alvo) { encerraTutorial(); return; }
-            const rect = alvo.getBoundingClientRect();
-            
-            tutFocus.style.display = 'block';
-            tutFocus.style.top = (rect.top - 8) + 'px';
-            tutFocus.style.left = (rect.left - 8) + 'px';
-            tutFocus.style.width = (rect.width + 16) + 'px';
-            tutFocus.style.height = (rect.height + 16) + 'px';
-
-            document.getElementById('tut-title').innerHTML = passo.titulo;
-            document.getElementById('tut-text').innerHTML = passo.texto;
-            
-            tutTooltip.style.display = 'block';
-            setTimeout(() => { tutTooltip.style.opacity = '1'; }, 50);
-
-            if(window.innerWidth > 768) { tutTooltip.style.top = (rect.bottom + 20) + 'px'; tutTooltip.style.left = rect.left + 'px'; } 
-            else { tutTooltip.style.top = '50%'; tutTooltip.style.transform = 'translateY(-50%)'; }
-            document.getElementById('tut-next').innerText = passoAtual === passosTutorial.length - 1 ? 'Concluir' : 'Próximo';
-        }
-
-        function iniciaTutorial() {
-            passoAtual = 0; document.getElementById('menu-lateral').classList.remove('aberto'); document.getElementById('overlay-menu').classList.remove('ativo');
-            window.scrollTo(0,0); atualizarTutorial();
-        }
-
-        function encerraTutorial() { tutFocus.style.display = 'none'; tutTooltip.style.opacity = '0'; setTimeout(() => { tutTooltip.style.display = 'none'; }, 400); localStorage.setItem('tutorial_agora_visto', 'sim'); }
-
-        document.getElementById('tut-next').addEventListener('click', () => { passoAtual++; atualizarTutorial(); });
-        document.getElementById('tut-skip').addEventListener('click', encerraTutorial);
-        document.getElementById('btn-iniciar-tutorial').addEventListener('click', iniciaTutorial);
 
         // MENU E TEMA
         const btnMenu = document.getElementById('btn-abrir-menu'); const menuLateral = document.getElementById('menu-lateral'); const overlay = document.getElementById('overlay-menu');
@@ -590,13 +419,6 @@
                     } 
                 } catch(e) {} 
                 
-                // MODO DEUS RETIRADO AQUI PARA VOCÊ TESTAR A COMPRA.
-                // Mas, o painel do modal é alterado baseado nessa variável.
-                const tituloPlanoAtivo = document.getElementById('texto-nome-plano-ativo');
-                const descPlanoAtivo = document.getElementById('texto-desc-plano-ativo');
-                const badgePlanoAtivo = document.getElementById('badge-plano-ativo');
-                const btnAssinarVip = document.getElementById('btn-assinar-vip');
-
                 if(isUserVip) {
                     // Libera funções
                     document.getElementById('badge-vip-header').classList.add('ativo'); 
@@ -605,26 +427,16 @@
                     document.getElementById('opcao-slide-btn').classList.remove('bloqueada');
                     document.getElementById('selo-lock-slide').style.display = 'none';
                     
-                    // Altera a área do Plano no Modal
-                    tituloPlanoAtivo.innerHTML = '<span class="material-symbols-outlined" style="color: #f1c40f;">workspace_premium</span> Ágora Premium';
-                    descPlanoAtivo.innerHTML = 'Você possui acesso ilimitado a todas as ferramentas (Apresentação, PDF, Vídeo e AI).';
-                    badgePlanoAtivo.innerText = "ATIVO";
-                    badgePlanoAtivo.style.background = "#2ecc71";
-                    
-                    // Trava o botão de compra para quem já é VIP
-                    btnAssinarVip.innerText = "Você já possui o plano máximo";
+                    const btnAssinarVip = document.getElementById('btn-assinar-vip');
+                    btnAssinarVip.innerText = "Você já possui o plano VIP";
                     btnAssinarVip.disabled = true;
+                    btnAssinarVip.style.background = "#2ecc71";
+                    btnAssinarVip.style.cursor = "not-allowed";
                 } else {
                     // Bloqueia funções
                     document.getElementById('btn-header-vip').classList.remove('escondido'); 
                     document.getElementById('opcao-slide-btn').classList.add('bloqueada');
                     document.getElementById('selo-lock-slide').style.display = 'block';
-
-                    // Altera a área do Plano no Modal
-                    tituloPlanoAtivo.innerHTML = '<span class="material-symbols-outlined" style="color: #7f8c8d;">account_circle</span> Ágora Básico';
-                    descPlanoAtivo.innerHTML = 'Você está utilizando os recursos gratuitos. Atualize para liberar apresentações e inteligência artificial.';
-                    badgePlanoAtivo.innerText = "GRÁTIS";
-                    badgePlanoAtivo.style.background = "#95a5a6";
                 }
 
                 document.getElementById('texto-boas-vindas').innerHTML = `Olá, ${nomeUsuario}! 👋`;
@@ -633,8 +445,6 @@
                 document.getElementById('preview-imagem').src = fotoUsuario;
                 
                 carregarMeusGrupos();
-
-                if(!localStorage.getItem('tutorial_agora_visto')) { setTimeout(iniciaTutorial, 1000); }
             } else { window.location.href = "index.html"; }
         });
 
@@ -642,16 +452,11 @@
         document.getElementById('btn-abrir-config').addEventListener('click', () => { document.getElementById('modal-config').style.display = 'flex'; });
         document.getElementById('btn-cancelar-config').addEventListener('click', () => { document.getElementById('modal-config').style.display = 'none'; });
 
-        // SISTEMA DE PAGAMENTO E VENDAS
-        document.getElementById('btn-assinar-vip').addEventListener('click', () => {
-            if(LINK_DE_PAGAMENTO.includes("SEU_LINK_AQUI")) { alert("Você precisa colar o Link de Pagamento do Mercado Pago no código-fonte!"); } 
-            else { window.open(LINK_DE_PAGAMENTO, '_blank'); }
-        });
-
+        // SIMULADOR DEV
         document.getElementById('btn-simular-backend').addEventListener('click', async () => {
             const btnComprar = document.getElementById('btn-simular-backend'); btnComprar.innerText = "Aguarde...";
             try { await setDoc(doc(db, "perfis_agora", meuEmail), { isVip: true }, { merge: true }); alert("Você é VIP! Recarregando..."); location.reload(); } 
-            catch(e) { alert("Erro na simulação."); btnComprar.innerText = "Simular Pagamento (Dev)"; }
+            catch(e) { alert("Erro na simulação."); btnComprar.innerText = "⚙️ Simular pagamento Aprovado"; }
         });
 
         // CRIAÇÃO DE PROJETO COM CADEADO
