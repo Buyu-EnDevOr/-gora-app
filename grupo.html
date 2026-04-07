@@ -55,9 +55,9 @@
             <div id="tab-arquivo" class="tab-pane">
                 <div class="ribbon-group">
                     <div class="group-tools">
-                        <button class="tool-btn tool-btn-large" onclick="document.getElementById('modal-modelos').style.display='flex'">
-                            <span class="material-symbols-outlined">auto_awesome</span>
-                            <span>Novo por Molde</span>
+                        <button class="tool-btn tool-btn-large" onclick="alertaVIP()">
+                            <span class="material-symbols-outlined" style="color: #f1c40f;">auto_awesome</span>
+                            <span>Novo por Molde (VIP)</span>
                         </button>
                     </div>
                     <span class="group-label">Documento</span>
@@ -72,10 +72,10 @@
                             </button>
                             <div class="dropdown-menu">
                                 <button class="dropdown-item" onclick="window.print()"><span class="material-symbols-outlined" style="color:#e74c3c;">file_download</span> Exportar para PDF</button>
-                                <button class="dropdown-item" onclick="alertaVIP()"><span class="material-symbols-outlined" style="color:#3498db;">file_upload</span> Importar de PDF</button>
+                                <button class="dropdown-item" onclick="alertaVIP()"><span class="material-symbols-outlined" style="color:#f1c40f;">file_upload</span> Importar de PDF (VIP)</button>
                                 <div class="dropdown-divider"></div>
                                 <button class="dropdown-item" onclick="abrirModalAssinatura()"><span class="material-symbols-outlined" style="color:#2c3e50;">draw</span> Assinar como PDF</button>
-                                <button class="dropdown-item" onclick="alertaVIP()"><span class="material-symbols-outlined" style="color:#8e44ad;">share</span> Compartilhar como PDF</button>
+                                <button class="dropdown-item" onclick="alertaVIP()"><span class="material-symbols-outlined" style="color:#f1c40f;">share</span> Compartilhar como PDF (VIP)</button>
                             </div>
                         </div>
                     </div>
@@ -276,7 +276,7 @@
                 <div class="ribbon-group">
                     <div class="group-tools">
                         <button class="tool-btn" onclick="abrirModalLink()"><span class="material-symbols-outlined" style="color:#3498db;">link</span> Link</button>
-                        <button class="tool-btn" onclick="alertaVIP()"><span class="material-symbols-outlined" style="color:#e74c3c;">bookmark</span> Indicador</button>
+                        <button class="tool-btn" onclick="alertaVIP()"><span class="material-symbols-outlined" style="color:#f1c40f;">bookmark</span> Indicador (VIP)</button>
                     </div>
                     <div class="group-tools">
                         <div class="dropdown-container">
@@ -408,7 +408,7 @@
                             <button class="tool-btn tool-btn-large dropdown-toggle"><span class="material-symbols-outlined" style="color:#2980b9;">translate</span><span>Traduzir <span class="material-symbols-outlined" style="font-size: 14px;">arrow_drop_down</span></span></button>
                             <div class="dropdown-menu">
                                 <button class="dropdown-item" onclick="traduzirDocumento()"><span class="material-symbols-outlined">g_translate</span> Traduzir via Google</button>
-                                <button class="dropdown-item" onclick="abrirModalTraducaoVIP()"><span class="material-symbols-outlined" style="color:#f1c40f;">auto_awesome</span> Tradução Ágora AI (VIP)</button>
+                                <button class="dropdown-item" onclick="alertaVIP()"><span class="material-symbols-outlined" style="color:#f1c40f;">auto_awesome</span> Tradução Ágora AI (VIP)</button>
                             </div>
                         </div>
                     </div>
@@ -416,7 +416,7 @@
                 </div>
                 <div class="ribbon-group">
                     <div class="group-tools">
-                        <button class="tool-btn tool-btn-large" onclick="lerEmVozAlta()"><span class="material-symbols-outlined" style="color:#3498db;">record_voice_over</span><span>Ler Texto</span></button>
+                        <button class="tool-btn tool-btn-large" onclick="alertaVIP()"><span class="material-symbols-outlined" style="color:#f1c40f;">record_voice_over</span><span>Ler Texto (VIP)</span></button>
                     </div>
                     <span class="group-label">Voz</span>
                 </div>
@@ -577,7 +577,8 @@
     <div class="fundo-modal" id="modal-maladireta"><div class="caixa-modal" style="max-width: 500px;"><h2 style="margin-top: 0; display: flex; align-items: center; gap: 8px;"><span class="material-symbols-outlined" style="color: #8e44ad;">group</span> Mala Direta Ágora</h2><p style="font-size: 13px; color: #333;">Digite no seu texto tags usando chaves duplas. Ex: Olá, <b>{{NOME}}</b>.</p><p style="font-size: 12px; color: #7f8c8d;">Depois, insira abaixo a variável e o valor para preencher o documento todo.</p><div style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;"><input type="text" id="input-tag" class="tool-select" style="padding: 10px;" placeholder="Nome da Tag (Ex: NOME)"><input type="text" id="input-valor" class="tool-select" style="padding: 10px;" placeholder="Valor real (Ex: Pedro Maia)"><button class="btn-add" style="background: #8e44ad;" onclick="executarMalaDireta()">Aplicar ao Documento</button></div><button class="btn-fechar-modal" onclick="document.getElementById('modal-maladireta').style.display='none'">Fechar</button></div></div>
     
     <div class="fundo-modal" id="modal-equipe"><div class="caixa-modal"><h2>Equipe do Projeto</h2><div class="linha-add"><input type="email" id="email-convidado" placeholder="E-mail do membro"><select id="cargo-convidado" class="tool-select"><option value="editor">Editor</option><option value="leitor">Leitor</option><option value="admin">Admin</option></select><button id="btn-add-membro" class="btn-add">Convidar</button></div><div class="lista-membros" id="lista-membros"></div><div style="margin-top: 15px; display: flex; gap: 10px; align-items: center;"><input type="text" id="link-gerado" readonly class="tool-select" style="flex-grow: 1; background: #f8fafc; padding: 10px;"><button class="btn-add" onclick="copiarLinkProjeto()" style="display: flex; align-items: center; gap: 5px;"><span class="material-symbols-outlined" style="font-size: 16px;">content_copy</span> Copiar Link</button></div><button class="btn-fechar-modal" onclick="document.getElementById('modal-equipe').style.display='none'">Fechar</button></div></div>
-    <div class="fundo-modal" id="modal-alerta"><div class="caixa-modal caixa-modal-pequena"><span class="material-symbols-outlined" style="font-size: 48px; color: #8e44ad;">workspace_premium</span><h2 style="margin-top: 10px;">Função Ágora VIP</h2><p style="font-size: 14px; color: #7f8c8d;">Esta ferramenta poderosa exige alto processamento e estará disponível exclusivamente para assinantes do plano VIP no futuro.</p><button class="btn-fechar-modal" onclick="document.getElementById('modal-alerta').style.display='none'">Entendi</button></div></div>
+    
+    <div class="fundo-modal" id="modal-alerta"><div class="caixa-modal caixa-modal-pequena"><span class="material-symbols-outlined" style="font-size: 48px; color: #f1c40f;">workspace_premium</span><h2 style="margin-top: 10px; color: #f1c40f;">Função Ágora VIP</h2><p style="font-size: 14px; color: #7f8c8d;">Esta ferramenta poderosa exige alto processamento e está disponível exclusivamente para assinantes do plano VIP.</p><button class="btn-add" style="background: #f1c40f; color: #2c3e50; font-weight: bold; width: 100%; margin-top: 10px;" onclick="window.location.href='dashboard.html'">Ver Planos</button><button class="btn-fechar-modal" onclick="document.getElementById('modal-alerta').style.display='none'">Fechar</button></div></div>
     
     <div class="fundo-modal" id="modal-modelos"><div class="caixa-modal" style="max-width: 800px;"><h2 style="margin-top:0;"><span class="material-symbols-outlined" style="vertical-align: middle;">school</span> Central Acadêmica Ágora</h2><p style="font-size: 13px; color: #e74c3c; font-weight: bold;">Injetar um documento substituirá todo o texto da tela.</p><div class="grid-modelos"><div class="cartao-modelo" onclick="abrirPainelGenerico(this, 'painel-tcc')"><div style="background: #f5f0fa; color: #8e44ad; padding: 10px; border-radius: 8px;"><span class="material-symbols-outlined">menu_book</span></div><div class="texto-modelo"><h3>TCC / Monografia</h3><p>Estrutura ABNT Completa.</p></div></div><div class="cartao-modelo" onclick="abrirPainelGenerico(this, 'painel-artigo')"><div style="background: #f5f0fa; color: #8e44ad; padding: 10px; border-radius: 8px;"><span class="material-symbols-outlined">article</span></div><div class="texto-modelo"><h3>Artigo Científico</h3><p>Para publicações.</p></div></div><div class="cartao-modelo" onclick="abrirPainelGenerico(this, 'painel-pesquisa')"><div style="background: #f5f0fa; color: #8e44ad; padding: 10px; border-radius: 8px;"><span class="material-symbols-outlined">biotech</span></div><div class="texto-modelo"><h3>Projeto de Pesquisa</h3><p>Estrutura acadêmica.</p></div></div><div class="cartao-modelo" onclick="aplicarTemplateDireto('resumo')"><div style="background: #f5f0fa; color: #8e44ad; padding: 10px; border-radius: 8px;"><span class="material-symbols-outlined">short_text</span></div><div class="texto-modelo"><h3>Resumo (Abstract)</h3><p>Modelo NBR 6028.</p></div></div><div class="cartao-modelo" onclick="aplicarTemplateDireto('resenha')"><div style="background: #f5f0fa; color: #8e44ad; padding: 10px; border-radius: 8px;"><span class="material-symbols-outlined">rate_review</span></div><div class="texto-modelo"><h3>Resenha Crítica</h3><p>Análise de Obras.</p></div></div><div class="cartao-modelo" onclick="aplicarTemplateDireto('relatorio')"><div style="background: #f5f0fa; color: #8e44ad; padding: 10px; border-radius: 8px;"><span class="material-symbols-outlined">assignment</span></div><div class="texto-modelo"><h3>Relatório Técnico</h3><p>Estágio / Atividades.</p></div></div></div><div id="painel-tcc" class="painel-opcoes"><label class="tcc-opcao"><input type="checkbox" id="tcc-capa" checked> Capa e Folha de Rosto</label><label class="tcc-opcao"><input type="checkbox" id="tcc-resumo" checked> Resumo / Abstract</label><label class="tcc-opcao"><input type="checkbox" id="tcc-desenv" checked> Estrutura Textual</label><button class="btn-add" style="background: #8e44ad; margin-top: 10px;" onclick="gerarDocumentoComplexo('tcc')">Gerar TCC (Multi-páginas)</button></div><div id="painel-artigo" class="painel-opcoes"><label class="tcc-opcao"><input type="checkbox" id="art-tudo" checked> Estrutura Completa do Artigo Científico</label><label class="tcc-opcao"><input type="checkbox" id="art-20pag"> Gerar 15 Páginas em branco de Desenvolvimento</label><button class="btn-add" style="background: #8e44ad; margin-top: 10px;" onclick="gerarDocumentoComplexo('artigo')">Gerar Artigo Científico</button></div><div id="painel-pesquisa" class="painel-opcoes"><label class="tcc-opcao"><input type="checkbox" id="pesq-tudo" checked> Projeto de Pesquisa Completo</label><button class="btn-add" style="background: #8e44ad; margin-top: 10px;" onclick="gerarDocumentoComplexo('pesquisa')">Gerar Projeto</button></div><button class="btn-fechar-modal" onclick="fecharTodosModais()">Cancelar</button></div></div>
 

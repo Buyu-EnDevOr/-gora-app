@@ -41,6 +41,12 @@
         .titulo-secao { color: #34495e; margin-bottom: 20px; transition: 0.3s; display: flex; align-items: center; gap: 8px;}
         .btn-menu-mobile { display: none; background: none; border: none; color: #2c3e50; cursor: pointer; padding: 0; }
         
+        /* NOVO BOTÃO DE UPGRADE VIP NO CABEÇALHO */
+        .area-botoes-topo { display: flex; gap: 10px; align-items: center; }
+        .btn-upgrade-header { background: linear-gradient(135deg, #f1c40f, #f39c12); color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 10px rgba(241, 196, 15, 0.3); }
+        .btn-upgrade-header:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(241, 196, 15, 0.5); }
+        .btn-upgrade-header.escondido { display: none; }
+
         .botao-novo-grupo { background-color: #8e44ad; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
         .botao-novo-grupo:hover { background-color: #7d3c98; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(142,68,173,0.3);}
         
@@ -74,36 +80,59 @@
         .opcao-tipo.bloqueada:hover { opacity: 1; border-color: #f1c40f; background-color: #fdf5e6; color: #f39c12; }
         .selo-bloqueado { position: absolute; top: -10px; right: -20px; background: #f1c40f; color: white; font-size: 10px; padding: 15px 20px 5px 20px; transform: rotate(45deg); font-weight: bold;}
 
-        /* MODAL VIP DE VENDAS - ATUALIZADO PARA R$ 10 VITALÍCIO */
-        .caixa-modal-vip { background: linear-gradient(135deg, #1e1e1e, #2c1a3b); color: white; padding: 40px 30px; border-radius: 20px; width: 100%; max-width: 450px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); border: 2px solid #8e44ad;}
-        .caixa-modal-vip h2 { color: #f1c40f; justify-content: center; font-size: 28px; margin-bottom: 5px;}
-        .lista-beneficios { text-align: left; margin: 25px 0; background: rgba(0,0,0,0.2); padding: 20px; border-radius: 12px; }
-        .lista-beneficios p { margin: 10px 0; display: flex; align-items: center; gap: 10px; font-size: 14px; color: #ecf0f1; }
-        .lista-beneficios .material-symbols-outlined { color: #2ecc71; font-size: 18px;}
+        /* MODAL VIP DE VENDAS + PLANO ATIVO */
+        .modal-planos-container { width: 100%; max-width: 900px; background: white; border-radius: 20px; padding: 40px; box-shadow: 0 20px 50px rgba(0,0,0,0.3); text-align: center; position: relative; max-height: 90vh; overflow-y: auto;}
+        .modal-planos-container h2 { color: #2c3e50; margin-top: 0; font-size: 32px; margin-bottom: 10px; }
+        .modal-planos-container > p { color: #7f8c8d; margin-bottom: 20px; font-size: 16px;}
         
-        .preco-vip { font-size: 38px; font-weight: 800; color: #fff; margin-bottom: 5px; }
-        .preco-sub { font-size: 14px; color: #bdc3c7; font-weight: normal; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 1px;}
+        /* Banner de Plano Ativo */
+        .banner-plano-ativo { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px 20px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; text-align: left; }
+        .banner-plano-ativo .info-plano h4 { margin: 0; color: #2c3e50; font-size: 16px; display:flex; align-items:center; gap:8px;}
+        .banner-plano-ativo .info-plano p { margin: 5px 0 0 0; color: #7f8c8d; font-size: 13px; }
+        .badge-status { background: #95a5a6; color: white; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;}
         
-        .btn-comprar-vip { background: #f1c40f; color: #2c3e50; border: none; padding: 15px; border-radius: 12px; font-size: 18px; font-weight: 900; width: 100%; cursor: pointer; transition: 0.3s; box-shadow: 0 5px 15px rgba(241, 196, 15, 0.4);}
-        .btn-comprar-vip:hover { transform: scale(1.05); }
-        .btn-simulador-backend { background: #2ecc71; color: white; border: none; padding: 8px; border-radius: 8px; font-size: 12px; margin-top: 15px; cursor: pointer; opacity: 0.7;}
+        .grid-planos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px; }
+        .card-plano { border: 2px solid #e2e8f0; border-radius: 12px; padding: 30px 20px; cursor: pointer; transition: 0.3s; position: relative; background: white; display: flex; flex-direction: column; }
+        .card-plano:hover { border-color: #8e44ad; box-shadow: 0 10px 25px rgba(142,68,173,0.15); transform: translateY(-5px); }
+        .card-plano.ativo { border-color: #8e44ad; background: #fcf9ff; box-shadow: 0 0 0 2px #8e44ad; }
+        .badge-oferta { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: #e74c3c; color: white; font-size: 12px; font-weight: bold; padding: 6px 15px; border-radius: 20px; text-transform: uppercase; letter-spacing: 1px; white-space: nowrap;}
+        .plano-titulo { font-size: 20px; color: #2c3e50; font-weight: bold; margin-bottom: 5px; }
+        .plano-sub { font-size: 13px; color: #8e44ad; font-weight: bold; text-transform: uppercase; margin-bottom: 15px;}
+        .plano-preco { font-size: 40px; font-weight: 900; color: #2c3e50; margin: 15px 0; }
+        .plano-preco span { font-size: 14px; color: #7f8c8d; font-weight: normal; }
+        .plano-preco s { font-size: 16px; color: #e74c3c; font-weight: normal; margin-right: 5px; display: block; margin-bottom: -5px;} 
+        .plano-features { list-style: none; padding: 0; margin: 20px 0 0 0; text-align: left; font-size: 14px; color: #475569; border-top: 1px solid #eee; padding-top: 20px; flex-grow: 1;}
+        .plano-features li { margin-bottom: 12px; display: flex; align-items: flex-start; gap: 8px; line-height: 1.4;}
+        .plano-features li .material-symbols-outlined { font-size: 18px; color: #27ae60; flex-shrink: 0;}
+        .icones-apps { display: flex; justify-content: center; gap: 15px; margin: 15px 0; color: #8e44ad;}
+        
+        .btn-comprar-plano { background: #27ae60; color: white; border: none; padding: 18px 40px; border-radius: 30px; font-size: 18px; font-weight: 900; cursor: pointer; transition: 0.3s; width: 100%; max-width: 400px; box-shadow: 0 10px 20px rgba(39, 174, 96, 0.3);}
+        .btn-comprar-plano:hover { background: #219653; transform: scale(1.05); }
+        .btn-comprar-plano:disabled { background: #bdc3c7; cursor: not-allowed; transform: none; box-shadow: none; color: #7f8c8d;}
+
+        .btn-fechar-planos { position: absolute; top: 20px; right: 20px; background: transparent; border: none; color: #7f8c8d; cursor: pointer; font-size: 24px; transition: 0.2s;}
+        .btn-fechar-planos:hover { color: #e74c3c; }
 
         .area-foto-perfil { display: flex; flex-direction: column; align-items: center; margin-bottom: 20px; }
         .foto-preview { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 3px solid #8e44ad; cursor: pointer; background-color: #ecf0f1; display: flex; justify-content: center; align-items: center; overflow: hidden; position: relative; transition: 0.3s; }
         .foto-preview:hover { opacity: 0.8; }
         .icone-camera { position: absolute; color: white; background: rgba(0,0,0,0.5); width: 100%; height: 30px; bottom: 0; display: flex; justify-content: center; align-items: center; font-size: 14px; }
+        
         .area-tema { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: #f8f9fa; border-radius: 8px; margin-bottom: 10px; border: 1px solid #ddd; transition: 0.3s; }
         .area-tema strong { color: #2c3e50; transition: 0.3s; }
+        
         .area-suporte { margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee; transition: 0.3s; }
         .box-suporte { display: flex; align-items: center; gap: 10px; background: #f8f9fa; padding: 10px; border-radius: 8px; border: 1px solid #ddd; transition: 0.3s; }
         .box-suporte a { color: #2c3e50; font-size: 13px; text-decoration: none; font-weight: bold; word-break: break-all; transition: 0.3s;}
         .box-suporte a:hover { color: #8e44ad; text-decoration: underline;}
+
         .switch { position: relative; display: inline-block; width: 50px; height: 26px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
         .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
         input:checked + .slider { background-color: #8e44ad; }
         input:checked + .slider:before { transform: translateX(24px); }
+
         .caixa-leitura { font-size: 13px; color: #475569; line-height: 1.6; text-align: justify; background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; max-height: 40vh; overflow-y: auto; margin-top: 15px; }
         .caixa-leitura strong { color: #2c3e50; }
 
@@ -127,7 +156,7 @@
         body.dark-mode .btn-cancelar { background-color: #333; color: white; }
         body.dark-mode .opcao-tipo { border-color: #444; color: #e0e0e0; }
         body.dark-mode .opcao-tipo.bloqueada { background-color: #1a1a1a; border-color: #222; }
-        body.dark-mode .opcao-tipo.bloqueada:hover { border-color: #f1c40f; background-color: #332a00; color: #f1c40f; }
+        body.dark-mode .opcao-tipo.bloqueada:hover { border-color: #8e44ad; background-color: #332a40; color: #8e44ad; }
         body.dark-mode .opcao-tipo:hover:not(.bloqueada) { border-color: #8e44ad; background-color: #2a2a2a; }
         body.dark-mode .opcao-tipo.ativo:not(.bloqueada) { background-color: #8e44ad; color: white; border-color: #8e44ad; }
         body.dark-mode .btn-menu-mobile { color: white; }
@@ -142,6 +171,23 @@
         body.dark-mode #tutorial-tooltip h3 { color: white; }
         body.dark-mode #tutorial-tooltip p { color: #aaa; }
 
+        /* Dark Mode Modal VIP */
+        body.dark-mode .modal-planos-container { background: #1e1e1e; border: 1px solid #333; }
+        body.dark-mode .modal-planos-container h2 { color: #fff; }
+        body.dark-mode .card-plano { background: #2a2a2a; border-color: #444; }
+        body.dark-mode .card-plano:hover { border-color: #8e44ad; }
+        body.dark-mode .card-plano.ativo { background: #332a40; border-color: #8e44ad; }
+        body.dark-mode .plano-titulo, body.dark-mode .plano-preco { color: #fff; }
+        body.dark-mode .plano-features { color: #cbd5e1; border-color: #444;}
+        body.dark-mode .btn-fechar-planos:hover { color: #e74c3c; }
+        body.dark-mode .banner-plano-ativo { background: #2a2a2a; border-color: #444; }
+        body.dark-mode .banner-plano-ativo .info-plano h4 { color: #fff; }
+
+        @media (max-width: 900px) {
+            .grid-planos { grid-template-columns: 1fr; }
+            .modal-planos-container { padding: 25px; }
+            .card-plano { padding: 20px 15px; }
+        }
         @media (max-width: 768px) {
             body::before { width: 100vw; height: 100vw; }
             .menu-lateral { left: -250px; }
@@ -152,10 +198,11 @@
             .cabecalho { flex-direction: column; align-items: stretch; gap: 20px; padding: 20px 15px; }
             .saudacao-area { justify-content: space-between; width: 100%; }
             .cabecalho h1 { font-size: 18px; } 
-            .botao-novo-grupo { width: 100%; justify-content: center; padding: 15px; font-size: 16px; }
+            .area-botoes-topo { width: 100%; justify-content: space-between; }
+            .botao-novo-grupo, .btn-upgrade-header { flex: 1; justify-content: center; padding: 15px; font-size: 14px; margin: 0;}
             .card-grupo { width: 100%; min-width: unset; padding: 20px; }
             .grid-tipo-projeto { grid-template-columns: 1fr; } 
-            .caixa-modal, .caixa-modal-vip { width: 95%; padding: 20px; }
+            .caixa-modal { width: 95%; padding: 20px; }
             .botoes-modal { flex-direction: column; gap: 15px; } 
             .btn-cancelar, .btn-salvar { width: 100%; padding: 15px; }
             #tutorial-tooltip { width: 80%; left: 10% !important; }
@@ -222,9 +269,15 @@
                 </div>
                 <img id="foto-topo" src="https://via.placeholder.com/150/ecf0f1/8e44ad?text=User" class="foto-perfil-topo" alt="Foto">
             </div>
-            <button id="btn-abrir-modal" class="botao-novo-grupo">
-                <span class="material-symbols-outlined">add_circle</span> Criar Novo Trabalho
-            </button>
+            
+            <div class="area-botoes-topo">
+                <button id="btn-header-vip" class="btn-upgrade-header">
+                    <span class="material-symbols-outlined">star</span> Assinar VIP
+                </button>
+                <button id="btn-abrir-modal" class="botao-novo-grupo">
+                    <span class="material-symbols-outlined">add_circle</span> Criar Novo Trabalho
+                </button>
+            </div>
         </div>
         
         <h2 class="titulo-secao" id="titulo-favoritos" style="display: none;">
@@ -245,24 +298,72 @@
     </div>
 
     <div class="fundo-modal" id="modal-vip-vendas">
-        <div class="caixa-modal-vip">
-            <h2><span class="material-symbols-outlined" style="font-size: 32px; vertical-align: middle;">workspace_premium</span> Ágora VIP</h2>
-            <p style="color: #bdc3c7;">Eleve a sua produtividade e libere o poder total da plataforma.</p>
+        <div class="modal-planos-container">
+            <button class="btn-fechar-planos" onclick="document.getElementById('modal-vip-vendas').style.display='none'"><span class="material-symbols-outlined">close</span></button>
             
-            <div class="lista-beneficios">
-                <p><span class="material-symbols-outlined">check_circle</span> Editor de Slides Completo</p>
-                <p><span class="material-symbols-outlined">check_circle</span> Reuniões de Vídeo Ilimitadas</p>
-                <p><span class="material-symbols-outlined">check_circle</span> Compartilhamento VIP de Projetos</p>
-                <p><span class="material-symbols-outlined">check_circle</span> Selo Exclusivo de Membro Pro</p>
+            <h2>Planos Ágora Pro</h2>
+            <p>Eleve a sua produtividade e libere o poder total da plataforma.</p>
+            
+            <div class="banner-plano-ativo">
+                <div class="info-plano">
+                    <h4 id="texto-nome-plano-ativo"><span class="material-symbols-outlined">account_circle</span> Carregando plano...</h4>
+                    <p id="texto-desc-plano-ativo">Verificando status da sua conta no sistema.</p>
+                </div>
+                <div class="badge-status" id="badge-plano-ativo">Aguarde</div>
+            </div>
+            
+            <div class="grid-planos">
+                <div class="card-plano" onclick="selecionarPlano(this, 'mensal')">
+                    <div class="plano-titulo">Ágora Mensal</div>
+                    <div class="plano-sub">1 Usuário VIP</div>
+                    <div class="icones-apps">
+                        <span class="material-symbols-outlined">description</span>
+                        <span class="material-symbols-outlined">slideshow</span>
+                    </div>
+                    <div class="plano-preco">R$ 4,90<br><span>/mês</span></div>
+                    <ul class="plano-features">
+                        <li><span class="material-symbols-outlined">check</span> Acesso ao Editor de Slides</li>
+                        <li><span class="material-symbols-outlined">check</span> Reuniões Ilimitadas</li>
+                        <li><span class="material-symbols-outlined">check</span> Upload de Imagens</li>
+                    </ul>
+                </div>
+
+                <div class="card-plano" onclick="selecionarPlano(this, 'equipe')">
+                    <div class="plano-titulo">Ágora Turma</div>
+                    <div class="plano-sub">Até 5 Usuários</div>
+                    <div class="icones-apps">
+                        <span class="material-symbols-outlined">description</span>
+                        <span class="material-symbols-outlined">slideshow</span>
+                    </div>
+                    <div class="plano-preco">R$ 14,90<br><span>/mês</span></div>
+                    <ul class="plano-features">
+                        <li><span class="material-symbols-outlined">check</span> VIP para você e seu grupo</li>
+                        <li><span class="material-symbols-outlined">check</span> Editor de Slides Completo</li>
+                        <li><span class="material-symbols-outlined">check</span> Suporte Prioritário</li>
+                    </ul>
+                </div>
+
+                <div class="card-plano ativo" onclick="selecionarPlano(this, 'vitalicio')">
+                    <div class="badge-oferta">Oferta de Lançamento</div>
+                    <div class="plano-titulo">Ágora Vitalício</div>
+                    <div class="plano-sub">Acesso Definitivo</div>
+                    <div class="icones-apps">
+                        <span class="material-symbols-outlined">description</span>
+                        <span class="material-symbols-outlined">slideshow</span>
+                        <span class="material-symbols-outlined">workspace_premium</span>
+                    </div>
+                    <div class="plano-preco"><s>R$ 199,90</s><br>R$ 20,00<br><span>/único</span></div>
+                    <ul class="plano-features">
+                        <li><span class="material-symbols-outlined">check</span> Pague uma vez, use para sempre</li>
+                        <li><span class="material-symbols-outlined">check</span> Todas as funções VIP</li>
+                        <li><span class="material-symbols-outlined">check</span> Atualizações futuras inclusas</li>
+                    </ul>
+                </div>
             </div>
 
-            <div class="preco-vip">R$ 10,00</div>
-            <div class="preco-sub">ACESSO VITALÍCIO</div>
-            
-            <button id="btn-assinar-vip" class="btn-comprar-vip">Pagar com PIX ou Cartão</button>
-            <button onclick="document.getElementById('modal-vip-vendas').style.display='none'" style="background:transparent; border:none; color:#7f8c8d; margin-top: 20px; cursor: pointer; text-decoration: underline;">Voltar para o plano grátis</button>
-            
-            <button id="btn-simular-backend" class="btn-simulador-backend">⚙️ Simular pagamento Aprovado (Testes)</button>
+            <button id="btn-assinar-vip" class="btn-comprar-plano">Atualizar Agora</button>
+            <br>
+            <button id="btn-simular-backend" style="background: transparent; color: #2ecc71; border: none; font-size: 12px; margin-top: 15px; cursor: pointer; text-decoration: underline;">Simular Pagamento (Dev)</button>
         </div>
     </div>
 
@@ -277,7 +378,7 @@
                 </div>
                 
                 <div class="opcao-tipo" id="opcao-slide-btn" data-tipo="slide">
-                    <div id="selo-lock-slide" class="selo-bloqueado" style="display:none;"><span class="material-symbols-outlined" style="font-size: 12px;">lock</span></div>
+                    <div id="selo-lock-slide" class="selo-bloqueado" style="display:none;"><span class="material-symbols-outlined" style="font-size: 12px;">lock</span> VIP</div>
                     <span class="material-symbols-outlined">slideshow</span><span>Apresentação</span>
                 </div>
             </div>
@@ -343,26 +444,38 @@
         let meuEmail = "";
         let isUserVip = false; 
         
-        // ==========================================================
-        // COMO LIGAR AO SEU NUBANK:
-        // 1. Crie uma conta no Mercado Pago.
-        // 2. Vá em "Cobrar com Link" e crie um de R$ 10,00.
-        // 3. Cole o link gerado aqui embaixo:
-        // ==========================================================
         const LINK_DE_PAGAMENTO = "https://link.mercadopago.com.br/SEU_LINK_AQUI";
 
         // ========================================================
-        // O CÉREBRO DO TUTORIAL DE ONBOARDING
+        // A LÓGICA DE ABRIR A LOJA VIP
+        // ========================================================
+        const abrirLojaVip = () => {
+            document.getElementById('menu-lateral').classList.remove('aberto');
+            document.getElementById('overlay-menu').classList.remove('ativo');
+            document.getElementById('modal-vip-vendas').style.display = 'flex';
+        };
+
+        document.getElementById('btn-lateral-vip').addEventListener('click', abrirLojaVip);
+        document.getElementById('btn-header-vip').addEventListener('click', abrirLojaVip);
+
+        window.selecionarPlano = function(elementoClicado, plano) {
+            const cartoes = document.querySelectorAll('.card-plano');
+            cartoes.forEach(c => c.classList.remove('ativo'));
+            elementoClicado.classList.add('ativo');
+        }
+
+        // ========================================================
+        // O CÉREBRO DO TUTORIAL
         // ========================================================
         const tutFocus = document.getElementById('tutorial-focus');
         const tutTooltip = document.getElementById('tutorial-tooltip');
         let passoAtual = 0;
 
         const passosTutorial = [
-            { elemento: '.botao-novo-grupo', titulo: '<span class="material-symbols-outlined">add_circle</span> Criar Projeto', texto: 'Este é o botão mais importante. Clique aqui para iniciar um novo <strong>Documento de Texto</strong> com normas ABNT ou uma <strong>Apresentação de Slides</strong> colaborativa.' },
+            { elemento: '.botao-novo-grupo', titulo: '<span class="material-symbols-outlined">add_circle</span> Criar Projeto', texto: 'Este é o botão mais importante. Clique aqui para iniciar um novo <strong>Documento de Texto</strong> ou uma <strong>Apresentação de Slides</strong> colaborativa.' },
             { elemento: '#area-perfil-tut', titulo: '<span class="material-symbols-outlined">account_circle</span> Seu Perfil', texto: 'Aqui fica o seu cartão de visita. Você pode alterar seu Nome e Foto clicando na aba de Configurações no menu lateral.' },
-            { elemento: '#area-projetos-tut', titulo: '<span class="material-symbols-outlined">folder_open</span> Seus Trabalhos', texto: 'Todos os projetos em que você foi convidado ou criou aparecem aqui embaixo. Dica: Clique na <strong>Estrela</strong> de um projeto para fixá-lo no topo!' },
-            { elemento: '.menu-lateral', titulo: '<span class="material-symbols-outlined">menu</span> Menu e Ferramentas', texto: 'Use esta barra para acessar o Conversor PDF, ativar o Modo Escuro e ler as nossas Políticas de Segurança e Conduta da plataforma.' }
+            { elemento: '#area-projetos-tut', titulo: '<span class="material-symbols-outlined">folder_open</span> Seus Trabalhos', texto: 'Todos os projetos em que você foi convidado ou criou aparecem aqui. Dica: Clique na <strong>Estrela</strong> de um projeto para fixá-lo no topo!' },
+            { elemento: '.menu-lateral', titulo: '<span class="material-symbols-outlined">menu</span> Menu e Ferramentas', texto: 'Use esta barra para acessar o Conversor PDF, ativar o Modo Escuro e ler as nossas Políticas de Segurança e Conduta.' }
         ];
 
         function atualizarTutorial() {
@@ -384,39 +497,24 @@
             tutTooltip.style.display = 'block';
             setTimeout(() => { tutTooltip.style.opacity = '1'; }, 50);
 
-            if(window.innerWidth > 768) {
-                tutTooltip.style.top = (rect.bottom + 20) + 'px';
-                tutTooltip.style.left = rect.left + 'px';
-            } else {
-                tutTooltip.style.top = '50%';
-                tutTooltip.style.transform = 'translateY(-50%)';
-            }
+            if(window.innerWidth > 768) { tutTooltip.style.top = (rect.bottom + 20) + 'px'; tutTooltip.style.left = rect.left + 'px'; } 
+            else { tutTooltip.style.top = '50%'; tutTooltip.style.transform = 'translateY(-50%)'; }
             document.getElementById('tut-next').innerText = passoAtual === passosTutorial.length - 1 ? 'Concluir' : 'Próximo';
         }
 
         function iniciaTutorial() {
-            passoAtual = 0;
-            document.getElementById('menu-lateral').classList.remove('aberto');
-            document.getElementById('overlay-menu').classList.remove('ativo');
-            window.scrollTo(0,0);
-            atualizarTutorial();
+            passoAtual = 0; document.getElementById('menu-lateral').classList.remove('aberto'); document.getElementById('overlay-menu').classList.remove('ativo');
+            window.scrollTo(0,0); atualizarTutorial();
         }
 
-        function encerraTutorial() {
-            tutFocus.style.display = 'none';
-            tutTooltip.style.opacity = '0';
-            setTimeout(() => { tutTooltip.style.display = 'none'; }, 400);
-            localStorage.setItem('tutorial_agora_visto', 'sim');
-        }
+        function encerraTutorial() { tutFocus.style.display = 'none'; tutTooltip.style.opacity = '0'; setTimeout(() => { tutTooltip.style.display = 'none'; }, 400); localStorage.setItem('tutorial_agora_visto', 'sim'); }
 
         document.getElementById('tut-next').addEventListener('click', () => { passoAtual++; atualizarTutorial(); });
         document.getElementById('tut-skip').addEventListener('click', encerraTutorial);
         document.getElementById('btn-iniciar-tutorial').addEventListener('click', iniciaTutorial);
 
-        // MENU MOBILE E TEMA
-        const btnMenu = document.getElementById('btn-abrir-menu');
-        const menuLateral = document.getElementById('menu-lateral');
-        const overlay = document.getElementById('overlay-menu');
+        // MENU E TEMA
+        const btnMenu = document.getElementById('btn-abrir-menu'); const menuLateral = document.getElementById('menu-lateral'); const overlay = document.getElementById('overlay-menu');
         btnMenu.addEventListener('click', () => { menuLateral.classList.add('aberto'); overlay.classList.add('ativo'); });
         overlay.addEventListener('click', () => { menuLateral.classList.remove('aberto'); overlay.classList.remove('ativo'); });
 
@@ -435,9 +533,7 @@
         };
 
         window.abrirPolitica = function(tipo) {
-            const modal = document.getElementById('modal-politicas');
-            const titulo = document.getElementById('titulo-modal-politica');
-            const conteudo = document.getElementById('conteudo-modal-politica');
+            const modal = document.getElementById('modal-politicas'); const titulo = document.getElementById('titulo-modal-politica'); const conteudo = document.getElementById('conteudo-modal-politica');
             if(tipo === 'privacidade') { titulo.innerHTML = '<span class="material-symbols-outlined" style="color:#3498db;">lock</span> Políticas de Privacidade'; conteudo.innerHTML = conteudosPoliticas.privacidade; } 
             else if(tipo === 'seguranca') { titulo.innerHTML = '<span class="material-symbols-outlined" style="color:#2ecc71;">security</span> Políticas de Segurança'; conteudo.innerHTML = conteudosPoliticas.seguranca; } 
             else if(tipo === 'bemestar') { titulo.innerHTML = '<span class="material-symbols-outlined" style="color:#e67e22;">handshake</span> Bem-Estar e Conduta'; conteudo.innerHTML = conteudosPoliticas.bemestar; }
@@ -471,15 +567,11 @@
         document.getElementById('btn-salvar-config').addEventListener('click', async () => {
             const novoNome = document.getElementById('input-nome-perfil').value.trim();
             if(novoNome === "") return;
-            document.getElementById('btn-salvar-config').innerText = "A guardar...";
+            const btnConfig = document.getElementById('btn-salvar-config'); btnConfig.innerText = "A guardar...";
             try { 
                 let atualizacao = { displayName: novoNome };
-                if (fotoBase64ParaSalvar) {
-                    atualizacao.photoURL = fotoBase64ParaSalvar;
-                    await setDoc(doc(db, "perfis_agora", meuEmail), { foto: fotoBase64ParaSalvar, nome: novoNome }, { merge: true });
-                }
-                await updateProfile(auth.currentUser, atualizacao); 
-                location.reload(); 
+                if (fotoBase64ParaSalvar) { atualizacao.photoURL = fotoBase64ParaSalvar; await setDoc(doc(db, "perfis_agora", meuEmail), { foto: fotoBase64ParaSalvar, nome: novoNome }, { merge: true }); }
+                await updateProfile(auth.currentUser, atualizacao); location.reload(); 
             } catch (erro) { alert("Erro ao salvar a imagem."); document.getElementById('btn-salvar-config').innerText = "Guardar Tudo"; }
         });
 
@@ -498,17 +590,41 @@
                     } 
                 } catch(e) {} 
                 
-                // MODO DEUS RETIRADO AQUI: Você não ganha VIP de graça mais. 
-                // Vai poder ver a tela do Cadeado.
+                // MODO DEUS RETIRADO AQUI PARA VOCÊ TESTAR A COMPRA.
+                // Mas, o painel do modal é alterado baseado nessa variável.
+                const tituloPlanoAtivo = document.getElementById('texto-nome-plano-ativo');
+                const descPlanoAtivo = document.getElementById('texto-desc-plano-ativo');
+                const badgePlanoAtivo = document.getElementById('badge-plano-ativo');
+                const btnAssinarVip = document.getElementById('btn-assinar-vip');
 
                 if(isUserVip) {
+                    // Libera funções
                     document.getElementById('badge-vip-header').classList.add('ativo'); 
                     document.getElementById('btn-lateral-vip').classList.add('escondido'); 
+                    document.getElementById('btn-header-vip').classList.add('escondido'); 
                     document.getElementById('opcao-slide-btn').classList.remove('bloqueada');
                     document.getElementById('selo-lock-slide').style.display = 'none';
+                    
+                    // Altera a área do Plano no Modal
+                    tituloPlanoAtivo.innerHTML = '<span class="material-symbols-outlined" style="color: #f1c40f;">workspace_premium</span> Ágora Premium';
+                    descPlanoAtivo.innerHTML = 'Você possui acesso ilimitado a todas as ferramentas (Apresentação, PDF, Vídeo e AI).';
+                    badgePlanoAtivo.innerText = "ATIVO";
+                    badgePlanoAtivo.style.background = "#2ecc71";
+                    
+                    // Trava o botão de compra para quem já é VIP
+                    btnAssinarVip.innerText = "Você já possui o plano máximo";
+                    btnAssinarVip.disabled = true;
                 } else {
+                    // Bloqueia funções
+                    document.getElementById('btn-header-vip').classList.remove('escondido'); 
                     document.getElementById('opcao-slide-btn').classList.add('bloqueada');
                     document.getElementById('selo-lock-slide').style.display = 'block';
+
+                    // Altera a área do Plano no Modal
+                    tituloPlanoAtivo.innerHTML = '<span class="material-symbols-outlined" style="color: #7f8c8d;">account_circle</span> Ágora Básico';
+                    descPlanoAtivo.innerHTML = 'Você está utilizando os recursos gratuitos. Atualize para liberar apresentações e inteligência artificial.';
+                    badgePlanoAtivo.innerText = "GRÁTIS";
+                    badgePlanoAtivo.style.background = "#95a5a6";
                 }
 
                 document.getElementById('texto-boas-vindas').innerHTML = `Olá, ${nomeUsuario}! 👋`;
@@ -526,64 +642,32 @@
         document.getElementById('btn-abrir-config').addEventListener('click', () => { document.getElementById('modal-config').style.display = 'flex'; });
         document.getElementById('btn-cancelar-config').addEventListener('click', () => { document.getElementById('modal-config').style.display = 'none'; });
 
-        // ========================================================
-        // O SISTEMA DE VENDAS E BLOQUEIO DE VIP
-        // ========================================================
-        
-        document.getElementById('btn-lateral-vip').addEventListener('click', () => {
-            document.getElementById('menu-lateral').classList.remove('aberto');
-            document.getElementById('overlay-menu').classList.remove('ativo');
-            document.getElementById('modal-vip-vendas').style.display = 'flex';
-        });
-
+        // SISTEMA DE PAGAMENTO E VENDAS
         document.getElementById('btn-assinar-vip').addEventListener('click', () => {
-            if(LINK_DE_PAGAMENTO.includes("SEU_LINK_AQUI")) {
-                alert("O Desenvolvedor ainda precisa colar o Link do Mercado Pago no código-fonte!");
-            } else {
-                window.open(LINK_DE_PAGAMENTO, '_blank');
-            }
+            if(LINK_DE_PAGAMENTO.includes("SEU_LINK_AQUI")) { alert("Você precisa colar o Link de Pagamento do Mercado Pago no código-fonte!"); } 
+            else { window.open(LINK_DE_PAGAMENTO, '_blank'); }
         });
 
         document.getElementById('btn-simular-backend').addEventListener('click', async () => {
-            const btnComprar = document.getElementById('btn-simular-backend');
-            btnComprar.innerText = "Aguarde...";
-            
-            try {
-                await setDoc(doc(db, "perfis_agora", meuEmail), { isVip: true }, { merge: true });
-                alert("Pagamento Simulado Aprovado! Agora você é VIP.");
-                location.reload(); 
-            } catch(e) {
-                alert("Erro na simulação.");
-                btnComprar.innerText = "⚙️ Simular pagamento Aprovado";
-            }
+            const btnComprar = document.getElementById('btn-simular-backend'); btnComprar.innerText = "Aguarde...";
+            try { await setDoc(doc(db, "perfis_agora", meuEmail), { isVip: true }, { merge: true }); alert("Você é VIP! Recarregando..."); location.reload(); } 
+            catch(e) { alert("Erro na simulação."); btnComprar.innerText = "Simular Pagamento (Dev)"; }
         });
 
-        // CRIAÇÃO DE PROJETO
+        // CRIAÇÃO DE PROJETO COM CADEADO
         let tipoProjetoSelecionado = 'documento';
         const cartoesTipo = document.querySelectorAll('.opcao-tipo');
-        
         cartoesTipo.forEach(cartao => {
             cartao.addEventListener('click', () => { 
                 const tipoClicado = cartao.getAttribute('data-tipo');
-                
-                if(tipoClicado === 'slide' && !isUserVip) {
-                    document.getElementById('modal-criacao').style.display = 'none';
-                    document.getElementById('modal-vip-vendas').style.display = 'flex';
-                    return; 
-                }
-
-                cartoesTipo.forEach(c => c.classList.remove('ativo')); 
-                cartao.classList.add('ativo'); 
-                tipoProjetoSelecionado = tipoClicado; 
+                if(tipoClicado === 'slide' && !isUserVip) { document.getElementById('modal-criacao').style.display = 'none'; abrirLojaVip(); return; }
+                cartoesTipo.forEach(c => c.classList.remove('ativo')); cartao.classList.add('ativo'); tipoProjetoSelecionado = tipoClicado; 
             });
         });
 
         document.getElementById('btn-abrir-modal').addEventListener('click', () => { 
-            cartoesTipo.forEach(c => c.classList.remove('ativo'));
-            document.querySelector('[data-tipo="documento"]').classList.add('ativo');
-            tipoProjetoSelecionado = 'documento';
-            document.getElementById('modal-criacao').style.display = 'flex'; 
-            document.getElementById('nome-novo-grupo').focus(); 
+            cartoesTipo.forEach(c => c.classList.remove('ativo')); document.querySelector('[data-tipo="documento"]').classList.add('ativo'); tipoProjetoSelecionado = 'documento';
+            document.getElementById('modal-criacao').style.display = 'flex'; document.getElementById('nome-novo-grupo').focus(); 
         });
         document.getElementById('btn-cancelar').addEventListener('click', () => { document.getElementById('modal-criacao').style.display = 'none'; document.getElementById('nome-novo-grupo').value = '';});
 
@@ -602,11 +686,9 @@
             } catch (err) { alert("Erro de conexão. Tente novamente."); btnSalvar.innerText = "Criar Projeto"; }
         });
 
-        // CARREGAMENTO (COM MODO DEUS VISUALIZADOR)
+        // CARREGAMENTO DOS GRUPOS
         function carregarMeusGrupos() {
             let consultaProjetos;
-            
-            // Você ainda puxa todos os projetos do banco de dados (Mas não é VIP automaticamente)
             if (meuEmail === "pedroeliasm08@gmail.com") { consultaProjetos = query(collection(db, "projetos")); } 
             else { consultaProjetos = query(collection(db, "projetos"), where("usuarios", "array-contains", meuEmail)); }
             
@@ -624,7 +706,6 @@
                     let meuCargo = permissoesSeguras[meuEmail] || "membro";
                     let nomeDoCargo = meuCargo.toUpperCase();
 
-                    // MANTIDO: O poder de visualizar as salas como Desenvolvedor
                     if (meuEmail === "pedroeliasm08@gmail.com") { meuCargo = "admin"; nomeDoCargo = "DESENVOLVEDOR GERAL"; }
 
                     let corCargo = meuCargo === "admin" ? "#8e44ad" : (meuCargo === "editor" ? "#27ae60" : "#7f8c8d");
@@ -656,11 +737,7 @@
         window.toggleFavorito = async (id, isFavAtualmente) => { const docRef = doc(db, "projetos", id); if(isFavAtualmente) { await updateDoc(docRef, { favoritos: arrayRemove(meuEmail) }); } else { await updateDoc(docRef, { favoritos: arrayUnion(meuEmail) }); } };
     </script>
     <script>
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('sw.js').then(reg => console.log('Cérebro Offline ativado!', reg.scope)).catch(err => console.log('Falha no Service Worker:', err));
-        });
-    }
-</script>
+    if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').then(reg => console.log('Cérebro Offline ativado!', reg.scope)).catch(err => console.log('Falha no Service Worker:', err)); }); }
+    </script>
 </body>
 </html>
