@@ -126,9 +126,11 @@
 
         /* Dark Mode Especial VIP Modal */
         body.dark-mode #modal-vip-vendas .caixa-modal { background-color: #1e1e1e; border-top-color: #f1c40f; }
+        body.dark-mode #conteudo-vip-qr { border-top-color: #25D366 !important; }
         body.dark-mode #modal-vip-vendas h2 { color: #fff !important; }
-        body.dark-mode #modal-vip-vendas div[style*="background: #f8fafc"] { background: #2a2a2a !important; border-color: #444 !important; }
+        body.dark-mode #modal-vip-vendas div[style*="background: #f8fafc"], body.dark-mode #modal-vip-vendas div[style*="background: white"] { background: #2a2a2a !important; border-color: #444 !important; }
         body.dark-mode #modal-vip-vendas span[style*="color: #2c3e50"] { color: #fff !important; }
+        body.dark-mode #texto-numero-zap { color: #fff !important; }
 
         @media (max-width: 768px) {
             body::before { width: 100vw; height: 100vw; }
@@ -226,8 +228,9 @@
     </div>
 
     <div class="fundo-modal" id="modal-vip-vendas">
-        <div class="caixa-modal" style="max-width: 450px; text-align: center; border-top: 5px solid #f1c40f; position: relative;">
-            <button class="btn-fechar-planos" style="position:absolute; top: 15px; right: 15px; background: none; border: none; cursor: pointer; font-size: 20px; color: #7f8c8d;" onclick="document.getElementById('modal-vip-vendas').style.display='none'"><span class="material-symbols-outlined">close</span></button>
+        
+        <div class="caixa-modal" style="max-width: 450px; text-align: center; border-top: 5px solid #f1c40f; position: relative;" id="conteudo-vip-oferta">
+            <button class="btn-fechar-planos" style="position:absolute; top: 15px; right: 15px; background: none; border: none; cursor: pointer; font-size: 20px; color: #7f8c8d;" onclick="fecharModalVip()"><span class="material-symbols-outlined">close</span></button>
             
             <span class="material-symbols-outlined" style="font-size: 50px; color: #f1c40f;">workspace_premium</span>
             <h2 style="margin-top: 10px; color: #2c3e50; justify-content: center;">Ágora VIP Vitalício</h2>
@@ -239,12 +242,33 @@
                 <span style="font-size: 12px; font-weight: bold; color: #27ae60;">Pagamento Único (PIX)</span>
             </div>
 
-            <button class="btn-add" id="btn-assinar-vip" style="background: #25D366; width: 100%; font-size: 16px; padding: 12px; display: flex; justify-content: center; align-items: center; gap: 8px; border:none; border-radius:8px; color:white; font-weight:bold; cursor:pointer;" onclick="comprarViaWhatsApp()">
+            <button class="btn-add" style="background: #25D366; width: 100%; font-size: 16px; padding: 12px; display: flex; justify-content: center; align-items: center; gap: 8px; border:none; border-radius:8px; color:white; font-weight:bold; cursor:pointer;" onclick="mostrarTelaQR()">
                 <span class="material-symbols-outlined">chat</span> Quero ser VIP (Via WhatsApp)
             </button>
             
             <button id="btn-simular-backend" style="background: transparent; color: #2ecc71; border: none; font-size: 12px; margin-top: 15px; cursor: pointer; text-decoration: underline;">⚙️ Simular pagamento Aprovado (Testes)</button>
         </div>
+
+        <div class="caixa-modal" style="max-width: 450px; text-align: center; border-top: 5px solid #25D366; position: relative; display: none;" id="conteudo-vip-qr">
+            <button class="btn-fechar-planos" style="position:absolute; top: 15px; right: 15px; background: none; border: none; cursor: pointer; font-size: 20px; color: #7f8c8d;" onclick="fecharModalVip()"><span class="material-symbols-outlined">close</span></button>
+            
+            <span class="material-symbols-outlined" style="font-size: 50px; color: #25D366;">qr_code_scanner</span>
+            <h2 style="margin-top: 10px; color: #2c3e50; justify-content: center;">Escaneie o código</h2>
+            <p style="font-size: 14px; color: #7f8c8d; line-height: 1.5;">Abra a câmera do seu celular e aponte para o código abaixo para nos enviar uma mensagem no WhatsApp.</p>
+            
+            <div style="margin: 15px auto; background: white; padding: 10px; display: inline-block; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                <img id="img-qr-code" src="" alt="QR Code WhatsApp" style="width: 200px; height: 200px; display: block;">
+            </div>
+
+            <p style="font-size: 18px; font-weight: bold; color: #2c3e50; margin: 5px 0 15px 0;" id="texto-numero-zap">📱 Carregando...</p>
+            
+            <button class="btn-add" style="background: transparent; border: 2px solid #25D366; color: #25D366; width: 100%; font-size: 14px; padding: 12px; display: flex; justify-content: center; align-items: center; gap: 8px; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="comprarViaWhatsApp()">
+                <span class="material-symbols-outlined">open_in_new</span> Estou no celular / Abrir Zap no PC
+            </button>
+            
+            <button class="btn-fechar-modal" onclick="voltarTelaOferta()" style="margin-top: 15px;">Voltar</button>
+        </div>
+
     </div>
 
     <div class="fundo-modal" id="modal-criacao">
@@ -325,10 +349,38 @@
         let isUserVip = false; 
 
         // ===============================================
-        // INSIRA SEU NÚMERO DE WHATSAPP AQUI (Com DDI e DDD)
-        // Exemplo: 5532999999999
+        // SEU NÚMERO DE WHATSAPP CONFIGURADO AQUI
         // ===============================================
-        const MEU_NUMERO_WHATSAPP = "+55(32)9926-6546"; 
+        const MEU_NUMERO_WHATSAPP = "5532999266546"; 
+        const MEU_NUMERO_FORMATADO = "+55 (32) 99926-6546"; 
+
+        // LÓGICA DO QR CODE E NAVEGAÇÃO DO MODAL DE VENDAS
+        window.mostrarTelaQR = function() {
+            // Esconde a oferta, mostra o QR
+            document.getElementById('conteudo-vip-oferta').style.display = 'none';
+            document.getElementById('conteudo-vip-qr').style.display = 'block';
+            
+            // Coloca o número na tela
+            document.getElementById('texto-numero-zap').innerText = `📱 ${MEU_NUMERO_FORMATADO}`;
+
+            // Cria a mensagem e o link
+            const mensagem = `Olá! Tenho interesse em assinar o plano VIP Vitalício do Ágora Pro por R$ 10,00. Meu e-mail de cadastro é: ${meuEmail}`;
+            const linkWhatsApp = `https://wa.me/${MEU_NUMERO_WHATSAPP}?text=${encodeURIComponent(mensagem)}`;
+            
+            // Usa a API do QuickChart para gerar o QR Code na hora
+            const urlQrCode = `https://quickchart.io/qr?text=${encodeURIComponent(linkWhatsApp)}&size=200&margin=2`;
+            document.getElementById('img-qr-code').src = urlQrCode;
+        };
+
+        window.voltarTelaOferta = function() {
+            document.getElementById('conteudo-vip-qr').style.display = 'none';
+            document.getElementById('conteudo-vip-oferta').style.display = 'block';
+        };
+
+        window.fecharModalVip = function() {
+            document.getElementById('modal-vip-vendas').style.display = 'none';
+            voltarTelaOferta(); // Reseta para a próxima vez que abrir
+        };
 
         window.comprarViaWhatsApp = function() {
             const mensagem = `Olá! Tenho interesse em assinar o plano VIP Vitalício do Ágora Pro por R$ 10,00. Meu e-mail de cadastro é: ${meuEmail}`;
@@ -426,12 +478,6 @@
                     document.getElementById('btn-header-vip').classList.add('escondido'); 
                     document.getElementById('opcao-slide-btn').classList.remove('bloqueada');
                     document.getElementById('selo-lock-slide').style.display = 'none';
-                    
-                    const btnAssinarVip = document.getElementById('btn-assinar-vip');
-                    btnAssinarVip.innerText = "Você já possui o plano VIP";
-                    btnAssinarVip.disabled = true;
-                    btnAssinarVip.style.background = "#2ecc71";
-                    btnAssinarVip.style.cursor = "not-allowed";
                 } else {
                     // Bloqueia funções
                     document.getElementById('btn-header-vip').classList.remove('escondido'); 
