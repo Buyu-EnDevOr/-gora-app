@@ -246,7 +246,6 @@
                 <span class="material-symbols-outlined">chat</span> Quero ser VIP (Via WhatsApp)
             </button>
             
-            <button id="btn-simular-backend" style="background: transparent; color: #2ecc71; border: none; font-size: 12px; margin-top: 15px; cursor: pointer; text-decoration: underline;">⚙️ Simular pagamento Aprovado (Testes)</button>
         </div>
 
         <div class="caixa-modal" style="max-width: 450px; text-align: center; border-top: 5px solid #25D366; position: relative; display: none;" id="conteudo-vip-qr">
@@ -497,13 +496,6 @@
         document.getElementById('btn-sair').addEventListener('click', () => { signOut(auth).then(() => { window.location.href = "index.html"; }); });
         document.getElementById('btn-abrir-config').addEventListener('click', () => { document.getElementById('modal-config').style.display = 'flex'; });
         document.getElementById('btn-cancelar-config').addEventListener('click', () => { document.getElementById('modal-config').style.display = 'none'; });
-
-        // SIMULADOR DEV
-        document.getElementById('btn-simular-backend').addEventListener('click', async () => {
-            const btnComprar = document.getElementById('btn-simular-backend'); btnComprar.innerText = "Aguarde...";
-            try { await setDoc(doc(db, "perfis_agora", meuEmail), { isVip: true }, { merge: true }); alert("Você é VIP! Recarregando..."); location.reload(); } 
-            catch(e) { alert("Erro na simulação."); btnComprar.innerText = "⚙️ Simular pagamento Aprovado"; }
-        });
 
         // CRIAÇÃO DE PROJETO COM CADEADO
         let tipoProjetoSelecionado = 'documento';
