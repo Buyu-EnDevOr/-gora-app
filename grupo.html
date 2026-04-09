@@ -50,6 +50,11 @@
                 <span id="status-nuvem" class="status-nuvem">☁️ Sincronizando</span>
             </div>
             <div class="ribbon-actions">
+                <button id="btn-publicar-comunidade" class="btn-top" title="Publicar como Modelo na Comunidade" style="color: #3498db;">
+                    <span class="material-symbols-outlined">public</span> 
+                    <span>Publicar</span>
+                </button>
+                
                 <button id="btn-abrir-equipe" class="btn-top" title="Compartilhar / Equipe">
                     <span class="material-symbols-outlined">group_add</span> 
                     <span>Compartilhar</span>
@@ -611,6 +616,22 @@
     
     <div class="fundo-modal" id="modal-modelos"><div class="caixa-modal" style="max-width: 800px;"><h2 style="margin-top:0;"><span class="material-symbols-outlined" style="vertical-align: middle;">school</span> Central Acadêmica Ágora</h2><p style="font-size: 13px; color: #e74c3c; font-weight: bold;">Injetar um documento substituirá todo o texto da tela.</p><div class="grid-modelos"><div class="cartao-modelo" onclick="abrirPainelGenerico(this, 'painel-tcc')"><div style="background: #f5f0fa; color: #8e44ad; padding: 10px; border-radius: 8px;"><span class="material-symbols-outlined">menu_book</span></div><div class="texto-modelo"><h3>TCC / Monografia</h3><p>Estrutura ABNT Completa.</p></div></div><div class="cartao-modelo" onclick="abrirPainelGenerico(this, 'painel-artigo')"><div style="background: #f5f0fa; color: #8e44ad; padding: 10px; border-radius: 8px;"><span class="material-symbols-outlined">article</span></div><div class="texto-modelo"><h3>Artigo Científico</h3><p>Para publicações.</p></div></div><div class="cartao-modelo" onclick="abrirPainelGenerico(this, 'painel-pesquisa')"><div style="background: #f5f0fa; color: #8e44ad; padding: 10px; border-radius: 8px;"><span class="material-symbols-outlined">biotech</span></div><div class="texto-modelo"><h3>Projeto de Pesquisa</h3><p>Estrutura acadêmica.</p></div></div><div class="cartao-modelo" onclick="aplicarTemplateDireto('resumo')"><div style="background: #f5f0fa; color: #8e44ad; padding: 10px; border-radius: 8px;"><span class="material-symbols-outlined">short_text</span></div><div class="texto-modelo"><h3>Resumo (Abstract)</h3><p>Modelo NBR 6028.</p></div></div><div class="cartao-modelo" onclick="aplicarTemplateDireto('resenha')"><div style="background: #f5f0fa; color: #8e44ad; padding: 10px; border-radius: 8px;"><span class="material-symbols-outlined">rate_review</span></div><div class="texto-modelo"><h3>Resenha Crítica</h3><p>Análise de Obras.</p></div></div><div class="cartao-modelo" onclick="aplicarTemplateDireto('relatorio')"><div style="background: #f5f0fa; color: #8e44ad; padding: 10px; border-radius: 8px;"><span class="material-symbols-outlined">assignment</span></div><div class="texto-modelo"><h3>Relatório Técnico</h3><p>Estágio / Atividades.</p></div></div></div><div id="painel-tcc" class="painel-opcoes"><label class="tcc-opcao"><input type="checkbox" id="tcc-capa" checked> Capa e Folha de Rosto</label><label class="tcc-opcao"><input type="checkbox" id="tcc-resumo" checked> Resumo / Abstract</label><label class="tcc-opcao"><input type="checkbox" id="tcc-desenv" checked> Estrutura Textual</label><button class="btn-add" style="background: #8e44ad; margin-top: 10px;" onclick="gerarDocumentoComplexo('tcc')">Gerar TCC (Multi-páginas)</button></div><div id="painel-artigo" class="painel-opcoes"><label class="tcc-opcao"><input type="checkbox" id="art-tudo" checked> Estrutura Completa do Artigo Científico</label><label class="tcc-opcao"><input type="checkbox" id="art-20pag"> Gerar 15 Páginas em branco de Desenvolvimento</label><button class="btn-add" style="background: #8e44ad; margin-top: 10px;" onclick="gerarDocumentoComplexo('artigo')">Gerar Artigo Científico</button></div><div id="painel-pesquisa" class="painel-opcoes"><label class="tcc-opcao"><input type="checkbox" id="pesq-tudo" checked> Projeto de Pesquisa Completo</label><button class="btn-add" style="background: #8e44ad; margin-top: 10px;" onclick="gerarDocumentoComplexo('pesquisa')">Gerar Projeto</button></div><button class="btn-fechar-modal" onclick="fecharTodosModais()">Cancelar</button></div></div>
 
+    <div class="fundo-modal" id="modal-publicar-comunidade">
+        <div class="caixa-modal">
+            <h2><span class="material-symbols-outlined" style="color:#3498db;">public</span> Publicar na Comunidade</h2>
+            <p style="font-size: 13px; color: #7f8c8d;">Partilhe o seu trabalho como um modelo (Template) para ajudar outros estudantes.</p>
+            
+            <input type="text" id="pub-titulo" class="tool-select" style="width: 100%; padding: 10px; margin-top: 10px; box-sizing: border-box;" placeholder="Título do Modelo (Ex: Resumo de Sociologia)">
+            <textarea id="pub-desc" class="tool-select" style="width: 100%; padding: 10px; margin-top: 10px; height: 60px; resize: none; box-sizing: border-box;" placeholder="Breve descrição do modelo..."></textarea>
+            <input type="text" id="pub-tags" class="tool-select" style="width: 100%; padding: 10px; margin-top: 10px; box-sizing: border-box;" placeholder="Tags separadas por vírgula (Ex: tcc, resumo, historia)">
+            
+            <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+                <button class="btn-fechar-modal" style="width: auto; margin: 0;" onclick="document.getElementById('modal-publicar-comunidade').style.display='none'">Cancelar</button>
+                <button class="btn-add" style="background: #3498db; width: auto;" onclick="enviarParaComunidade()">Publicar Modelo</button>
+            </div>
+        </div>
+    </div>
+
     <script src="https://meet.jit.si/external_api.js"></script>
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
     
@@ -619,14 +640,16 @@
 
     <script type="module">
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, addDoc, collection } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
         
         setTimeout(() => {
             try {
                 const auth = getAuth();
                 const db = getFirestore();
+                window.db = db; // Salva o banco para a Comunidade usar depois
                 onAuthStateChanged(auth, async (user) => {
                     if (user) {
+                        window.meuEmail = user.email; // Salva o email para usar na Comunidade
                         try {
                             const docSnap = await getDoc(doc(db, "perfis_agora", user.email));
                             if (docSnap.exists() && docSnap.data().isVip === true) {
@@ -637,6 +660,50 @@
                 });
             } catch(e) { console.error("Erro Auth:", e); }
         }, 1000);
+
+        // ==========================================
+        // LÓGICA DE PUBLICAR NA COMUNIDADE
+        // ==========================================
+        document.getElementById('btn-publicar-comunidade').addEventListener('click', () => {
+            document.getElementById('modal-publicar-comunidade').style.display = 'flex';
+        });
+
+        window.enviarParaComunidade = async () => {
+            const titulo = document.getElementById('pub-titulo').value.trim();
+            const desc = document.getElementById('pub-desc').value.trim();
+            const tagsStr = document.getElementById('pub-tags').value.trim();
+            
+            if(!titulo) return alert("Dê um título ao seu modelo.");
+            
+            const editorHTML = document.querySelector('.ql-editor').innerHTML;
+            if(editorHTML.replace(/<[^>]*>?/gm, '').trim().length < 10) {
+                return alert("O documento está muito vazio para ser publicado.");
+            }
+
+            const tagsArray = tagsStr.split(',').map(tag => tag.trim().replace('#', '')).filter(t => t !== "");
+
+            try {
+                document.querySelector('#modal-publicar-comunidade .btn-add').innerText = "A publicar...";
+                
+                await addDoc(collection(window.db, "comunidade"), {
+                    titulo: titulo,
+                    descricao: desc,
+                    tags: tagsArray,
+                    autor: window.meuEmail || "anonimo@email.com",
+                    conteudo_html: editorHTML,
+                    likes: [],
+                    timestamp: Date.now()
+                });
+                
+                alert("🎉 Sucesso! O seu modelo já está disponível na aba 'Explorar Comunidade' para todos os utilizadores!");
+                document.getElementById('modal-publicar-comunidade').style.display = 'none';
+                document.querySelector('#modal-publicar-comunidade .btn-add').innerText = "Publicar Modelo";
+            } catch(e) {
+                alert("Erro ao publicar na comunidade.");
+                console.error(e);
+                document.querySelector('#modal-publicar-comunidade .btn-add').innerText = "Publicar Modelo";
+            }
+        };
     </script>
 
     <script>

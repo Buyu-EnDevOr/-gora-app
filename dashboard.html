@@ -177,6 +177,8 @@
         </button>
 
         <a href="dashboard.html" style="border-left: 4px solid #8e44ad; color: white;"><span class="material-symbols-outlined" style="font-size:18px;">home</span> Início</a>
+        <a href="explorar.html" style="color: #3498db; font-weight: bold;"><span class="material-symbols-outlined" style="font-size:18px;">travel_explore</span> Explorar Comunidade</a>
+        
         <a href="conversor.html"><span class="material-symbols-outlined" style="font-size:18px;">picture_as_pdf</span> Conversor PDF</a>
         <a href="#" id="btn-abrir-config"><span class="material-symbols-outlined" style="font-size:18px;">settings</span> Configurações</a>
         
@@ -353,20 +355,12 @@
         const MEU_NUMERO_WHATSAPP = "5532999266546"; 
         const MEU_NUMERO_FORMATADO = "+55 (32) 99926-6546"; 
 
-        // LÓGICA DO QR CODE E NAVEGAÇÃO DO MODAL DE VENDAS
         window.mostrarTelaQR = function() {
-            // Esconde a oferta, mostra o QR
             document.getElementById('conteudo-vip-oferta').style.display = 'none';
             document.getElementById('conteudo-vip-qr').style.display = 'block';
-            
-            // Coloca o número na tela
             document.getElementById('texto-numero-zap').innerText = `📱 ${MEU_NUMERO_FORMATADO}`;
-
-            // Cria a mensagem e o link
             const mensagem = `Olá! Tenho interesse em assinar o plano VIP Vitalício do Ágora Pro por R$ 10,00. Meu e-mail de cadastro é: ${meuEmail}`;
             const linkWhatsApp = `https://wa.me/${MEU_NUMERO_WHATSAPP}?text=${encodeURIComponent(mensagem)}`;
-            
-            // Usa a API do QuickChart para gerar o QR Code na hora
             const urlQrCode = `https://quickchart.io/qr?text=${encodeURIComponent(linkWhatsApp)}&size=200&margin=2`;
             document.getElementById('img-qr-code').src = urlQrCode;
         };
@@ -378,7 +372,7 @@
 
         window.fecharModalVip = function() {
             document.getElementById('modal-vip-vendas').style.display = 'none';
-            voltarTelaOferta(); // Reseta para a próxima vez que abrir
+            voltarTelaOferta(); 
         };
 
         window.comprarViaWhatsApp = function() {
@@ -393,7 +387,6 @@
             document.getElementById('modal-vip-vendas').style.display = 'flex';
         };
 
-        // MENU E TEMA
         const btnMenu = document.getElementById('btn-abrir-menu'); const menuLateral = document.getElementById('menu-lateral'); const overlay = document.getElementById('overlay-menu');
         btnMenu.addEventListener('click', () => { menuLateral.classList.add('aberto'); overlay.classList.add('ativo'); });
         overlay.addEventListener('click', () => { menuLateral.classList.remove('aberto'); overlay.classList.remove('ativo'); });
@@ -405,9 +398,39 @@
             else { document.body.classList.remove('dark-mode'); localStorage.setItem('tema-agora', 'claro'); }
         });
 
-        // POLÍTICAS
+        // ===============================================
+        // POLÍTICAS DE PRIVACIDADE E TERMOS (ATUALIZADOS)
+        // ===============================================
         const conteudosPoliticas = {
-            privacidade: `<strong>1. Coleta Mínima de Dados:</strong> O Ágora Pro respeita a sua privacidade. Coletamos apenas as informações estritamente necessárias para o funcionamento do sistema.<br><br><strong>2. Proteção de Arquivos:</strong> Seus documentos pertencem a você. O Ágora não vende, não analisa e não compartilha dados com terceiros.<br><br><strong>3. Controle:</strong> Você detém o poder de excluir permanentemente seus dados do banco.`,
+            privacidade: `
+                <div style="font-size: 14px; color: #475569; line-height: 1.6;">
+                    <p>No <strong>Ágora Studio</strong>, nós acreditamos que a privacidade é um direito fundamental, não um recurso premium. Lidamos com os seus trabalhos acadêmicos, pesquisas e ideias, e levamos a segurança disso muito a sério. Esta política explica de forma clara, sem letras miúdas, como tratamos os seus dados.</p>
+                    <h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">1. Os dados que recolhemos</h3>
+                    <p>Para que a plataforma funcione perfeitamente, recolhemos apenas o estritamente necessário:</p>
+                    <ul style="padding-left: 20px; margin-bottom: 15px;">
+                        <li><strong>Informações de Conta:</strong> O seu e-mail, nome de exibição e foto de perfil (para que a sua equipe saiba quem está online).</li>
+                        <li><strong>O seu Conteúdo:</strong> Os textos, imagens e formatações que você insere nos seus documentos e apresentações.</li>
+                    </ul>
+                    <h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">2. O que NUNCA fazemos com os seus dados</h3>
+                    <ul style="padding-left: 20px; margin-bottom: 15px;">
+                        <li><strong>Não vendemos os seus dados:</strong> O seu TCC, artigo ou resumo nunca será vendido a terceiros, anunciantes ou empresas de IA.</li>
+                        <li><strong>Não lemos os seus documentos:</strong> A menos que você nos solicite suporte técnico explícito, a nossa equipe não tem permissão nem interesse em ler o que você escreve em salas privadas.</li>
+                        <li><strong>Não guardamos dados financeiros:</strong> Os upgrades para o plano VIP são negociados e confirmados de forma externa (via WhatsApp/PIX), garantindo que nenhum dado de cartão de crédito passe pelos nossos servidores.</li>
+                    </ul>
+                    <h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">3. Onde os dados ficam guardados?</h3>
+                    <p>A infraestrutura do Ágora é construída sob a tecnologia de nuvem do Google (Firebase / Google Cloud). Isso significa que os seus dados estão protegidos pela mesma criptografia de ponta a ponta e pelos mesmos padrões de segurança que os maiores bancos e empresas de tecnologia do mundo utilizam.</p>
+                    <h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">4. Quem pode ver os meus trabalhos?</h3>
+                    <p>Por padrão, <strong>apenas você</strong>. A privacidade inicial de todo projeto é 100% restrita. O seu trabalho só se torna visível para outras pessoas em duas situações criadas por você:</p>
+                    <ol style="padding-left: 20px; margin-bottom: 15px;">
+                        <li>Se você gerar um <strong>Link de Convite</strong> e enviar para a sua equipe.</li>
+                        <li>Se você decidir, voluntariamente, partilhar o seu documento na <strong>Explorar Comunidade</strong> para ajudar outros estudantes.</li>
+                    </ol>
+                    <h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">5. O seu direito ao esquecimento</h3>
+                    <p>Você é o único dono da sua propriedade intelectual. Se decidir parar de usar o Ágora, você pode excluir os seus projetos individualmente. Ao apagar um projeto ou ao solicitar a exclusão da sua conta, os dados são varridos dos nossos bancos de dados de forma irreversível.</p>
+                    <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 25px 0;">
+                    <p style="font-size: 12px; color: #94a3b8; text-align: center;">Ao continuar a utilizar o Ágora Studio, você concorda com o processamento dos dados conforme descrito acima. Para dúvidas ou solicitações de exclusão de conta, contate o suporte.</p>
+                </div>
+            `,
             seguranca: `<strong>1. Criptografia em Trânsito:</strong> Conexões feitas no Ágora Pro utilizam protocolos de segurança modernos do Google Cloud.<br><br><strong>2. Isolamento de Salas:</strong> Apenas usuários com convite explícito podem acessar uma sala.<br><br><strong>3. Senhas:</strong> A segurança da sua conta começa com você.`,
             bemestar: `O Ágora Pro é um ambiente profissional.<br><br><strong>1. Tolerância Zero:</strong> É proibido o uso das salas para disseminação de discurso de ódio, racismo, assédio ou pirataria.<br><br><strong>2. Respeito Mútuo:</strong> Evite apagar o trabalho de colegas sem permissão.<br><br><strong>3. Sanções:</strong> A violação implicará no banimento imediato e definitivo do infrator.`
         };
@@ -420,7 +443,6 @@
             menuLateral.classList.remove('aberto'); overlay.classList.remove('ativo'); modal.style.display = 'flex';
         }
 
-        // FOTO DE PERFIL
         let fotoBase64ParaSalvar = null;
         document.getElementById('btn-trocar-foto').addEventListener('click', () => { document.getElementById('input-foto').click(); });
         document.getElementById('input-foto').addEventListener('change', function(e) {
@@ -455,7 +477,6 @@
             } catch (erro) { alert("Erro ao salvar a imagem."); document.getElementById('btn-salvar-config').innerText = "Guardar Tudo"; }
         });
 
-        // AUTENTICAÇÃO E CHECAGEM DE VIP
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 meuEmail = user.email;
@@ -471,14 +492,12 @@
                 } catch(e) {} 
                 
                 if(isUserVip) {
-                    // Libera funções
                     document.getElementById('badge-vip-header').classList.add('ativo'); 
                     document.getElementById('btn-lateral-vip').classList.add('escondido'); 
                     document.getElementById('btn-header-vip').classList.add('escondido'); 
                     document.getElementById('opcao-slide-btn').classList.remove('bloqueada');
                     document.getElementById('selo-lock-slide').style.display = 'none';
                 } else {
-                    // Bloqueia funções
                     document.getElementById('btn-header-vip').classList.remove('escondido'); 
                     document.getElementById('opcao-slide-btn').classList.add('bloqueada');
                     document.getElementById('selo-lock-slide').style.display = 'block';
@@ -497,7 +516,6 @@
         document.getElementById('btn-abrir-config').addEventListener('click', () => { document.getElementById('modal-config').style.display = 'flex'; });
         document.getElementById('btn-cancelar-config').addEventListener('click', () => { document.getElementById('modal-config').style.display = 'none'; });
 
-        // CRIAÇÃO DE PROJETO COM CADEADO
         let tipoProjetoSelecionado = 'documento';
         const cartoesTipo = document.querySelectorAll('.opcao-tipo');
         cartoesTipo.forEach(cartao => {
@@ -529,7 +547,6 @@
             } catch (err) { alert("Erro de conexão. Tente novamente."); btnSalvar.innerText = "Criar Projeto"; }
         });
 
-        // CARREGAMENTO DOS GRUPOS
         function carregarMeusGrupos() {
             let consultaProjetos;
             if (meuEmail === "pedroeliasm08@gmail.com") { consultaProjetos = query(collection(db, "projetos")); } 
