@@ -13,6 +13,8 @@
         .logo { text-align: center; font-size: 24px; font-weight: 800; margin-bottom: 20px; color: #8e44ad; }
         .menu-lateral a { display: block; color: #bdc3c7; padding: 12px 25px; text-decoration: none; font-size: 15px; display: flex; align-items: center; gap: 10px;}
         .menu-lateral a:hover { background-color: #2c3e50; color: white; }
+        .menu-divisor { height: 1px; background: #2c3e50; margin: 15px 25px; }
+        .menu-label { color: #7f8c8d; font-size: 11px; font-weight: bold; text-transform: uppercase; margin: 10px 25px 5px 25px; letter-spacing: 1px;}
         
         .conteudo { 
             margin-left: 250px; 
@@ -41,7 +43,7 @@
         .grid-publicacoes { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; min-height: 300px; align-content: start;}
         .card-pub { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border-top: 4px solid #3498db; position: relative; transition: 0.3s;}
         .card-pub:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
-        .card-pub h3 { margin: 0 0 10px 0; color: #2c3e50; font-size: 18px; padding-right: 50px; } /* Espaço para não encostar nos botões */
+        .card-pub h3 { margin: 0 0 10px 0; color: #2c3e50; font-size: 18px; padding-right: 50px; } 
         .autor-info { font-size: 12px; color: #7f8c8d; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #eee; }
         
         .tags-container { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 15px; }
@@ -54,7 +56,6 @@
         .btn-like.curtido { color: #f1c40f; }
         .btn-like:hover { transform: scale(1.1); }
         
-        /* BOTÕES DE CONTROLE NO TOPO DO CARD */
         .acoes-topo-card { position: absolute; top: 15px; right: 15px; display: flex; gap: 5px; }
         .btn-denunciar { background: none; border: none; color: #cbd5e1; cursor: pointer; transition: 0.2s; padding: 5px; border-radius: 4px; }
         .btn-denunciar:hover { color: #e74c3c; background: #fef2f2; }
@@ -74,13 +75,15 @@
         .fundo-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 3000; justify-content: center; align-items: center; }
         .caixa-modal { background: white; padding: 30px; border-radius: 12px; width: 100%; max-width: 400px; }
         .caixa-modal h2 { margin-top: 0; display: flex; align-items: center; gap: 8px; }
-        .caixa-modal input[type="text"], .caixa-modal textarea { width: 100%; padding: 10px; margin-top: 15px; border-radius: 8px; border: 1px solid #ddd; box-sizing: border-box; font-family: inherit; font-size: 14px; outline: none;}
+        .caixa-modal input[type="text"], .caixa-modal textarea { width: 100%; padding: 10px; margin: 10px 0 20px 0; border: 1px solid #ddd; box-sizing: border-box; font-family: inherit; font-size: 14px; outline: none;}
         .caixa-modal input[type="text"]:focus, .caixa-modal textarea:focus { border-color: #3498db; }
         .caixa-modal textarea { height: 80px; resize: none; }
         
         .botoes-modal { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
         .btn-cancelar { background: #ecf0f1; color: #2c3e50; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; }
         .btn-salvar { color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        
+        .caixa-leitura { font-size: 13px; color: #475569; line-height: 1.6; text-align: justify; background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; max-height: 40vh; overflow-y: auto; margin-top: 15px; }
     </style>
 </head>
 <body>
@@ -89,6 +92,12 @@
         <div class="logo">Ágora</div>
         <a href="dashboard.html"><span class="material-symbols-outlined">home</span> Início</a>
         <a href="explorar.html" style="border-left: 4px solid #3498db; color: white; background: #2c3e50;"><span class="material-symbols-outlined">travel_explore</span> Explorar Comunidade</a>
+        
+        <div class="menu-divisor"></div>
+        <div class="menu-label">Diretrizes do Ágora</div>
+        <a href="#" onclick="abrirPolitica('privacidade')"><span class="material-symbols-outlined" style="font-size:18px;">lock</span> Privacidade</a>
+        <a href="#" onclick="abrirPolitica('seguranca')"><span class="material-symbols-outlined" style="font-size:18px;">security</span> Segurança</a>
+        <a href="#" onclick="abrirPolitica('bemestar')"><span class="material-symbols-outlined" style="font-size:18px;">handshake</span> Bem-Estar e Conduta</a>
     </div>
 
     <div class="conteudo" id="topo-conteudo">
@@ -142,10 +151,17 @@
         </div>
     </div>
 
+    <div class="fundo-modal" id="modal-politicas">
+        <div class="caixa-modal" style="max-width: 600px;">
+            <h2 id="titulo-modal-politica" style="color:#2c3e50;"><span class="material-symbols-outlined">gavel</span> Termos e Políticas</h2>
+            <div class="caixa-leitura" id="conteudo-modal-politica"></div>
+            <button class="btn-cancelar" onclick="document.getElementById('modal-politicas').style.display='none'" style="width: 100%; margin-top: 20px; background: #8e44ad; color: white; padding: 12px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer;">Estou ciente e concordo</button>
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-        // Importamos o deleteDoc para podermos apagar posts
         import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, arrayUnion, arrayRemove, getDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
         const firebaseConfig = { apiKey: "AIzaSyCrO7jKe3ja8XJWeNTfTpv4wwEWwzzcYzo", authDomain: "agora-ea1be.firebaseapp.com", projectId: "agora-ea1be", storageBucket: "agora-ea1be.firebasestorage.app", messagingSenderId: "801313514193", appId: "1:801313514193:web:99621b133ed4ca80e89bf0" };
@@ -166,6 +182,74 @@
             else { window.location.href = "index.html"; }
         });
 
+        // ===============================================
+        // POLÍTICAS DE PRIVACIDADE E SEGURANÇA
+        // ===============================================
+        const conteudosPoliticas = {
+            privacidade: `
+                <div style="font-size: 14px; color: #475569; line-height: 1.6;">
+                    <p>No <strong>Ágora Studio</strong>, nós acreditamos que a privacidade é um direito fundamental, não um recurso premium. Lidamos com os seus trabalhos acadêmicos, pesquisas e ideias, e levamos a segurança disso muito a sério. Esta política explica de forma clara, sem letras miúdas, como tratamos os seus dados.</p>
+                    <h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">1. Os dados que recolhemos</h3>
+                    <p>Para que a plataforma funcione perfeitamente, recolhemos apenas o estritamente necessário:</p>
+                    <ul style="padding-left: 20px; margin-bottom: 15px;">
+                        <li><strong>Informações de Conta:</strong> O seu e-mail, nome de exibição e foto de perfil (para que a sua equipe saiba quem está online).</li>
+                        <li><strong>O seu Conteúdo:</strong> Os textos, imagens e formatações que você insere nos seus documentos e apresentações.</li>
+                    </ul>
+                    <h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">2. O que NUNCA fazemos com os seus dados</h3>
+                    <ul style="padding-left: 20px; margin-bottom: 15px;">
+                        <li><strong>Não vendemos os seus dados:</strong> O seu TCC, artigo ou resumo nunca será vendido a terceiros, anunciantes ou empresas de IA.</li>
+                        <li><strong>Não lemos os seus documentos:</strong> A menos que você nos solicite suporte técnico explícito, a nossa equipe não tem permissão nem interesse em ler o que você escreve em salas privadas.</li>
+                        <li><strong>Não guardamos dados financeiros:</strong> Os upgrades para o plano VIP são negociados e confirmados de forma externa (via WhatsApp/PIX), garantindo que nenhum dado de cartão de crédito passe pelos nossos servidores.</li>
+                    </ul>
+                    <h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">3. Onde os dados ficam guardados?</h3>
+                    <p>A infraestrutura do Ágora é construída sob a tecnologia de nuvem do Google (Firebase / Google Cloud). Isso significa que os seus dados estão protegidos pela mesma criptografia de ponta a ponta e pelos mesmos padrões de segurança que os maiores bancos e empresas de tecnologia do mundo utilizam.</p>
+                    <h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">4. Quem pode ver os meus trabalhos?</h3>
+                    <p>Por padrão, <strong>apenas você</strong>. A privacidade inicial de todo projeto é 100% restrita. O seu trabalho só se torna visível para outras pessoas em duas situações criadas por você:</p>
+                    <ol style="padding-left: 20px; margin-bottom: 15px;">
+                        <li>Se você gerar um <strong>Link de Convite</strong> e enviar para a sua equipe.</li>
+                        <li>Se você decidir, voluntariamente, partilhar o seu documento na <strong>Explorar Comunidade</strong> para ajudar outros estudantes.</li>
+                    </ol>
+                    <h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">5. O seu direito ao esquecimento</h3>
+                    <p>Você é o único dono da sua propriedade intelectual. Se decidir parar de usar o Ágora, você pode excluir os seus projetos individualmente. Ao apagar um projeto ou ao solicitar a exclusão da sua conta, os dados são varridos dos nossos bancos de dados de forma irreversível.</p>
+                    <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 25px 0;">
+                    <p style="font-size: 12px; color: #94a3b8; text-align: center;">Ao continuar a utilizar o Ágora Studio, você concorda com o processamento dos dados conforme descrito acima. Para dúvidas ou solicitações de exclusão de conta, contate o suporte.</p>
+                </div>
+            `,
+            seguranca: `
+                <div style="font-size: 14px; color: #475569; line-height: 1.6;">
+                    <p>A segurança dos seus projetos é a nossa maior prioridade. O <strong>Ágora Studio</strong> foi construído utilizando tecnologias modernas para garantir que o seu trabalho árduo esteja sempre protegido contra acessos não autorizados e perdas de dados.</p>
+
+                    <h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">1. Infraestrutura de Ponta (Google Cloud)</h3>
+                    <p>Não guardamos os seus dados num servidor caseiro. Utilizamos a infraestrutura do <strong>Firebase (Google)</strong>, o que significa que os seus documentos estão protegidos por criptografia de nível militar, tanto em trânsito (enquanto você digita) quanto em repouso (quando estão salvos no banco de dados).</p>
+
+                    <h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">2. Isolamento e Controle de Acesso</h3>
+                    <ul style="padding-left: 20px; margin-bottom: 15px;">
+                        <li><strong>Projetos Privados:</strong> Todo documento criado nasce 100% privado. Apenas a sua conta tem acesso a ele.</li>
+                        <li><strong>Convites Seguros:</strong> Outras pessoas só entram no seu projeto se você compartilhar o link exclusivo de convite e adicioná-las ativamente à sua equipe através do e-mail delas.</li>
+                        <li><strong>Senhas Criptografadas:</strong> A sua palavra-passe é criptografada no momento do cadastro e protegida pelas políticas rigorosas do Google. Ninguém da nossa equipe tem acesso a ela.</li>
+                    </ul>
+
+                    <h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">3. Pagamentos 100% Seguros</h3>
+                    <p>Para garantir risco zero em transações financeiras, o Ágora não processa pagamentos internamente e <strong>não armazena dados de cartões de crédito</strong>. O upgrade para o plano VIP é feito exclusivamente via PIX através de um canal direto e seguro no WhatsApp oficial da plataforma.</p>
+
+                    <h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">4. A sua parte na Segurança</h3>
+                    <p>A tecnologia faz a maior parte do trabalho, mas precisamos da sua ajuda: não compartilhe a sua senha com terceiros e tenha muito cuidado com quem você adiciona como "Admin" nos seus projetos, pois essa pessoa terá permissão total para apagar o seu documento.</p>
+                </div>
+            `,
+            bemestar: `O Ágora Pro é um ambiente profissional.<br><br><strong>1. Tolerância Zero:</strong> É proibido o uso das salas para disseminação de discurso de ódio, racismo, assédio ou pirataria.<br><br><strong>2. Respeito Mútuo:</strong> Evite apagar o trabalho de colegas sem permissão.<br><br><strong>3. Sanções:</strong> A violação implicará no banimento imediato e definitivo do infrator.`
+        };
+
+        window.abrirPolitica = function(tipo) {
+            const modal = document.getElementById('modal-politicas'); const titulo = document.getElementById('titulo-modal-politica'); const conteudo = document.getElementById('conteudo-modal-politica');
+            if(tipo === 'privacidade') { titulo.innerHTML = '<span class="material-symbols-outlined" style="color:#3498db;">lock</span> Políticas de Privacidade'; conteudo.innerHTML = conteudosPoliticas.privacidade; } 
+            else if(tipo === 'seguranca') { titulo.innerHTML = '<span class="material-symbols-outlined" style="color:#2ecc71;">security</span> Políticas de Segurança'; conteudo.innerHTML = conteudosPoliticas.seguranca; } 
+            else if(tipo === 'bemestar') { titulo.innerHTML = '<span class="material-symbols-outlined" style="color:#e67e22;">handshake</span> Bem-Estar e Conduta'; conteudo.innerHTML = conteudosPoliticas.bemestar; }
+            modal.style.display = 'flex';
+        }
+
+        // ==========================================
+        // COMUNIDADE
+        // ==========================================
         function buscarDadosDoBanco() {
             onSnapshot(collection(db, "comunidade"), (snapshot) => {
                 todasPublicacoes = [];
@@ -209,9 +293,6 @@
                 let tagsHTML = "";
                 if(pub.tags) { pub.tags.forEach(tag => tagsHTML += `<span class="tag-badge">#${tag.trim()}</span>`); }
 
-                // ==============================================================
-                // LÓGICA DE EXIBIÇÃO: SE FOR O DONO, MOSTRA EDITAR E APAGAR
-                // ==============================================================
                 let acoesTopoHTML = '';
                 if (pub.autor === meuEmail) {
                     acoesTopoHTML = `
@@ -296,14 +377,10 @@
 
         document.getElementById('input-pesquisa').addEventListener('input', aplicarFiltroEPesquisa);
 
-        // ==========================================
-        // FUNÇÕES DO DONO DA PUBLICAÇÃO (EDITAR/DELETAR)
-        // ==========================================
         window.deletarPublicacao = async (id) => {
             if(confirm("Tem certeza que deseja apagar esta publicação da comunidade? Esta ação não pode ser desfeita.")) {
                 try {
                     await deleteDoc(doc(db, "comunidade", id));
-                    // A lista vai atualizar sozinha pelo onSnapshot
                 } catch(e) {
                     alert("Erro ao apagar publicação. Tente novamente.");
                 }
@@ -317,7 +394,6 @@
                 document.getElementById('edit-titulo').value = pub.titulo;
                 document.getElementById('edit-desc').value = pub.descricao || "";
                 document.getElementById('edit-tags').value = pub.tags ? pub.tags.join(', ') : "";
-                
                 document.getElementById('modal-editar-pub').style.display = 'flex';
             }
         };
@@ -344,9 +420,6 @@
             }
         };
 
-        // ==========================================
-        // OUTRAS FUNÇÕES (LIKES, DENUNCIA E CLONE)
-        // ==========================================
         window.toggleLike = async (id, isCurtido) => {
             const docRef = doc(db, "comunidade", id);
             if (isCurtido) { await updateDoc(docRef, { likes: arrayRemove(meuEmail) }); } 

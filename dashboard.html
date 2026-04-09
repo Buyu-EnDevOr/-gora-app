@@ -247,7 +247,6 @@
             <button class="btn-add" style="background: #25D366; width: 100%; font-size: 16px; padding: 12px; display: flex; justify-content: center; align-items: center; gap: 8px; border:none; border-radius:8px; color:white; font-weight:bold; cursor:pointer;" onclick="mostrarTelaQR()">
                 <span class="material-symbols-outlined">chat</span> Quero ser VIP (Via WhatsApp)
             </button>
-            
         </div>
 
         <div class="caixa-modal" style="max-width: 450px; text-align: center; border-top: 5px solid #25D366; position: relative; display: none;" id="conteudo-vip-qr">
@@ -349,9 +348,6 @@
         let meuEmail = "";
         let isUserVip = false; 
 
-        // ===============================================
-        // SEU NÚMERO DE WHATSAPP CONFIGURADO AQUI
-        // ===============================================
         const MEU_NUMERO_WHATSAPP = "5532999266546"; 
         const MEU_NUMERO_FORMATADO = "+55 (32) 99926-6546"; 
 
@@ -399,7 +395,7 @@
         });
 
         // ===============================================
-        // POLÍTICAS DE PRIVACIDADE E TERMOS (ATUALIZADOS)
+        // POLÍTICAS (COM SEGURANÇA ATUALIZADA)
         // ===============================================
         const conteudosPoliticas = {
             privacidade: `
@@ -431,7 +427,27 @@
                     <p style="font-size: 12px; color: #94a3b8; text-align: center;">Ao continuar a utilizar o Ágora Studio, você concorda com o processamento dos dados conforme descrito acima. Para dúvidas ou solicitações de exclusão de conta, contate o suporte.</p>
                 </div>
             `,
-            seguranca: `<strong>1. Criptografia em Trânsito:</strong> Conexões feitas no Ágora Pro utilizam protocolos de segurança modernos do Google Cloud.<br><br><strong>2. Isolamento de Salas:</strong> Apenas usuários com convite explícito podem acessar uma sala.<br><br><strong>3. Senhas:</strong> A segurança da sua conta começa com você.`,
+            seguranca: `
+                <div style="font-size: 14px; color: #475569; line-height: 1.6;">
+                    <p>A segurança dos seus projetos é a nossa maior prioridade. O <strong>Ágora Studio</strong> foi construído utilizando tecnologias modernas para garantir que o seu trabalho árduo esteja sempre protegido contra acessos não autorizados e perdas de dados.</p>
+
+                    <h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">1. Infraestrutura de Ponta (Google Cloud)</h3>
+                    <p>Não guardamos os seus dados num servidor caseiro. Utilizamos a infraestrutura do <strong>Firebase (Google)</strong>, o que significa que os seus documentos estão protegidos por criptografia de nível militar, tanto em trânsito (enquanto você digita) quanto em repouso (quando estão salvos no banco de dados).</p>
+
+                    <h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">2. Isolamento e Controle de Acesso</h3>
+                    <ul style="padding-left: 20px; margin-bottom: 15px;">
+                        <li><strong>Projetos Privados:</strong> Todo documento criado nasce 100% privado. Apenas a sua conta tem acesso a ele.</li>
+                        <li><strong>Convites Seguros:</strong> Outras pessoas só entram no seu projeto se você compartilhar o link exclusivo de convite e adicioná-las ativamente à sua equipe através do e-mail delas.</li>
+                        <li><strong>Senhas Criptografadas:</strong> A sua palavra-passe é criptografada no momento do cadastro e protegida pelas políticas rigorosas do Google. Ninguém da nossa equipe tem acesso a ela.</li>
+                    </ul>
+
+                    <h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">3. Pagamentos 100% Seguros</h3>
+                    <p>Para garantir risco zero em transações financeiras, o Ágora não processa pagamentos internamente e <strong>não armazena dados de cartões de crédito</strong>. O upgrade para o plano VIP é feito exclusivamente via PIX através de um canal direto e seguro no WhatsApp oficial da plataforma.</p>
+
+                    <h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">4. A sua parte na Segurança</h3>
+                    <p>A tecnologia faz a maior parte do trabalho, mas precisamos da sua ajuda: não compartilhe a sua senha com terceiros e tenha muito cuidado com quem você adiciona como "Admin" nos seus projetos, pois essa pessoa terá permissão total para apagar o seu documento.</p>
+                </div>
+            `,
             bemestar: `O Ágora Pro é um ambiente profissional.<br><br><strong>1. Tolerância Zero:</strong> É proibido o uso das salas para disseminação de discurso de ódio, racismo, assédio ou pirataria.<br><br><strong>2. Respeito Mútuo:</strong> Evite apagar o trabalho de colegas sem permissão.<br><br><strong>3. Sanções:</strong> A violação implicará no banimento imediato e definitivo do infrator.`
         };
 
