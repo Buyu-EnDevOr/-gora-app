@@ -57,9 +57,21 @@
         .btn-ver-modelo:hover { background: #2980b9; transform: translateY(-2px);}
         .btn-clonar { background: #8e44ad; color: white; border: none; padding: 8px 15px; border-radius: 6px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 5px; transition: 0.2s;}
         .btn-clonar:hover { background: #7d3c98; transform: translateY(-2px);}
-        .btn-like { background: none; border: none; cursor: pointer; color: #94a3b8; display: flex; align-items: center; gap: 5px; font-weight: bold; transition: 0.2s;}
-        .btn-like.curtido { color: #f1c40f; }
-        .btn-like:hover { transform: scale(1.1); }
+        
+        /* ========================================== */
+        /* NOVO SISTEMA DE ESTRELAS E AVALIAÇÃO       */
+        /* ========================================== */
+        .area-avaliacao { display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 6px 12px; border-radius: 6px; background: #f8fafc; transition: 0.2s; border: 1px solid transparent; }
+        .area-avaliacao:hover { background: #fffbea; border-color: #f1c40f; }
+        .estrelas-wrapper { position: relative; display: inline-block; color: #cbd5e1; font-size: 18px; }
+        .estrelas-fundo, .estrelas-frente { display: flex; gap: 2px; min-width: max-content; }
+        .estrelas-frente { position: absolute; top: 0; left: 0; overflow: hidden; white-space: nowrap; color: #f1c40f; }
+        .star-icon { font-size: 16px; line-height: 1; user-select: none; }
+        .media-texto { font-size: 13px; font-weight: bold; color: #475569; }
+
+        .estrelas-interativas { display: flex; justify-content: center; gap: 5px; margin: 15px 0; cursor: pointer; }
+        .estrelas-interativas span { font-size: 40px; color: #cbd5e1; transition: 0.2s; }
+        .estrelas-interativas span:hover { transform: scale(1.1); }
         
         .acoes-topo-card { position: absolute; top: 15px; right: 15px; display: flex; gap: 5px; }
         .btn-denunciar { background: none; border: none; color: #cbd5e1; cursor: pointer; transition: 0.2s; padding: 5px; border-radius: 4px; }
@@ -91,31 +103,10 @@
         .caixa-leitura { font-size: 13px; color: #475569; line-height: 1.6; text-align: justify; background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; max-height: 40vh; overflow-y: auto; margin-top: 15px; }
 
         /* ESTILOS DO MODAL DE PRÉ-VISUALIZAÇÃO (PREVIEW) */
-        #modal-preview .caixa-modal { 
-            max-width: 900px; 
-            width: 95%; 
-            height: 90vh; 
-            display: flex; 
-            flex-direction: column; 
-            padding: 0; 
-            overflow: hidden; 
-            background: #e2e8f0; /* Fundo cinza para destacar a folha branca */
-        }
+        #modal-preview .caixa-modal { max-width: 900px; width: 95%; height: 90vh; display: flex; flex-direction: column; padding: 0; overflow: hidden; background: #e2e8f0; }
         .preview-header { padding: 20px 30px; background: white; border-bottom: 1px solid #cbd5e1; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); z-index: 10;}
         .preview-body { flex: 1; overflow-y: auto; padding: 40px 20px; display: flex; justify-content: center; }
-        
-        /* A "Folha de Papel" virtual */
-        .folha-preview { 
-            background: white; 
-            width: 100%; 
-            max-width: 21cm; /* Tamanho A4 */
-            min-height: 29.7cm; 
-            padding: 2cm; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
-            box-sizing: border-box; 
-            color: #000; 
-        }
-        
+        .folha-preview { background: white; width: 100%; max-width: 21cm; min-height: 29.7cm; padding: 2cm; box-shadow: 0 10px 25px rgba(0,0,0,0.1); box-sizing: border-box; color: #000; }
         .preview-footer { padding: 15px 30px; background: white; border-top: 1px solid #cbd5e1; display: flex; justify-content: flex-end; gap: 10px; z-index: 10;}
     </style>
 </head>
@@ -153,6 +144,29 @@
         <div class="paginacao-container" id="paginacao-container"></div>
     </div>
 
+    <div class="fundo-modal" id="modal-avaliar">
+        <div class="caixa-modal" style="text-align: center; max-width: 350px;">
+            <h2 style="justify-content: center; color: #f1c40f;"><span class="material-symbols-outlined">star</span> Avaliar Modelo</h2>
+            <p style="font-size: 13px; color: #7f8c8d;">Dê a sua nota para o trabalho de um colega:</p>
+            
+            <input type="hidden" id="avaliar-id-pub">
+            
+            <div class="estrelas-interativas" id="estrelas-interativas">
+                <span class="material-symbols-outlined" data-nota="1">star</span>
+                <span class="material-symbols-outlined" data-nota="2">star</span>
+                <span class="material-symbols-outlined" data-nota="3">star</span>
+                <span class="material-symbols-outlined" data-nota="4">star</span>
+                <span class="material-symbols-outlined" data-nota="5">star</span>
+            </div>
+            <p id="texto-nota" style="font-weight: bold; color: #8e44ad; min-height: 20px;"></p>
+
+            <div class="botoes-modal" style="justify-content: center;">
+                <button class="btn-cancelar" onclick="document.getElementById('modal-avaliar').style.display='none'">Cancelar</button>
+                <button class="btn-salvar" style="background: #f1c40f; color: #2c3e50;" onclick="salvarAvaliacao()">Confirmar Nota</button>
+            </div>
+        </div>
+    </div>
+
     <div class="fundo-modal" id="modal-preview">
         <div class="caixa-modal">
             <div class="preview-header">
@@ -164,12 +178,9 @@
                     <span class="material-symbols-outlined" style="font-size: 28px;">close</span>
                 </button>
             </div>
-            
             <div class="preview-body">
-                <div class="folha-preview ql-editor" id="preview-conteudo">
-                    </div>
+                <div class="folha-preview ql-editor" id="preview-conteudo"></div>
             </div>
-            
             <div class="preview-footer">
                 <button class="btn-cancelar" onclick="document.getElementById('modal-preview').style.display='none'">Fechar Leitura</button>
                 <button class="btn-salvar" style="background: #8e44ad; display: flex; align-items: center; gap: 5px;" id="btn-clonar-preview">
@@ -197,12 +208,10 @@
         <div class="caixa-modal">
             <h2 style="color: #3498db;"><span class="material-symbols-outlined">edit</span> Editar Publicação</h2>
             <p style="font-size: 13px; color: #7f8c8d;">Atualize as informações do seu modelo na comunidade.</p>
-            
             <input type="hidden" id="edit-id-pub">
             <input type="text" id="edit-titulo" placeholder="Título da Publicação">
             <textarea id="edit-desc" placeholder="Breve descrição do modelo..."></textarea>
             <input type="text" id="edit-tags" placeholder="Tags (Ex: resumo, enem, fisica)">
-            
             <div class="botoes-modal">
                 <button class="btn-cancelar" onclick="document.getElementById('modal-editar-pub').style.display='none'">Cancelar</button>
                 <button class="btn-salvar" style="background: #3498db;" onclick="salvarEdicao()">Guardar Alterações</button>
@@ -221,7 +230,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, arrayUnion, arrayRemove, getDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, getDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
         const firebaseConfig = { apiKey: "AIzaSyCrO7jKe3ja8XJWeNTfTpv4wwEWwzzcYzo", authDomain: "agora-ea1be.firebaseapp.com", projectId: "agora-ea1be", storageBucket: "agora-ea1be.firebasestorage.app", messagingSenderId: "801313514193", appId: "1:801313514193:web:99621b133ed4ca80e89bf0" };
         const app = initializeApp(firebaseConfig);
@@ -240,77 +249,10 @@
             else { window.location.href = "index.html"; }
         });
 
-        // ===============================================
-        // POLÍTICAS DE PRIVACIDADE E TERMOS
-        // ===============================================
         const conteudosPoliticas = {
-            privacidade: `
-                <div style="font-size: 14px; color: #475569; line-height: 1.6;">
-                    <p>No <strong>Ágora Studio</strong>, nós acreditamos que a privacidade é um direito fundamental, não um recurso premium. Lidamos com os seus trabalhos acadêmicos, pesquisas e ideias, e levamos a segurança disso muito a sério. Esta política explica de forma clara, sem letras miúdas, como tratamos os seus dados.</p>
-                    <h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">1. Os dados que recolhemos</h3>
-                    <p>Para que a plataforma funcione perfeitamente, recolhemos apenas o estritamente necessário:</p>
-                    <ul style="padding-left: 20px; margin-bottom: 15px;">
-                        <li><strong>Informações de Conta:</strong> O seu e-mail, nome de exibição e foto de perfil (para que a sua equipe saiba quem está online).</li>
-                        <li><strong>O seu Conteúdo:</strong> Os textos, imagens e formatações que você insere nos seus documentos e apresentações.</li>
-                    </ul>
-                    <h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">2. O que NUNCA fazemos com os seus dados</h3>
-                    <ul style="padding-left: 20px; margin-bottom: 15px;">
-                        <li><strong>Não vendemos os seus dados:</strong> O seu TCC, artigo ou resumo nunca será vendido a terceiros, anunciantes ou empresas de IA.</li>
-                        <li><strong>Não lemos os seus documentos:</strong> A menos que você nos solicite suporte técnico explícito, a nossa equipe não tem permissão nem interesse em ler o que você escreve em salas privadas.</li>
-                        <li><strong>Não guardamos dados financeiros:</strong> Os upgrades para o plano VIP são negociados e confirmados de forma externa (via WhatsApp/PIX), garantindo que nenhum dado de cartão de crédito passe pelos nossos servidores.</li>
-                    </ul>
-                    <h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">3. Onde os dados ficam guardados?</h3>
-                    <p>A infraestrutura do Ágora é construída sob a tecnologia de nuvem do Google (Firebase / Google Cloud). Isso significa que os seus dados estão protegidos pela mesma criptografia de ponta a ponta e pelos mesmos padrões de segurança que os maiores bancos e empresas de tecnologia do mundo utilizam.</p>
-                    <h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">4. Quem pode ver os meus trabalhos?</h3>
-                    <p>Por padrão, <strong>apenas você</strong>. A privacidade inicial de todo projeto é 100% restrita. O seu trabalho só se torna visível para outras pessoas em duas situações criadas por você:</p>
-                    <ol style="padding-left: 20px; margin-bottom: 15px;">
-                        <li>Se você gerar um <strong>Link de Convite</strong> e enviar para a sua equipe.</li>
-                        <li>Se você decidir, voluntariamente, partilhar o seu documento na <strong>Explorar Comunidade</strong> para ajudar outros estudantes.</li>
-                    </ol>
-                    <h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">5. O seu direito ao esquecimento</h3>
-                    <p>Você é o único dono da sua propriedade intelectual. Se decidir parar de usar o Ágora, você pode excluir os seus projetos individualmente. Ao apagar um projeto ou ao solicitar a exclusão da sua conta, os dados são varridos dos nossos bancos de dados de forma irreversível.</p>
-                    <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 25px 0;">
-                    <p style="font-size: 12px; color: #94a3b8; text-align: center;">Ao continuar a utilizar o Ágora Studio, você concorda com o processamento dos dados conforme descrito acima. Para dúvidas ou solicitações de exclusão de conta, contate o suporte.</p>
-                </div>
-            `,
-            seguranca: `
-                <div style="font-size: 14px; color: #475569; line-height: 1.6;">
-                    <p>A segurança dos seus projetos é a nossa maior prioridade. O <strong>Ágora Studio</strong> foi construído utilizando tecnologias modernas para garantir que o seu trabalho árduo esteja sempre protegido contra acessos não autorizados e perdas de dados.</p>
-                    <h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">1. Infraestrutura de Ponta (Google Cloud)</h3>
-                    <p>Não guardamos os seus dados num servidor caseiro. Utilizamos a infraestrutura do <strong>Firebase (Google)</strong>, o que significa que os seus documentos estão protegidos por criptografia de nível militar, tanto em trânsito (enquanto você digita) quanto em repouso (quando estão salvos no banco de dados).</p>
-                    <h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">2. Isolamento e Controle de Acesso</h3>
-                    <ul style="padding-left: 20px; margin-bottom: 15px;">
-                        <li><strong>Projetos Privados:</strong> Todo documento criado nasce 100% privado. Apenas a sua conta tem acesso a ele.</li>
-                        <li><strong>Convites Seguros:</strong> Outras pessoas só entram no seu projeto se você compartilhar o link exclusivo de convite e adicioná-las ativamente à sua equipe através do e-mail delas.</li>
-                        <li><strong>Senhas Criptografadas:</strong> A sua palavra-passe é criptografada no momento do cadastro e protegida pelas políticas rigorosas do Google. Ninguém da nossa equipe tem acesso a ela.</li>
-                    </ul>
-                    <h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">3. Pagamentos 100% Seguros</h3>
-                    <p>Para garantir risco zero em transações financeiras, o Ágora não processa pagamentos internamente e <strong>não armazena dados de cartões de crédito</strong>. O upgrade para o plano VIP é feito exclusivamente via PIX através de um canal direto e seguro no WhatsApp oficial da plataforma.</p>
-                    <h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">4. A sua parte na Segurança</h3>
-                    <p>A tecnologia faz a maior parte do trabalho, mas precisamos da sua ajuda: não compartilhe a sua senha com terceiros e tenha muito cuidado com quem você adiciona como "Admin" nos seus projetos, pois essa pessoa terá permissão total para apagar o seu documento.</p>
-                </div>
-            `,
-            bemestar: `
-                <div style="font-size: 14px; color: #475569; line-height: 1.6;">
-                    <p>O <strong>Ágora Studio</strong> é um espaço criado por e para estudantes. A nossa missão é facilitar a colaboração acadêmica em um ambiente seguro, respeitoso e produtivo. Para manter essa comunidade incrível, exigimos o cumprimento de algumas regras básicas de conduta.</p>
-                    <h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">1. Respeito e Colaboração</h3>
-                    <p>Trabalhar em equipe exige empatia. Não apague ou sabote o trabalho de seus colegas de forma intencional nas salas colaborativas. O Ágora foi feito para construir, não para destruir.</p>
-                    <h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">2. Tolerância Zero</h3>
-                    <p>Temos uma política de tolerância absolutamente zero para os seguintes comportamentos, tanto nas salas privadas quanto na aba Explorar Comunidade:</p>
-                    <ul style="padding-left: 20px; margin-bottom: 15px;">
-                        <li><strong>Discurso de ódio, racismo, homofobia ou qualquer tipo de discriminação.</strong></li>
-                        <li><strong>Assédio, bullying ou ameaças</strong> a outros usuários.</li>
-                        <li>Partilha de <strong>conteúdo explícito, violento ou ilegal</strong> (incluindo pirataria).</li>
-                    </ul>
-                    <h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">3. Integridade Acadêmica (Plágio)</h3>
-                    <p>A aba "Explorar Comunidade" serve para compartilhar <em>modelos</em> (templates) e estruturas. Incentivamos que você use esses modelos como base para o seu estudo, mas repudiamos o plágio acadêmico. Se você publicar o trabalho integral de outra pessoa afirmando ser seu, o conteúdo será removido.</p>
-                    <h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">4. Sistema de Denúncias e Sanções</h3>
-                    <p>Se você encontrar qualquer conteúdo ofensivo ou sofrer algum tipo de abuso na plataforma, utilize o botão de <strong>Denunciar</strong> (ícone de bandeira nos projetos da comunidade). A nossa equipe analisará o caso rigorosamente.</p>
-                    <p><strong>A punição:</strong> A violação de qualquer uma dessas diretrizes resultará na suspensão ou no <strong>banimento definitivo</strong> da conta do infrator, com a exclusão de todos os seus dados e projetos, sem aviso prévio e sem direito a reembolso de planos VIP.</p>
-                    <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 25px 0;">
-                    <p style="font-size: 12px; color: #94a3b8; text-align: center;">Ao fazer parte da comunidade Ágora, você se compromete a manter um ambiente de respeito e crescimento mútuo.</p>
-                </div>
-            `
+            privacidade: `<div style="font-size: 14px; color: #475569; line-height: 1.6;"><p>No <strong>Ágora Studio</strong>, nós acreditamos que a privacidade é um direito fundamental, não um recurso premium. Lidamos com os seus trabalhos acadêmicos, pesquisas e ideias, e levamos a segurança disso muito a sério. Esta política explica de forma clara, sem letras miúdas, como tratamos os seus dados.</p><h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">1. Os dados que recolhemos</h3><p>Para que a plataforma funcione perfeitamente, recolhemos apenas o estritamente necessário:</p><ul style="padding-left: 20px; margin-bottom: 15px;"><li><strong>Informações de Conta:</strong> O seu e-mail, nome de exibição e foto de perfil (para que a sua equipe saiba quem está online).</li><li><strong>O seu Conteúdo:</strong> Os textos, imagens e formatações que você insere nos seus documentos e apresentações.</li></ul><h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">2. O que NUNCA fazemos com os seus dados</h3><ul style="padding-left: 20px; margin-bottom: 15px;"><li><strong>Não vendemos os seus dados:</strong> O seu TCC, artigo ou resumo nunca será vendido a terceiros, anunciantes ou empresas de IA.</li><li><strong>Não lemos os seus documentos:</strong> A menos que você nos solicite suporte técnico explícito, a nossa equipe não tem permissão nem interesse em ler o que você escreve em salas privadas.</li><li><strong>Não guardamos dados financeiros:</strong> Os upgrades para o plano VIP são negociados e confirmados de forma externa (via WhatsApp/PIX), garantindo que nenhum dado de cartão de crédito passe pelos nossos servidores.</li></ul><h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">3. Onde os dados ficam guardados?</h3><p>A infraestrutura do Ágora é construída sob a tecnologia de nuvem do Google (Firebase / Google Cloud). Isso significa que os seus dados estão protegidos pela mesma criptografia de ponta a ponta e pelos mesmos padrões de segurança que os maiores bancos e empresas de tecnologia do mundo utilizam.</p><h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">4. Quem pode ver os meus trabalhos?</h3><p>Por padrão, <strong>apenas você</strong>. A privacidade inicial de todo projeto é 100% restrita. O seu trabalho só se torna visível para outras pessoas em duas situações criadas por você:</p><ol style="padding-left: 20px; margin-bottom: 15px;"><li>Se você gerar um <strong>Link de Convite</strong> e enviar para a sua equipe.</li><li>Se você decidir, voluntariamente, partilhar o seu documento na <strong>Explorar Comunidade</strong> para ajudar outros estudantes.</li></ol><h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">5. O seu direito ao esquecimento</h3><p>Você é o único dono da sua propriedade intelectual. Se decidir parar de usar o Ágora, você pode excluir os seus projetos individualmente. Ao apagar um projeto ou ao solicitar a exclusão da sua conta, os dados são varridos dos nossos bancos de dados de forma irreversível.</p><hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 25px 0;"><p style="font-size: 12px; color: #94a3b8; text-align: center;">Ao continuar a utilizar o Ágora Studio, você concorda com o processamento dos dados conforme descrito acima. Para dúvidas ou solicitações de exclusão de conta, contate o suporte.</p></div>`,
+            seguranca: `<div style="font-size: 14px; color: #475569; line-height: 1.6;"><p>A segurança dos seus projetos é a nossa maior prioridade. O <strong>Ágora Studio</strong> foi construído utilizando tecnologias modernas para garantir que o seu trabalho árduo esteja sempre protegido contra acessos não autorizados e perdas de dados.</p><h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">1. Infraestrutura de Ponta (Google Cloud)</h3><p>Não guardamos os seus dados num servidor caseiro. Utilizamos a infraestrutura do <strong>Firebase (Google)</strong>, o que significa que os seus documentos estão protegidos por criptografia de nível militar, tanto em trânsito (enquanto você digita) quanto em repouso (quando estão salvos no banco de dados).</p><h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">2. Isolamento e Controle de Acesso</h3><ul style="padding-left: 20px; margin-bottom: 15px;"><li><strong>Projetos Privados:</strong> Todo documento criado nasce 100% privado. Apenas a sua conta tem acesso a ele.</li><li><strong>Convites Seguros:</strong> Outras pessoas só entram no seu projeto se você compartilhar o link exclusivo de convite e adicioná-las ativamente à sua equipe através do e-mail delas.</li><li><strong>Senhas Criptografadas:</strong> A sua palavra-passe é criptografada no momento do cadastro e protegida pelas políticas rigorosas do Google. Ninguém da nossa equipe tem acesso a ela.</li></ul><h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">3. Pagamentos 100% Seguros</h3><p>Para garantir risco zero em transações financeiras, o Ágora não processa pagamentos internamente e <strong>não armazena dados de cartões de crédito</strong>. O upgrade para o plano VIP é feito exclusivamente via PIX através de um canal direto e seguro no WhatsApp oficial da plataforma.</p><h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">4. A sua parte na Segurança</h3><p>A tecnologia faz a maior parte do trabalho, mas precisamos da sua ajuda: não compartilhe a sua senha com terceiros e tenha muito cuidado com quem você adiciona como "Admin" nos seus projetos, pois essa pessoa terá permissão total para apagar o seu documento.</p></div>`,
+            bemestar: `<div style="font-size: 14px; color: #475569; line-height: 1.6;"><p>O <strong>Ágora Studio</strong> é um espaço criado por e para estudantes. A nossa missão é facilitar a colaboração acadêmica em um ambiente seguro, respeitoso e produtivo. Para manter essa comunidade incrível, exigimos o cumprimento de algumas regras básicas de conduta.</p><h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">1. Respeito e Colaboração</h3><p>Trabalhar em equipe exige empatia. Não apague ou sabote o trabalho de seus colegas de forma intencional nas salas colaborativas. O Ágora foi feito para construir, não para destruir.</p><h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">2. Tolerância Zero</h3><p>Temos uma política de tolerância absolutamente zero para os seguintes comportamentos, tanto nas salas privadas quanto na aba Explorar Comunidade:</p><ul style="padding-left: 20px; margin-bottom: 15px;"><li><strong>Discurso de ódio, racismo, homofobia ou qualquer tipo de discriminação.</strong></li><li><strong>Assédio, bullying ou ameaças</strong> a outros usuários.</li><li>Partilha de <strong>conteúdo explícito, violento ou ilegal</strong> (incluindo pirataria).</li></ul><h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">3. Integridade Acadêmica (Plágio)</h3><p>A aba "Explorar Comunidade" serve para compartilhar <em>modelos</em> (templates) e estruturas. Incentivamos que você use esses modelos como base para o seu estudo, mas repudiamos o plágio acadêmico. Se você publicar o trabalho integral de outra pessoa afirmando ser seu, o conteúdo será removido.</p><h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">4. Sistema de Denúncias e Sanções</h3><p>Se você encontrar qualquer conteúdo ofensivo ou sofrer algum tipo de abuso na plataforma, utilize o botão de <strong>Denunciar</strong> (ícone de bandeira nos projetos da comunidade). A nossa equipe analisará o caso rigorosamente.</p><p><strong>A punição:</strong> A violação de qualquer uma dessas diretrizes resultará na suspensão ou no <strong>banimento definitivo</strong> da conta do infrator, com a exclusão de todos os seus dados e projetos, sem aviso prévio e sem direito a reembolso de planos VIP.</p><hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 25px 0;"><p style="font-size: 12px; color: #94a3b8; text-align: center;">Ao fazer parte da comunidade Ágora, você se compromete a manter um ambiente de respeito e crescimento mútuo.</p></div>`
         };
 
         window.abrirPolitica = function(tipo) {
@@ -321,14 +263,23 @@
             modal.style.display = 'flex';
         }
 
-        // ==========================================
-        // COMUNIDADE
-        // ==========================================
+        // Função utilitária para calcular a média de notas de um modelo
+        function calcularMedia(pub) {
+            let avaliacoes = pub.avaliacoes || {};
+            let chaves = Object.keys(avaliacoes);
+            if (chaves.length === 0) return 0;
+            let soma = chaves.reduce((acc, email) => acc + avaliacoes[email], 0);
+            return soma / chaves.length;
+        }
+
         function buscarDadosDoBanco() {
             onSnapshot(collection(db, "comunidade"), (snapshot) => {
                 todasPublicacoes = [];
                 snapshot.forEach(doc => { todasPublicacoes.push({ id: doc.id, ...doc.data() }); });
-                todasPublicacoes.sort((a, b) => (b.likes ? b.likes.length : 0) - (a.likes ? a.likes.length : 0));
+                
+                // Agora o rank é ordenado pelas Melhores Notas (Média) em vez de apenas "Likes"
+                todasPublicacoes.sort((a, b) => calcularMedia(b) - calcularMedia(a));
+                
                 aplicarFiltroEPesquisa();
             });
         }
@@ -359,10 +310,14 @@
             const itensDestaPagina = publicacoesFiltradas.slice(inicio, fim);
 
             itensDestaPagina.forEach(pub => {
-                const likesArray = pub.likes || [];
-                const curtido = likesArray.includes(meuEmail) ? "curtido" : "";
-                const iconeEstrela = likesArray.includes(meuEmail) ? "'FILL' 1" : "'FILL' 0";
-                const totalLikes = likesArray.length;
+                
+                // === LÓGICA DAS 5 ESTRELAS ===
+                let avaliacoes = pub.avaliacoes || {};
+                let emailsQueVotaram = Object.keys(avaliacoes);
+                let totalVotos = emailsQueVotaram.length;
+                let mediaNumerica = calcularMedia(pub);
+                let mediaFormatada = totalVotos > 0 ? mediaNumerica.toFixed(1) : 0;
+                let porcentagemPreenchimento = (mediaNumerica / 5) * 100;
                 
                 let tagsHTML = "";
                 if(pub.tags) { pub.tags.forEach(tag => tagsHTML += `<span class="tag-badge">#${tag.trim()}</span>`); }
@@ -404,11 +359,29 @@
                             <button class="btn-ver-modelo" onclick="abrirPreview('${pub.id}')">
                                 <span class="material-symbols-outlined" style="font-size: 18px;">visibility</span> Ler
                             </button>
+                            
+                            <div class="area-avaliacao" title="Clique para avaliar" onclick="abrirAvaliacao('${pub.id}')">
+                                <div class="estrelas-wrapper">
+                                    <div class="estrelas-fundo">
+                                        <span class="material-symbols-outlined star-icon">star</span>
+                                        <span class="material-symbols-outlined star-icon">star</span>
+                                        <span class="material-symbols-outlined star-icon">star</span>
+                                        <span class="material-symbols-outlined star-icon">star</span>
+                                        <span class="material-symbols-outlined star-icon">star</span>
+                                    </div>
+                                    <div class="estrelas-frente" style="width: ${porcentagemPreenchimento}%;">
+                                        <span class="material-symbols-outlined star-icon" style="font-variation-settings: 'FILL' 1;">star</span>
+                                        <span class="material-symbols-outlined star-icon" style="font-variation-settings: 'FILL' 1;">star</span>
+                                        <span class="material-symbols-outlined star-icon" style="font-variation-settings: 'FILL' 1;">star</span>
+                                        <span class="material-symbols-outlined star-icon" style="font-variation-settings: 'FILL' 1;">star</span>
+                                        <span class="material-symbols-outlined star-icon" style="font-variation-settings: 'FILL' 1;">star</span>
+                                    </div>
+                                </div>
+                                <span class="media-texto">${totalVotos > 0 ? mediaFormatada : 'Novo'} (${totalVotos})</span>
+                            </div>
+
                             <button class="btn-clonar" title="Copiar para meus projetos" onclick="clonarModelo('${pub.id}')">
                                 <span class="material-symbols-outlined" style="font-size: 18px;">download</span>
-                            </button>
-                            <button class="btn-like ${curtido}" onclick="toggleLike('${pub.id}', ${likesArray.includes(meuEmail)})">
-                                <span class="material-symbols-outlined" style="font-variation-settings: ${iconeEstrela};">star</span> ${totalLikes}
                             </button>
                         </div>
                     </div>
@@ -455,7 +428,72 @@
         document.getElementById('input-pesquisa').addEventListener('input', aplicarFiltroEPesquisa);
 
         // ==========================================
-        // LÓGICA DE PRÉ-VISUALIZAÇÃO (PREVIEW LER MODELO)
+        // LÓGICA DE AVALIAÇÃO (5 ESTRELAS)
+        // ==========================================
+        let notaSelecionada = 0;
+        const estrelasInterativas = document.querySelectorAll('#estrelas-interativas span');
+        const textosNota = ["", "Péssimo", "Ruim", "Razoável", "Muito Bom", "Excelente!"];
+
+        estrelasInterativas.forEach(estrela => {
+            estrela.addEventListener('mouseover', function() {
+                preencherEstrelas(this.getAttribute('data-nota'));
+            });
+            estrela.addEventListener('mouseout', function() {
+                preencherEstrelas(notaSelecionada);
+            });
+            estrela.addEventListener('click', function() {
+                notaSelecionada = this.getAttribute('data-nota');
+                preencherEstrelas(notaSelecionada);
+            });
+        });
+
+        function preencherEstrelas(nota) {
+            estrelasInterativas.forEach(e => {
+                if(e.getAttribute('data-nota') <= nota) {
+                    e.style.fontVariationSettings = "'FILL' 1";
+                    e.style.color = "#f1c40f";
+                } else {
+                    e.style.fontVariationSettings = "'FILL' 0";
+                    e.style.color = "#cbd5e1";
+                }
+            });
+            document.getElementById('texto-nota').innerText = nota > 0 ? textosNota[nota] : "";
+        }
+
+        window.abrirAvaliacao = (id) => {
+            const pub = todasPublicacoes.find(p => p.id === id);
+            if(!pub) return;
+            if(pub.autor === meuEmail) { return alert("Não podes avaliar a tua própria publicação."); }
+            
+            document.getElementById('avaliar-id-pub').value = id;
+            
+            // Verifica se o usuário já votou antes e carrega a nota dele
+            let avaliacoes = pub.avaliacoes || {};
+            notaSelecionada = avaliacoes[meuEmail] || 0;
+            preencherEstrelas(notaSelecionada);
+            
+            document.getElementById('modal-avaliar').style.display = 'flex';
+        };
+
+        window.salvarAvaliacao = async () => {
+            if(notaSelecionada == 0) return alert("Selecione pelo menos 1 estrela.");
+            const id = document.getElementById('avaliar-id-pub').value;
+            
+            try {
+                const docRef = doc(db, "comunidade", id);
+                const docSnap = await getDoc(docRef);
+                if(docSnap.exists()) {
+                    let avaliacoesAtuais = docSnap.data().avaliacoes || {};
+                    avaliacoesAtuais[meuEmail] = parseInt(notaSelecionada); // Salva ou substitui a nota do usuário
+                    
+                    await updateDoc(docRef, { avaliacoes: avaliacoesAtuais });
+                    document.getElementById('modal-avaliar').style.display = 'none';
+                }
+            } catch(e) { alert("Erro ao enviar a avaliação."); }
+        };
+
+        // ==========================================
+        // OUTRAS LÓGICAS (PREVIEW, CLONAR, DELETAR)
         // ==========================================
         window.abrirPreview = (id) => {
             const pub = todasPublicacoes.find(p => p.id === id);
@@ -463,7 +501,6 @@
                 document.getElementById('preview-titulo').innerText = pub.titulo;
                 document.getElementById('preview-autor').innerText = "Publicado por: " + pub.autor.split('@')[0];
                 
-                // Injeta o conteúdo. Se não tiver nada, avisa.
                 const areaConteudo = document.getElementById('preview-conteudo');
                 if (pub.conteudo_html && pub.conteudo_html.trim() !== "") {
                     areaConteudo.innerHTML = pub.conteudo_html;
@@ -471,23 +508,17 @@
                     areaConteudo.innerHTML = "<p style='text-align:center; color:#999; margin-top: 50px;'>Este modelo não possui conteúdo de texto ou é uma apresentação de slides.</p>";
                 }
                 
-                // Configura o botão de clonar que está dentro do modal para baixar aquele ID específico
                 document.getElementById('btn-clonar-preview').onclick = () => {
                     document.getElementById('modal-preview').style.display = 'none';
                     clonarModelo(pub.id);
                 };
-                
                 document.getElementById('modal-preview').style.display = 'flex';
             }
         };
 
         window.deletarPublicacao = async (id) => {
             if(confirm("Tem certeza que deseja apagar esta publicação da comunidade? Esta ação não pode ser desfeita.")) {
-                try {
-                    await deleteDoc(doc(db, "comunidade", id));
-                } catch(e) {
-                    alert("Erro ao apagar publicação. Tente novamente.");
-                }
+                try { await deleteDoc(doc(db, "comunidade", id)); } catch(e) { alert("Erro ao apagar publicação."); }
             }
         };
 
@@ -509,25 +540,12 @@
             const tagsStr = document.getElementById('edit-tags').value.trim();
 
             if(!titulo) return alert("O título é obrigatório.");
-
             const tagsArray = tagsStr.split(',').map(tag => tag.trim().replace('#', '')).filter(t => t !== "");
 
             try {
-                await updateDoc(doc(db, "comunidade", id), {
-                    titulo: titulo,
-                    descricao: desc,
-                    tags: tagsArray
-                });
+                await updateDoc(doc(db, "comunidade", id), { titulo: titulo, descricao: desc, tags: tagsArray });
                 document.getElementById('modal-editar-pub').style.display = 'none';
-            } catch(e) {
-                alert("Erro ao guardar as alterações.");
-            }
-        };
-
-        window.toggleLike = async (id, isCurtido) => {
-            const docRef = doc(db, "comunidade", id);
-            if (isCurtido) { await updateDoc(docRef, { likes: arrayRemove(meuEmail) }); } 
-            else { await updateDoc(docRef, { likes: arrayUnion(meuEmail) }); }
+            } catch(e) { alert("Erro ao guardar as alterações."); }
         };
 
         window.abrirDenuncia = (idPub, autor) => {
@@ -544,10 +562,8 @@
             const autorInfrator = document.getElementById('denuncia-autor').value;
 
             try {
-                await addDoc(collection(db, "denuncias"), {
-                    id_publicacao: idPub, autor_denunciado: autorInfrator, denunciante: meuEmail, motivo: motivo, status: "Pendente", timestamp: Date.now()
-                });
-                alert("Denúncia enviada! A nossa equipa irá analisar e tomar as medidas necessárias.");
+                await addDoc(collection(db, "denuncias"), { id_publicacao: idPub, autor_denunciado: autorInfrator, denunciante: meuEmail, motivo: motivo, status: "Pendente", timestamp: Date.now() });
+                alert("Denúncia enviada! A nossa equipa irá analisar.");
                 document.getElementById('modal-denuncia').style.display = 'none';
             } catch(e) { alert("Erro ao enviar denúncia."); }
         };
