@@ -230,7 +230,6 @@
     </div>
 
     <div class="fundo-modal" id="modal-vip-vendas">
-        
         <div class="caixa-modal" style="max-width: 450px; text-align: center; border-top: 5px solid #f1c40f; position: relative;" id="conteudo-vip-oferta">
             <button class="btn-fechar-planos" style="position:absolute; top: 15px; right: 15px; background: none; border: none; cursor: pointer; font-size: 20px; color: #7f8c8d;" onclick="fecharModalVip()"><span class="material-symbols-outlined">close</span></button>
             
@@ -268,7 +267,42 @@
             
             <button class="btn-fechar-modal" onclick="voltarTelaOferta()" style="margin-top: 15px;">Voltar</button>
         </div>
+    </div>
 
+    <div class="fundo-modal" id="modal-novidades">
+        <div class="caixa-modal" style="max-width: 500px; text-align: center; border-top: 5px solid #8e44ad;">
+            <span class="material-symbols-outlined" style="font-size: 50px; color: #8e44ad; margin-bottom: 10px;">rocket_launch</span>
+            <h2 style="margin-top: 0; color: #2c3e50; justify-content: center;">Bem-vindo ao Ágora 1.0! 🎉</h2>
+            <p style="font-size: 14px; color: #7f8c8d; line-height: 1.6; margin-bottom: 20px;">
+                O seu novo ambiente académico oficial está no ar. Preparamos ferramentas incríveis para turbinar os seus estudos. Conheça as <strong>vantagens exclusivas do Plano VIP</strong>:
+            </p>
+
+            <div style="text-align: left; background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 20px;">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                    <span class="material-symbols-outlined" style="color: #f1c40f;">slideshow</span>
+                    <span style="font-size: 14px; color: #34495e;"><strong>Apresentações:</strong> Crie slides profissionais direto na plataforma.</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                    <span class="material-symbols-outlined" style="color: #f1c40f;">auto_awesome</span>
+                    <span style="font-size: 14px; color: #34495e;"><strong>Ágora AI:</strong> Tradutor neural e leitura inteligente de textos.</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                    <span class="material-symbols-outlined" style="color: #f1c40f;">school</span>
+                    <span style="font-size: 14px; color: #34495e;"><strong>Modelos ABNT:</strong> TCC, Artigos e Resumos formatados em 1 clique.</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span class="material-symbols-outlined" style="color: #f1c40f;">picture_as_pdf</span>
+                    <span style="font-size: 14px; color: #34495e;"><strong>Importação:</strong> Extraia textos de arquivos PDF instantaneamente.</span>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                <button class="btn-cancelar" style="flex: 1; min-width: 120px;" onclick="fecharModalNovidades()">Começar a usar</button>
+                <button class="btn-salvar" style="flex: 1; min-width: 150px; background: linear-gradient(135deg, #f1c40f, #f39c12); color: white; display: flex; justify-content: center; align-items: center; gap: 5px; box-shadow: 0 4px 10px rgba(241, 196, 15, 0.3);" onclick="abrirLojaVipDoNovidades()">
+                    <span class="material-symbols-outlined" style="font-size: 18px;">workspace_premium</span> Quero ser VIP
+                </button>
+            </div>
+        </div>
     </div>
 
     <div class="fundo-modal" id="modal-criacao">
@@ -394,82 +428,10 @@
             else { document.body.classList.remove('dark-mode'); localStorage.setItem('tema-agora', 'claro'); }
         });
 
-        // ===============================================
-        // POLÍTICAS (COMPLETAS)
-        // ===============================================
         const conteudosPoliticas = {
-            privacidade: `
-                <div style="font-size: 14px; color: #475569; line-height: 1.6;">
-                    <p>No <strong>Ágora Studio</strong>, nós acreditamos que a privacidade é um direito fundamental, não um recurso premium. Lidamos com os seus trabalhos acadêmicos, pesquisas e ideias, e levamos a segurança disso muito a sério. Esta política explica de forma clara, sem letras miúdas, como tratamos os seus dados.</p>
-                    <h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">1. Os dados que recolhemos</h3>
-                    <p>Para que a plataforma funcione perfeitamente, recolhemos apenas o estritamente necessário:</p>
-                    <ul style="padding-left: 20px; margin-bottom: 15px;">
-                        <li><strong>Informações de Conta:</strong> O seu e-mail, nome de exibição e foto de perfil (para que a sua equipe saiba quem está online).</li>
-                        <li><strong>O seu Conteúdo:</strong> Os textos, imagens e formatações que você insere nos seus documentos e apresentações.</li>
-                    </ul>
-                    <h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">2. O que NUNCA fazemos com os seus dados</h3>
-                    <ul style="padding-left: 20px; margin-bottom: 15px;">
-                        <li><strong>Não vendemos os seus dados:</strong> O seu TCC, artigo ou resumo nunca será vendido a terceiros, anunciantes ou empresas de IA.</li>
-                        <li><strong>Não lemos os seus documentos:</strong> A menos que você nos solicite suporte técnico explícito, a nossa equipe não tem permissão nem interesse em ler o que você escreve em salas privadas.</li>
-                        <li><strong>Não guardamos dados financeiros:</strong> Os upgrades para o plano VIP são negociados e confirmados de forma externa (via WhatsApp/PIX), garantindo que nenhum dado de cartão de crédito passe pelos nossos servidores.</li>
-                    </ul>
-                    <h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">3. Onde os dados ficam guardados?</h3>
-                    <p>A infraestrutura do Ágora é construída sob a tecnologia de nuvem do Google (Firebase / Google Cloud). Isso significa que os seus dados estão protegidos pela mesma criptografia de ponta a ponta e pelos mesmos padrões de segurança que os maiores bancos e empresas de tecnologia do mundo utilizam.</p>
-                    <h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">4. Quem pode ver os meus trabalhos?</h3>
-                    <p>Por padrão, <strong>apenas você</strong>. A privacidade inicial de todo projeto é 100% restrita. O seu trabalho só se torna visível para outras pessoas em duas situações criadas por você:</p>
-                    <ol style="padding-left: 20px; margin-bottom: 15px;">
-                        <li>Se você gerar um <strong>Link de Convite</strong> e enviar para a sua equipe.</li>
-                        <li>Se você decidir, voluntariamente, partilhar o seu documento na <strong>Explorar Comunidade</strong> para ajudar outros estudantes.</li>
-                    </ol>
-                    <h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">5. O seu direito ao esquecimento</h3>
-                    <p>Você é o único dono da sua propriedade intelectual. Se decidir parar de usar o Ágora, você pode excluir os seus projetos individualmente. Ao apagar um projeto ou ao solicitar a exclusão da sua conta, os dados são varridos dos nossos bancos de dados de forma irreversível.</p>
-                    <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 25px 0;">
-                    <p style="font-size: 12px; color: #94a3b8; text-align: center;">Ao continuar a utilizar o Ágora Studio, você concorda com o processamento dos dados conforme descrito acima. Para dúvidas ou solicitações de exclusão de conta, contate o suporte.</p>
-                </div>
-            `,
-            seguranca: `
-                <div style="font-size: 14px; color: #475569; line-height: 1.6;">
-                    <p>A segurança dos seus projetos é a nossa maior prioridade. O <strong>Ágora Studio</strong> foi construído utilizando tecnologias modernas para garantir que o seu trabalho árduo esteja sempre protegido contra acessos não autorizados e perdas de dados.</p>
-                    <h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">1. Infraestrutura de Ponta (Google Cloud)</h3>
-                    <p>Não guardamos os seus dados num servidor caseiro. Utilizamos a infraestrutura do <strong>Firebase (Google)</strong>, o que significa que os seus documentos estão protegidos por criptografia de nível militar, tanto em trânsito (enquanto você digita) quanto em repouso (quando estão salvos no banco de dados).</p>
-                    <h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">2. Isolamento e Controle de Acesso</h3>
-                    <ul style="padding-left: 20px; margin-bottom: 15px;">
-                        <li><strong>Projetos Privados:</strong> Todo documento criado nasce 100% privado. Apenas a sua conta tem acesso a ele.</li>
-                        <li><strong>Convites Seguros:</strong> Outras pessoas só entram no seu projeto se você compartilhar o link exclusivo de convite e adicioná-las ativamente à sua equipe através do e-mail delas.</li>
-                        <li><strong>Senhas Criptografadas:</strong> A sua palavra-passe é criptografada no momento do cadastro e protegida pelas políticas rigorosas do Google. Ninguém da nossa equipe tem acesso a ela.</li>
-                    </ul>
-                    <h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">3. Pagamentos 100% Seguros</h3>
-                    <p>Para garantir risco zero em transações financeiras, o Ágora não processa pagamentos internamente e <strong>não armazena dados de cartões de crédito</strong>. O upgrade para o plano VIP é feito exclusivamente via PIX através de um canal direto e seguro no WhatsApp oficial da plataforma.</p>
-                    <h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">4. A sua parte na Segurança</h3>
-                    <p>A tecnologia faz a maior parte do trabalho, mas precisamos da sua ajuda: não compartilhe a sua senha com terceiros e tenha muito cuidado com quem você adiciona como "Admin" nos seus projetos, pois essa pessoa terá permissão total para apagar o seu documento.</p>
-                </div>
-            `,
-            bemestar: `
-                <div style="font-size: 14px; color: #475569; line-height: 1.6;">
-                    <p>O <strong>Ágora Studio</strong> é um espaço criado por e para estudantes. A nossa missão é facilitar a colaboração acadêmica em um ambiente seguro, respeitoso e produtivo. Para manter essa comunidade incrível, exigimos o cumprimento de algumas regras básicas de conduta.</p>
-
-                    <h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">1. Respeito e Colaboração</h3>
-                    <p>Trabalhar em equipe exige empatia. Não apague ou sabote o trabalho de seus colegas de forma intencional nas salas colaborativas. O Ágora foi feito para construir, não para destruir.</p>
-
-                    <h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">2. Tolerância Zero</h3>
-                    <p>Temos uma política de tolerância absolutamente zero para os seguintes comportamentos, tanto nas salas privadas quanto na aba Explorar Comunidade:</p>
-                    <ul style="padding-left: 20px; margin-bottom: 15px;">
-                        <li><strong>Discurso de ódio, racismo, homofobia ou qualquer tipo de discriminação.</strong></li>
-                        <li><strong>Assédio, bullying ou ameaças</strong> a outros usuários.</li>
-                        <li>Partilha de <strong>conteúdo explícito, violento ou ilegal</strong> (incluindo pirataria).</li>
-                    </ul>
-
-                    <h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">3. Integridade Acadêmica (Plágio)</h3>
-                    <p>A aba "Explorar Comunidade" serve para compartilhar <em>modelos</em> (templates) e estruturas. Incentivamos que você use esses modelos como base para o seu estudo, mas repudiamos o plágio acadêmico. Se você publicar o trabalho integral de outra pessoa afirmando ser seu, o conteúdo será removido.</p>
-
-                    <h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">4. Sistema de Denúncias e Sanções</h3>
-                    <p>Se você encontrar qualquer conteúdo ofensivo ou sofrer algum tipo de abuso na plataforma, utilize o botão de <strong>Denunciar</strong> (ícone de bandeira nos projetos da comunidade). A nossa equipe analisará o caso rigorosamente.</p>
-                    <p><strong>A punição:</strong> A violação de qualquer uma dessas diretrizes resultará na suspensão ou no <strong>banimento definitivo</strong> da conta do infrator, com a exclusão de todos os seus dados e projetos, sem aviso prévio e sem direito a reembolso de planos VIP.</p>
-                    
-                    <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 25px 0;">
-                    <p style="font-size: 12px; color: #94a3b8; text-align: center;">Ao fazer parte da comunidade Ágora, você se compromete a manter um ambiente de respeito e crescimento mútuo.</p>
-                </div>
-            `
+            privacidade: `<div style="font-size: 14px; color: #475569; line-height: 1.6;"><p>No <strong>Ágora Studio</strong>, nós acreditamos que a privacidade é um direito fundamental, não um recurso premium. Lidamos com os seus trabalhos acadêmicos, pesquisas e ideias, e levamos a segurança disso muito a sério. Esta política explica de forma clara, sem letras miúdas, como tratamos os seus dados.</p><h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">1. Os dados que recolhemos</h3><p>Para que a plataforma funcione perfeitamente, recolhemos apenas o estritamente necessário:</p><ul style="padding-left: 20px; margin-bottom: 15px;"><li><strong>Informações de Conta:</strong> O seu e-mail, nome de exibição e foto de perfil (para que a sua equipe saiba quem está online).</li><li><strong>O seu Conteúdo:</strong> Os textos, imagens e formatações que você insere nos seus documentos e apresentações.</li></ul><h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">2. O que NUNCA fazemos com os seus dados</h3><ul style="padding-left: 20px; margin-bottom: 15px;"><li><strong>Não vendemos os seus dados:</strong> O seu TCC, artigo ou resumo nunca será vendido a terceiros, anunciantes ou empresas de IA.</li><li><strong>Não lemos os seus documentos:</strong> A menos que você nos solicite suporte técnico explícito, a nossa equipe não tem permissão nem interesse em ler o que você escreve em salas privadas.</li><li><strong>Não guardamos dados financeiros:</strong> Os upgrades para o plano VIP são negociados e confirmados de forma externa (via WhatsApp/PIX), garantindo que nenhum dado de cartão de crédito passe pelos nossos servidores.</li></ul><h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">3. Onde os dados ficam guardados?</h3><p>A infraestrutura do Ágora é construída sob a tecnologia de nuvem do Google (Firebase / Google Cloud). Isso significa que os seus dados estão protegidos pela mesma criptografia de ponta a ponta e pelos mesmos padrões de segurança que os maiores bancos e empresas de tecnologia do mundo utilizam.</p><h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">4. Quem pode ver os meus trabalhos?</h3><p>Por padrão, <strong>apenas você</strong>. A privacidade inicial de todo projeto é 100% restrita. O seu trabalho só se torna visível para outras pessoas em duas situações criadas por você:</p><ol style="padding-left: 20px; margin-bottom: 15px;"><li>Se você gerar um <strong>Link de Convite</strong> e enviar para a sua equipe.</li><li>Se você decidir, voluntariamente, partilhar o seu documento na <strong>Explorar Comunidade</strong> para ajudar outros estudantes.</li></ol><h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">5. O seu direito ao esquecimento</h3><p>Você é o único dono da sua propriedade intelectual. Se decidir parar de usar o Ágora, você pode excluir os seus projetos individualmente. Ao apagar um projeto ou ao solicitar a exclusão da sua conta, os dados são varridos dos nossos bancos de dados de forma irreversível.</p><hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 25px 0;"><p style="font-size: 12px; color: #94a3b8; text-align: center;">Ao continuar a utilizar o Ágora Studio, você concorda com o processamento dos dados conforme descrito acima. Para dúvidas ou solicitações de exclusão de conta, contate o suporte.</p></div>`,
+            seguranca: `<div style="font-size: 14px; color: #475569; line-height: 1.6;"><p>A segurança dos seus projetos é a nossa maior prioridade. O <strong>Ágora Studio</strong> foi construído utilizando tecnologias modernas para garantir que o seu trabalho árduo esteja sempre protegido contra acessos não autorizados e perdas de dados.</p><h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">1. Infraestrutura de Ponta (Google Cloud)</h3><p>Não guardamos os seus dados num servidor caseiro. Utilizamos a infraestrutura do <strong>Firebase (Google)</strong>, o que significa que os seus documentos estão protegidos por criptografia de nível militar, tanto em trânsito (enquanto você digita) quanto em repouso (quando estão salvos no banco de dados).</p><h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">2. Isolamento e Controle de Acesso</h3><ul style="padding-left: 20px; margin-bottom: 15px;"><li><strong>Projetos Privados:</strong> Todo documento criado nasce 100% privado. Apenas a sua conta tem acesso a ele.</li><li><strong>Convites Seguros:</strong> Outras pessoas só entram no seu projeto se você compartilhar o link exclusivo de convite e adicioná-las ativamente à sua equipe através do e-mail delas.</li><li><strong>Senhas Criptografadas:</strong> A sua palavra-passe é criptografada no momento do cadastro e protegida pelas políticas rigorosas do Google. Ninguém da nossa equipe tem acesso a ela.</li></ul><h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">3. Pagamentos 100% Seguros</h3><p>Para garantir risco zero em transações financeiras, o Ágora não processa pagamentos internamente e <strong>não armazena dados de cartões de crédito</strong>. O upgrade para o plano VIP é feito exclusivamente via PIX através de um canal direto e seguro no WhatsApp oficial da plataforma.</p><h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">4. A sua parte na Segurança</h3><p>A tecnologia faz a maior parte do trabalho, mas precisamos da sua ajuda: não compartilhe a sua senha com terceiros e tenha muito cuidado com quem você adiciona como "Admin" nos seus projetos, pois essa pessoa terá permissão total para apagar o seu documento.</p></div>`,
+            bemestar: `<div style="font-size: 14px; color: #475569; line-height: 1.6;"><p>O <strong>Ágora Studio</strong> é um espaço criado por e para estudantes. A nossa missão é facilitar a colaboração acadêmica em um ambiente seguro, respeitoso e produtivo. Para manter essa comunidade incrível, exigimos o cumprimento de algumas regras básicas de conduta.</p><h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">1. Respeito e Colaboração</h3><p>Trabalhar em equipe exige empatia. Não apague ou sabote o trabalho de seus colegas de forma intencional nas salas colaborativas. O Ágora foi feito para construir, não para destruir.</p><h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">2. Tolerância Zero</h3><p>Temos uma política de tolerância absolutamente zero para os seguintes comportamentos, tanto nas salas privadas quanto na aba Explorar Comunidade:</p><ul style="padding-left: 20px; margin-bottom: 15px;"><li><strong>Discurso de ódio, racismo, homofobia ou qualquer tipo de discriminação.</strong></li><li><strong>Assédio, bullying ou ameaças</strong> a outros usuários.</li><li>Partilha de <strong>conteúdo explícito, violento ou ilegal</strong> (incluindo pirataria).</li></ul><h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">3. Integridade Acadêmica (Plágio)</h3><p>A aba "Explorar Comunidade" serve para compartilhar <em>modelos</em> (templates) e estruturas. Incentivamos que você use esses modelos como base para o seu estudo, mas repudiamos o plágio acadêmico. Se você publicar o trabalho integral de outra pessoa afirmando ser seu, o conteúdo será removido.</p><h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">4. Sistema de Denúncias e Sanções</h3><p>Se você encontrar qualquer conteúdo ofensivo ou sofrer algum tipo de abuso na plataforma, utilize o botão de <strong>Denunciar</strong> (ícone de bandeira nos projetos da comunidade). A nossa equipe analisará o caso rigorosamente.</p><p><strong>A punição:</strong> A violação de qualquer uma dessas diretrizes resultará na suspensão ou no <strong>banimento definitivo</strong> da conta do infrator, com a exclusão de todos os seus dados e projetos, sem aviso prévio e sem direito a reembolso de planos VIP.</p><hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 25px 0;"><p style="font-size: 12px; color: #94a3b8; text-align: center;">Ao fazer parte da comunidade Ágora, você se compromete a manter um ambiente de respeito e crescimento mútuo.</p></div>`
         };
 
         window.abrirPolitica = function(tipo) {
@@ -546,6 +508,7 @@
                 document.getElementById('preview-imagem').src = fotoUsuario;
                 
                 carregarMeusGrupos();
+                verificarNovidades(); // <--- GATILHO DAS NOVIDADES AQUI!
             } else { window.location.href = "index.html"; }
         });
 
@@ -632,6 +595,30 @@
         
         window.deletarProjeto = async (id) => { if(confirm("Deseja excluir o projeto? Esta ação não pode ser desfeita.")) { await deleteDoc(doc(db, "projetos", id)); } };
         window.toggleFavorito = async (id, isFavAtualmente) => { const docRef = doc(db, "projetos", id); if(isFavAtualmente) { await updateDoc(docRef, { favoritos: arrayRemove(meuEmail) }); } else { await updateDoc(docRef, { favoritos: arrayUnion(meuEmail) }); } };
+        
+        // ===============================================
+        // SISTEMA DE NOVIDADES (POP-UP DE ATUALIZAÇÃO)
+        // ===============================================
+        const VERSAO_ATUAL_SISTEMA = "1.0.0"; 
+        
+        function verificarNovidades() {
+            const versaoVista = localStorage.getItem('agora-versao-vista');
+            if (versaoVista !== VERSAO_ATUAL_SISTEMA) {
+                setTimeout(() => {
+                    document.getElementById('modal-novidades').style.display = 'flex';
+                }, 1000);
+            }
+        }
+
+        window.fecharModalNovidades = function() {
+            document.getElementById('modal-novidades').style.display = 'none';
+            localStorage.setItem('agora-versao-vista', VERSAO_ATUAL_SISTEMA);
+        };
+
+        window.abrirLojaVipDoNovidades = function() {
+            fecharModalNovidades(); 
+            abrirLojaVip(); 
+        };
     </script>
     <script>
     if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').then(reg => console.log('Cérebro Offline ativado!', reg.scope)).catch(err => console.log('Falha no Service Worker:', err)); }); }
