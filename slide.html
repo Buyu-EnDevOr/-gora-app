@@ -20,6 +20,10 @@
             <button id="btn-toggle-modelos" class="btn-icone" style="color: #c084fc; margin-right: 5px;" title="Modelos e Templates">
                 <span class="material-symbols-outlined">space_dashboard</span>
             </button>
+            <button id="btn-toggle-elementos" class="btn-icone" style="color: #2ecc71; margin-right: 5px;" title="Elementos e Formas">
+                <span class="material-symbols-outlined">category</span>
+            </button>
+            
             <span class="material-symbols-outlined" style="color: #8e44ad;">polyline</span>
             <h1 id="titulo-projeto-topo">Carregando...</h1>
             <span id="status-nuvem" class="status-nuvem">☁️</span>
@@ -114,27 +118,39 @@
     <div class="area-trabalho">
         
         <div class="gaveta-esquerda" id="caixa-modelos">
-            <div class="cabecalho-gaveta" style="display:flex; justify-content:space-between; align-items:center;">
+            <div class="cabecalho-gaveta">
                 <h2 style="margin:0; font-size:18px; color:#2c3e50;">Modelos</h2>
                 <button id="btn-fechar-modelos" class="btn-icone" style="color:#94a3b8;"><span class="material-symbols-outlined">close</span></button>
             </div>
-            
             <div class="conteudo-modelos">
                 <div class="busca-ia-container">
-                    <input type="text" placeholder="Descreva seu design ideal">
+                    <input type="text" id="input-ia-modelos" placeholder="Descreva seu design ideal">
                     <span class="material-symbols-outlined" title="Ditar por voz">mic</span>
                 </div>
-                
                 <div class="botoes-ia-container">
-                    <button class="btn-ia-gerar" onclick="alert('Sistema de Inteligência Artificial será ativado em breve nas próximas atualizações!')">
+                    <button class="btn-ia-gerar">
                         <span class="material-symbols-outlined" style="color:#f1c40f;">auto_awesome</span> Gerar
                     </button>
                     <button class="btn-ia-buscar">Buscar</button>
                 </div>
-                
                 <div class="grid-modelos-canva" id="grid-ia-modelos"></div>
                 <div class="separador-modelos"><span>Modelos Prontos</span></div>
                 <div class="grid-modelos-canva" id="grid-comunidade-modelos"></div>
+            </div>
+        </div>
+
+        <div class="gaveta-esquerda" id="caixa-elementos">
+            <div class="cabecalho-gaveta">
+                <h2 style="margin:0; font-size:18px; color:#2c3e50;">Elementos</h2>
+                <button id="btn-fechar-elementos" class="btn-icone" style="color:#94a3b8;"><span class="material-symbols-outlined">close</span></button>
+            </div>
+            <div class="conteudo-modelos">
+                <div class="busca-ia-container">
+                    <input type="text" id="input-busca-elementos" placeholder="Buscar ícones, formas, imagens...">
+                    <span class="material-symbols-outlined">search</span>
+                </div>
+                <div id="grid-elementos-conteudo">
+                    </div>
             </div>
         </div>
 
