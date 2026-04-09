@@ -171,7 +171,6 @@
         
         let meuEmail = "";
         
-        // VARIÁVEIS DA PAGINAÇÃO
         let todasPublicacoes = [];
         let publicacoesFiltradas = [];
         let paginaAtual = 1;
@@ -183,7 +182,7 @@
         });
 
         // ===============================================
-        // POLÍTICAS DE PRIVACIDADE E SEGURANÇA
+        // POLÍTICAS DE PRIVACIDADE E TERMOS
         // ===============================================
         const conteudosPoliticas = {
             privacidade: `
@@ -218,25 +217,41 @@
             seguranca: `
                 <div style="font-size: 14px; color: #475569; line-height: 1.6;">
                     <p>A segurança dos seus projetos é a nossa maior prioridade. O <strong>Ágora Studio</strong> foi construído utilizando tecnologias modernas para garantir que o seu trabalho árduo esteja sempre protegido contra acessos não autorizados e perdas de dados.</p>
-
                     <h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">1. Infraestrutura de Ponta (Google Cloud)</h3>
                     <p>Não guardamos os seus dados num servidor caseiro. Utilizamos a infraestrutura do <strong>Firebase (Google)</strong>, o que significa que os seus documentos estão protegidos por criptografia de nível militar, tanto em trânsito (enquanto você digita) quanto em repouso (quando estão salvos no banco de dados).</p>
-
                     <h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">2. Isolamento e Controle de Acesso</h3>
                     <ul style="padding-left: 20px; margin-bottom: 15px;">
                         <li><strong>Projetos Privados:</strong> Todo documento criado nasce 100% privado. Apenas a sua conta tem acesso a ele.</li>
                         <li><strong>Convites Seguros:</strong> Outras pessoas só entram no seu projeto se você compartilhar o link exclusivo de convite e adicioná-las ativamente à sua equipe através do e-mail delas.</li>
                         <li><strong>Senhas Criptografadas:</strong> A sua palavra-passe é criptografada no momento do cadastro e protegida pelas políticas rigorosas do Google. Ninguém da nossa equipe tem acesso a ela.</li>
                     </ul>
-
                     <h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">3. Pagamentos 100% Seguros</h3>
                     <p>Para garantir risco zero em transações financeiras, o Ágora não processa pagamentos internamente e <strong>não armazena dados de cartões de crédito</strong>. O upgrade para o plano VIP é feito exclusivamente via PIX através de um canal direto e seguro no WhatsApp oficial da plataforma.</p>
-
                     <h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">4. A sua parte na Segurança</h3>
                     <p>A tecnologia faz a maior parte do trabalho, mas precisamos da sua ajuda: não compartilhe a sua senha com terceiros e tenha muito cuidado com quem você adiciona como "Admin" nos seus projetos, pois essa pessoa terá permissão total para apagar o seu documento.</p>
                 </div>
             `,
-            bemestar: `O Ágora Pro é um ambiente profissional.<br><br><strong>1. Tolerância Zero:</strong> É proibido o uso das salas para disseminação de discurso de ódio, racismo, assédio ou pirataria.<br><br><strong>2. Respeito Mútuo:</strong> Evite apagar o trabalho de colegas sem permissão.<br><br><strong>3. Sanções:</strong> A violação implicará no banimento imediato e definitivo do infrator.`
+            bemestar: `
+                <div style="font-size: 14px; color: #475569; line-height: 1.6;">
+                    <p>O <strong>Ágora Studio</strong> é um espaço criado por e para estudantes. A nossa missão é facilitar a colaboração acadêmica em um ambiente seguro, respeitoso e produtivo. Para manter essa comunidade incrível, exigimos o cumprimento de algumas regras básicas de conduta.</p>
+                    <h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">1. Respeito e Colaboração</h3>
+                    <p>Trabalhar em equipe exige empatia. Não apague ou sabote o trabalho de seus colegas de forma intencional nas salas colaborativas. O Ágora foi feito para construir, não para destruir.</p>
+                    <h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">2. Tolerância Zero</h3>
+                    <p>Temos uma política de tolerância absolutamente zero para os seguintes comportamentos, tanto nas salas privadas quanto na aba Explorar Comunidade:</p>
+                    <ul style="padding-left: 20px; margin-bottom: 15px;">
+                        <li><strong>Discurso de ódio, racismo, homofobia ou qualquer tipo de discriminação.</strong></li>
+                        <li><strong>Assédio, bullying ou ameaças</strong> a outros usuários.</li>
+                        <li>Partilha de <strong>conteúdo explícito, violento ou ilegal</strong> (incluindo pirataria).</li>
+                    </ul>
+                    <h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">3. Integridade Acadêmica (Plágio)</h3>
+                    <p>A aba "Explorar Comunidade" serve para compartilhar <em>modelos</em> (templates) e estruturas. Incentivamos que você use esses modelos como base para o seu estudo, mas repudiamos o plágio acadêmico. Se você publicar o trabalho integral de outra pessoa afirmando ser seu, o conteúdo será removido.</p>
+                    <h3 style="color: #2c3e50; margin-top: 20px; font-size: 16px;">4. Sistema de Denúncias e Sanções</h3>
+                    <p>Se você encontrar qualquer conteúdo ofensivo ou sofrer algum tipo de abuso na plataforma, utilize o botão de <strong>Denunciar</strong> (ícone de bandeira nos projetos da comunidade). A nossa equipe analisará o caso rigorosamente.</p>
+                    <p><strong>A punição:</strong> A violação de qualquer uma dessas diretrizes resultará na suspensão ou no <strong>banimento definitivo</strong> da conta do infrator, com a exclusão de todos os seus dados e projetos, sem aviso prévio e sem direito a reembolso de planos VIP.</p>
+                    <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 25px 0;">
+                    <p style="font-size: 12px; color: #94a3b8; text-align: center;">Ao fazer parte da comunidade Ágora, você se compromete a manter um ambiente de respeito e crescimento mútuo.</p>
+                </div>
+            `
         };
 
         window.abrirPolitica = function(tipo) {
@@ -247,9 +262,6 @@
             modal.style.display = 'flex';
         }
 
-        // ==========================================
-        // COMUNIDADE
-        // ==========================================
         function buscarDadosDoBanco() {
             onSnapshot(collection(db, "comunidade"), (snapshot) => {
                 todasPublicacoes = [];
