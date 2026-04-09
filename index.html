@@ -171,17 +171,10 @@
                 .catch((error) => { msgErro.innerText = "Erro ao entrar. Verifique os seus dados."; msgErro.style.display = "block"; });
         });
 
-        // CRIAR CONTA
+       // IR PARA TELA DE CRIAR CONTA
         document.getElementById('btn-criar-conta').addEventListener('click', () => {
-            const email = inputEmail.value.trim(); const senha = inputSenha.value.trim();
-            if(!email || !senha) { msgErro.innerText = "Preencha o e-mail e palavra-passe."; msgErro.style.display = "block"; return; }
-            if(senha.length < 6) { msgErro.innerText = "A palavra-passe precisa de 6 ou mais caracteres."; msgErro.style.display = "block"; return; }
-
-            createUserWithEmailAndPassword(auth, email, senha)
-                .then(() => { window.location.href = "dashboard.html"; })
-                .catch((error) => { msgErro.innerText = "Erro ao criar conta. O e-mail já existe?"; msgErro.style.display = "block"; });
+            window.location.href = "cadastro.html";
         });
-
         // RECUPERAÇÃO DE PALAVRA-PASSE
         const modalRecuperar = document.getElementById('modal-recuperar');
         const inputEmailRecup = document.getElementById('email-recuperacao');
