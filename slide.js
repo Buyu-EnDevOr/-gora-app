@@ -88,7 +88,6 @@ window.carregarElementosBuscados = function(termo = "") {
     if(!grid) return;
     grid.innerHTML = '';
     
-    // 1. Dicionário de Emojis/Stickers
     const bancoEmojis = [
         {tags: "estrela estrela brilho", emoji: '🌟'}, {tags: "fogo quente", emoji: '🔥'}, 
         {tags: "ideia lampada", emoji: '💡'}, {tags: "foguete espaco", emoji: '🚀'},
@@ -98,7 +97,6 @@ window.carregarElementosBuscados = function(termo = "") {
         {tags: "flor natureza", emoji: '🌸'}, {tags: "planeta terra", emoji: '🌍'}
     ];
 
-    // Formas Geométricas
     if(termo === "" || "forma quadrado circulo triangulo".includes(termo.toLowerCase())) {
         grid.innerHTML += `
             <div class="separador-modelos"><span>Formas Básicas</span></div>
@@ -110,7 +108,6 @@ window.carregarElementosBuscados = function(termo = "") {
         `;
     }
 
-    // Filtra e exibe Stickers
     const termoLower = termo.toLowerCase();
     const emojisFiltrados = bancoEmojis.filter(e => termo === "" || e.tags.includes(termoLower));
     
@@ -123,11 +120,9 @@ window.carregarElementosBuscados = function(termo = "") {
         grid.innerHTML += htmlStickers;
     }
 
-    // Fotos (Simulando uma API tipo Pixabay/Unsplash com imagens aleatórias)
     let photoTerm = termo === "" ? "abstract" : termo;
     let htmlFotos = `<div class="separador-modelos"><span>Fotografias</span></div><div class="grid-modelos-canva">`;
     for(let i=1; i<=6; i++) {
-        // Usando placehold.co com texto colorido para simular uma galeria visual
         let imgUrl = `https://placehold.co/400x400/e2e8f0/8e44ad?text=${encodeURIComponent(photoTerm)}+${i}`;
         htmlFotos += `<div class="modelo-item-canva" style="aspect-ratio:1;" onclick="inserirImagemExternaNoSlide('${imgUrl}')"><img src="${imgUrl}"></div>`;
     }
@@ -135,7 +130,6 @@ window.carregarElementosBuscados = function(termo = "") {
     grid.innerHTML += htmlFotos;
 }
 
-// Funções para injetar elementos no quadro
 window.inserirFormaNoSlide = function(tipo) {
     if(meuCargo === "leitor") return;
     desativarLapis();
@@ -162,7 +156,6 @@ window.inserirImagemExternaNoSlide = function(url) {
     }, { crossOrigin: 'anonymous' });
 };
 
-// Listener da Barra de Pesquisa de Elementos
 if(document.getElementById('input-busca-elementos')) {
     let timeoutBusca = null;
     document.getElementById('input-busca-elementos').addEventListener('input', (e) => {
@@ -172,7 +165,7 @@ if(document.getElementById('input-busca-elementos')) {
 }
 
 // ==========================================
-// ABA: MODELOS E IA
+// ABA: MODELOS E TEMPLATES
 // ==========================================
 const modeloMockJSON = '{"version":"5.3.0","objects":[{"type":"rect","left":0,"top":0,"width":1920,"height":1080,"fill":"#2c3e50"},{"type":"i-text","left":100,"top":200,"fill":"#ffffff","text":"APRESENTAÇÃO DE\\nHISTÓRIA","fontSize":80,"fontWeight":"bold"},{"type":"i-text","left":100,"top":400,"fill":"#f1c40f","text":"Substitua com seus dados","fontSize":30}],"background":"#2c3e50"}';
 let modelosComunidadeDisponiveis = []; 
@@ -236,14 +229,20 @@ window.abrirPreviewReal = function(idPub) {
     }
 }
 
+// CORREÇÃO: ADICIONADA TRAVA DE NUVEM PARA EVITAR O LOOP DE SALVAMENTO AO APLICAR MODELO
 if(document.getElementById('btn-aplicar-modelo-real')) {
     document.getElementById('btn-aplicar-modelo-real').addEventListener('click', () => {
         if(meuCargo === "leitor") return alert("Leitores não podem editar o arquivo.");
         if(!modeloSelecionadoParaAplicar) return;
 
         if(confirm("Aplicar este modelo vai substituir todo o conteúdo atual deste slide. Deseja continuar?")) {
+            isAtualizandoPelaNuvem = true; // Impede que o Canvas salve objeto por objeto
+            
             canvas.loadFromJSON(modeloSelecionadoParaAplicar, () => {
-                canvas.renderAll(); salvarNoFirebase();
+                isAtualizandoPelaNuvem = false; // Libera o salvamento novamente
+                canvas.renderAll(); 
+                salvarNoFirebase(); // Salva o estado completo uma única vez
+                
                 document.getElementById('modal-preview-modelo').style.display = 'none';
                 if(caixaModelos) caixaModelos.classList.remove('aberto');
                 alert("Modelo aplicado com sucesso!");
@@ -252,83 +251,61 @@ if(document.getElementById('btn-aplicar-modelo-real')) {
     });
 }
 
-// Inicializa aba Modelos
 setTimeout(() => gerarGrelhasModelos(), 500);
 
 // ==========================================
-// CÉREBRO DA IA GERADORA DE SLIDES
+// CÉREBRO DA IA GERADORA DE SLIDES (POLLINATIONS)
 // ==========================================
 const btnGerarIA = document.querySelector('.btn-ia-gerar');
 const inputIA = document.querySelector('#input-ia-modelos');
 
 if(btnGerarIA && inputIA) {
-    btnGerarIA.removeAttribute('onclick');
+    const novoBtnGerarIA = btnGerarIA.cloneNode(true);
+    btnGerarIA.parentNode.replaceChild(novoBtnGerarIA, btnGerarIA);
 
-    btnGerarIA.addEventListener('click', () => {
+    novoBtnGerarIA.addEventListener('click', () => {
         if(meuCargo === "leitor") return alert("Leitores não podem usar a IA neste documento.");
         
         const prompt = inputIA.value.trim();
         if(!prompt) return alert("Por favor, descreva o design ideal na caixa de texto!");
         
-        btnGerarIA.innerHTML = '<span class="material-symbols-outlined spin-anim">sync</span> Gerando...';
+        novoBtnGerarIA.innerHTML = '<span class="material-symbols-outlined spin-anim">sync</span> Gerando...';
+        novoBtnGerarIA.disabled = true;
         
-        setTimeout(() => {
-            gerarSlideComIA(prompt);
-            btnGerarIA.innerHTML = '<span class="material-symbols-outlined" style="color:#f1c40f;">auto_awesome</span> Gerar';
-            if(caixaModelos) caixaModelos.classList.remove('aberto'); 
-        }, 1500);
+        gerarFundoComPollinations(prompt, novoBtnGerarIA);
     });
 }
 
-function gerarSlideComIA(prompt) {
-    let p = prompt.toLowerCase();
-    let tema = { bg: '#f5f0fa', titulo: '#2c3e50', sub: '#8e44ad', icones: ['✨', '🟣', '🎨', '🚀', '☁️'] };
+function gerarFundoComPollinations(promptTexto, botaoInterface) {
+    const promptOtimizado = encodeURIComponent(promptTexto + ", clean presentation background, high quality, no text");
+    const width = 1920;
+    const height = 1080;
+    const imageUrl = `https://image.pollinations.ai/prompt/${promptOtimizado}?width=${width}&height=${height}&nologo=true`;
 
-    if(p.includes('natureza') || p.includes('biologia') || p.includes('meio ambiente') || p.includes('flor') || p.includes('plantas')) {
-        tema = { bg: '#e8f5e9', titulo: '#1b5e20', sub: '#2e7d32', icones: ['🌿', '🌸', '🌱', '☀️', '☁️'] };
-    } else if (p.includes('tecnologia') || p.includes('futuro') || p.includes('informática') || p.includes('ia') || p.includes('dados')) {
-        tema = { bg: '#0f172a', titulo: '#38bdf8', sub: '#c084fc', icones: ['💻', '🌐', '⚡', '🧩', '💠'] };
-    } else if (p.includes('história') || p.includes('antigo') || p.includes('passado') || p.includes('geografia')) {
-        tema = { bg: '#fdf4e3', titulo: '#5c4033', sub: '#8b5a2b', icones: ['📜', '🏺', '🏛️', '✒️', '🗺️'] };
-    }
+    fabric.Image.fromURL(imageUrl, function(img) {
+        if (!img) {
+            alert("Erro ao conectar com a IA. Tente novamente.");
+            botaoInterface.innerHTML = '<span class="material-symbols-outlined" style="color:#f1c40f;">auto_awesome</span> Gerar';
+            botaoInterface.disabled = false;
+            return;
+        }
 
-    canvas.clear();
-    canvas.backgroundColor = tema.bg;
-    isQuadroEscuro = (tema.bg === '#0f172a');
-    document.getElementById('cor-borda').value = isQuadroEscuro ? '#ffffff' : '#2c3e50';
+        const scaleX = canvas.width / img.width;
+        const scaleY = canvas.height / img.height;
+        const scale = Math.max(scaleX, scaleY);
 
-    const textTitle = new fabric.IText(prompt.toUpperCase(), {
-        left: canvas.width / 2, top: canvas.height / 2 - 30,
-        fontFamily: 'Arial', fill: tema.titulo, fontSize: 50, fontWeight: 'bold',
-        originX: 'center', originY: 'center', textAlign: 'center'
-    });
+        img.set({ originX: 'center', originY: 'center', left: canvas.width / 2, top: canvas.height / 2, scaleX: scale, scaleY: scale });
 
-    const textSub = new fabric.IText("Layout gerado pela Ágora AI", {
-        left: canvas.width / 2, top: canvas.height / 2 + 40,
-        fontFamily: 'Arial', fill: tema.sub, fontSize: 20,
-        originX: 'center', originY: 'center'
-    });
+        canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
+        salvarNoFirebase();
+        precisaAtualizarThumb = true;
 
-    canvas.add(textTitle, textSub);
-
-    for(let i = 0; i < 6; i++) {
-        let iconeAleatorio = tema.icones[Math.floor(Math.random() * tema.icones.length)];
-        let rx = Math.random() > 0.5 ? Math.random() * 200 : canvas.width - (Math.random() * 200) - 50;
-        let ry = Math.random() > 0.5 ? Math.random() * 200 : canvas.height - (Math.random() * 200) - 50;
+        botaoInterface.innerHTML = '<span class="material-symbols-outlined" style="color:#f1c40f;">auto_awesome</span> Gerar';
+        botaoInterface.disabled = false;
         
-        const decor = new fabric.Text(iconeAleatorio, {
-            left: rx, top: ry, fontSize: Math.random() * 60 + 40, opacity: 0.2 + (Math.random() * 0.3), angle: Math.random() * 360, selectable: true
-        });
-        canvas.add(decor); canvas.sendToBack(decor); 
-    }
-
-    const blobUrl = `https://api.dicebear.com/7.x/shapes/svg?seed=${encodeURIComponent(prompt)}&backgroundColor=transparent`;
-    fabric.Image.fromURL(blobUrl, function(img) {
-        img.set({ left: canvas.width - 250, top: -50, scaleX: 2, scaleY: 2, opacity: 0.1, angle: 45 });
-        canvas.add(img); canvas.sendToBack(img); canvas.renderAll(); salvarNoFirebase();
+        if(document.getElementById('caixa-modelos')) document.getElementById('caixa-modelos').classList.remove('aberto');
+        
     }, { crossOrigin: 'anonymous' });
-
-    canvas.renderAll(); salvarNoFirebase();
 }
 
 // ==========================================
@@ -417,14 +394,25 @@ setInterval(() => {
     }
 }, 10000);
 
+// CORREÇÃO: ADICIONAR/TROCAR SLIDE AGORA USA O CANVAS.TOJSON()
 document.getElementById('btn-adicionar-slide').addEventListener('click', () => {
-    if(meuCargo !== "leitor") { tirarFotoDoSlide(); const objs = canvas.getObjects().filter(o => !o.isGuide); arrayDeSlides[indiceSlideAtivo].dadosGraficos = JSON.stringify({ version: "5.3.0", objects: objs, background: canvas.backgroundColor }); }
+    if(meuCargo !== "leitor") { 
+        tirarFotoDoSlide(); 
+        const canvasData = canvas.toJSON();
+        canvasData.objects = canvasData.objects.filter(o => !o.isGuide);
+        arrayDeSlides[indiceSlideAtivo].dadosGraficos = JSON.stringify(canvasData); 
+    }
     arrayDeSlides.push({ id: Date.now().toString(), dadosGraficos: '{"version":"5.3.0","objects":[],"background":"white"}', thumbnail: '' });
     indiceSlideAtivo = arrayDeSlides.length - 1; updateDoc(doc(db, "projetos", idProjeto), { slides: arrayDeSlides }); carregarSlide(); desenharMiniaturas(); 
 });
 
 function trocarSlide(idx) { 
-    if(meuCargo !== "leitor") { tirarFotoDoSlide(); const objs = canvas.getObjects().filter(o => !o.isGuide); arrayDeSlides[indiceSlideAtivo].dadosGraficos = JSON.stringify({ version: "5.3.0", objects: objs, background: canvas.backgroundColor }); }
+    if(meuCargo !== "leitor") { 
+        tirarFotoDoSlide(); 
+        const canvasData = canvas.toJSON();
+        canvasData.objects = canvasData.objects.filter(o => !o.isGuide);
+        arrayDeSlides[indiceSlideAtivo].dadosGraficos = JSON.stringify(canvasData); 
+    }
     indiceSlideAtivo = idx; updateDoc(doc(db, "projetos", idProjeto), { slides: arrayDeSlides }); carregarSlide(); desenharMiniaturas(); 
 }
 
@@ -443,12 +431,16 @@ function carregarSlide() {
 window.isQuadroEscuro = false;
 document.getElementById('btn-tema-quadro').addEventListener('click', () => { isQuadroEscuro = !isQuadroEscuro; canvas.backgroundColor = isQuadroEscuro ? '#1e1e1e' : '#ffffff'; document.getElementById('cor-borda').value = isQuadroEscuro ? '#ffffff' : '#2c3e50'; canvas.renderAll(); salvarNoFirebase(); document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('aberto')); });
 
+// CORREÇÃO: SALVAR NO FIREBASE AGORA CONSERVA AS IMAGENS DE FUNDO DA IA E O MODELO COMPLETO
 window.salvarNoFirebase = function() {
     if(isAtualizandoPelaNuvem || meuCargo === "leitor" || isHistoryAction) return;
     const sNuvem = document.getElementById('status-nuvem');
     if(sNuvem) sNuvem.innerText = "⏳ A Salvar...";
     
-    const objs = canvas.getObjects().filter(o => !o.isGuide); const json = JSON.stringify({ version: "5.3.0", objects: objs, background: canvas.backgroundColor });
+    const canvasData = canvas.toJSON();
+    canvasData.objects = canvasData.objects.filter(o => !o.isGuide);
+    const json = JSON.stringify(canvasData);
+    
     if(historyStack[historyIndex] !== json) { historyStack = historyStack.slice(0, historyIndex + 1); historyStack.push(json); historyIndex++; }
     arrayDeSlides[indiceSlideAtivo].dadosGraficos = json; precisaAtualizarThumb = true;
     updateDoc(doc(db, "projetos", idProjeto), { slides: arrayDeSlides }).then(() => { if(sNuvem) sNuvem.innerText = "☁️ Salvo"; }).catch(err => { if(sNuvem) sNuvem.innerText = "⚠️ Erro"; });
