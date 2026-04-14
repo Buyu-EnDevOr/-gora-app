@@ -24,7 +24,7 @@ let meuNome = "Anônimo", meuEmail = "", minhaFoto = "", meuCargo = "leitor";
 let arrayDeSlides = [], indiceSlideAtivo = 0;
 let historyStack = [], historyIndex = -1, isHistoryAction = false, isAtualizandoPelaNuvem = false, primeiraCarga = true;
 let precisaAtualizarThumb = false;
-let bloqueioSincronizacao = false; // TRAVA DE SEGURANÇA ADICIONADA
+let bloqueioSincronizacao = false; // TRAVA DE SEGURANÇA ANTIBUG
 
 const containerCanvas = document.getElementById('container-canvas');
 const canvas = new fabric.Canvas('canvas-slide', { backgroundColor: 'white', selection: true, preserveObjectStacking: true, width: containerCanvas.clientWidth, height: containerCanvas.clientHeight });
@@ -64,7 +64,7 @@ if(document.getElementById('btn-toggle-elementos')) {
         fecharTodasAsGavetasEsquerdas();
         if(!estavaAberto) {
             caixaElementos.classList.add('aberto');
-            carregarElementosBuscados(""); // Carrega os padrão ao abrir
+            carregarElementosBuscados(""); 
         }
         caixaChat.classList.remove('aberto'); caixaArquivos.classList.remove('aberto');
     });
@@ -236,20 +236,19 @@ if(document.getElementById('btn-aplicar-modelo-real')) {
         if(!modeloSelecionadoParaAplicar) return;
 
         if(confirm("Aplicar este modelo vai substituir todo o conteúdo atual deste slide. Deseja continuar?")) {
-            bloqueioSincronizacao = true; // ATIVA A TRAVA
+            bloqueioSincronizacao = true; 
             isAtualizandoPelaNuvem = true; 
             
             canvas.loadFromJSON(modeloSelecionadoParaAplicar, () => {
                 canvas.renderAll(); 
                 
-                // Salva o estado completo uma única vez
                 const canvasData = canvas.toJSON();
                 canvasData.objects = canvasData.objects.filter(o => !o.isGuide);
                 arrayDeSlides[indiceSlideAtivo].dadosGraficos = JSON.stringify(canvasData);
                 
                 updateDoc(doc(db, "projetos", idProjeto), { slides: arrayDeSlides }).then(() => {
                     setTimeout(() => {
-                        bloqueioSincronizacao = false; // LIBERA A TRAVA
+                        bloqueioSincronizacao = false; 
                         isAtualizandoPelaNuvem = false;
                     }, 500);
                 });
@@ -269,7 +268,7 @@ setTimeout(() => gerarGrelhasModelos(), 500);
 // ==========================================
 const btnGerarIA = document.querySelector('.btn-ia-gerar');
 const inputIA = document.querySelector('#input-ia-modelos');
-const gridIA = document.getElementById('grid-ia-modelos'); // Vamos usar a grid atual para injetar o mosaico
+const gridIA = document.getElementById('grid-ia-modelos');
 
 if(btnGerarIA && inputIA) {
     const novoBtnGerarIA = btnGerarIA.cloneNode(true);
@@ -289,7 +288,6 @@ if(btnGerarIA && inputIA) {
 }
 
 function gerarMosaicoComPollinations(promptTexto, botaoInterface) {
-    // 4 perfis de prompt engineering para garantir imagens incríveis
     const estilosIA = [
         { nome: "Moderno", sufixo: ", flat vector design, clean presentation background, beautiful UI, abstract minimal, no text" },
         { nome: "Aquarela", sufixo: ", soft watercolor painting, elegant presentation background, light pastel colors, no text" },
@@ -298,17 +296,15 @@ function gerarMosaicoComPollinations(promptTexto, botaoInterface) {
     ];
 
     if(gridIA) {
-        // Limpa a lista de modelos genéricos e mostra o título do mosaico
         gridIA.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; color: #8e44ad; font-weight: bold; font-size: 13px; margin-bottom: 5px;">Selecione seu estilo favorito:</div>`;
     }
 
     let imagensCarregadas = 0;
     
-    // Gerar as 4 variações
     estilosIA.forEach((estilo) => {
         const promptOtimizado = encodeURIComponent(promptTexto + estilo.sufixo);
-        // Pede miniatura pra ser rápido, e adiciona um random seed para não vir imagens repetidas
         const semente = Math.floor(Math.random() * 9999);
+        
         const urlMiniatura = `https://image.pollinations.ai/prompt/${promptOtimizado}?width=400&height=225&nologo=true&seed=${semente}`;
         const urlAltaRes = `https://image.pollinations.ai/prompt/${promptOtimizado}?width=1920&height=1080&nologo=true&seed=${semente}`;
 
@@ -316,31 +312,37 @@ function gerarMosaicoComPollinations(promptTexto, botaoInterface) {
         divCard.className = 'modelo-item-canva';
         divCard.style.position = 'relative';
         
-        // Estrutura do card com carregamento (CSS inline para não te obrigar a mexer no slide.css)
+        // CORS na Miniatura
         divCard.innerHTML = `
-            <img src="${urlMiniatura}" style="opacity: 0.3; transition: opacity 0.5s;">
+            <img crossorigin="anonymous" src="" style="opacity: 0; transition: opacity 0.5s; width: 100%; height: 100%; object-fit: cover;">
             <div class="tag-estilo" style="position: absolute; top: 5px; left: 5px; background: rgba(142,68,173,0.8); color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold;">${estilo.nome}</div>
             <div class="loader-ia" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"><span class="material-symbols-outlined spin-anim" style="color: #8e44ad;">sync</span></div>
         `;
-
-        // Ao clicar no card, ele baixa a imagem inteira e monta o slide
-        divCard.onclick = () => aplicarIACompletaNoSlide(promptTexto, urlAltaRes);
         
         if(gridIA) gridIA.appendChild(divCard);
 
-        // Controlador de carregamento das miniaturas
+        const imgElement = divCard.querySelector('img');
         const imgTeste = new Image();
+        
+        // CORS RESOLVIDO PARA A REDE DA FACULDADE
+        imgTeste.crossOrigin = "anonymous"; 
+
         imgTeste.onload = () => {
-            divCard.querySelector('img').style.opacity = '1';
+            imgElement.src = urlMiniatura;
+            imgElement.style.opacity = '1';
             divCard.querySelector('.loader-ia').style.display = 'none';
+            divCard.onclick = () => aplicarIACompletaNoSlide(promptTexto, urlAltaRes);
+            
             imagensCarregadas++;
             verificarConclusaoMosaico(imagensCarregadas, botaoInterface);
         };
+
         imgTeste.onerror = () => {
             divCard.innerHTML = `<div style="text-align: center; color: #e74c3c; font-size: 11px; padding: 20px;">Erro ao carregar</div>`;
             imagensCarregadas++;
             verificarConclusaoMosaico(imagensCarregadas, botaoInterface);
         }
+        
         imgTeste.src = urlMiniatura;
     });
 }
@@ -353,10 +355,11 @@ function verificarConclusaoMosaico(contagem, btn) {
 }
 
 function aplicarIACompletaNoSlide(promptOriginal, imageUrl) {
-    bloqueioSincronizacao = true; // ATIVA A TRAVA
+    bloqueioSincronizacao = true; 
     const sNuvem = document.getElementById('status-nuvem');
     if(sNuvem) sNuvem.innerText = "⏳ Montando Slide...";
 
+    // A mágica acontece aqui: A imagem alta resolução também com CORS
     fabric.Image.fromURL(imageUrl, function(img) {
         if (!img) {
             alert("Erro ao baixar a imagem em alta resolução.");
@@ -365,16 +368,14 @@ function aplicarIACompletaNoSlide(promptOriginal, imageUrl) {
             return;
         }
 
-        // 1. Aplica o Fundo de Tela
         const scale = Math.max(canvas.width / img.width, canvas.height / img.height);
         img.set({ originX: 'center', originY: 'center', left: canvas.width / 2, top: canvas.height / 2, scaleX: scale, scaleY: scale });
 
         canvas.setBackgroundImage(img, () => {
             
-            // 2. Cria a Estrutura Inteligente de Texto
+            // INJEÇÃO DA ESTRUTURA DE TEXTO INTELIGENTE
             const tituloCaps = promptOriginal.toUpperCase();
             
-            // Retângulo escuro translúcido para garantir que o texto dê leitura em qualquer fundo
             const fundoTexto = new fabric.Rect({
                 left: canvas.width / 2,
                 top: canvas.height / 2,
@@ -382,12 +383,11 @@ function aplicarIACompletaNoSlide(promptOriginal, imageUrl) {
                 originY: 'center',
                 width: 800,
                 height: 400,
-                fill: 'rgba(0, 0, 0, 0.5)',
+                fill: 'rgba(0, 0, 0, 0.6)', // Fundo escuro para dar leitura em qualquer imagem
                 rx: 15,
                 ry: 15
             });
 
-            // Título formatado
             const textoTitulo = new fabric.IText(tituloCaps, {
                 left: canvas.width / 2,
                 top: canvas.height / 2 - 100,
@@ -400,7 +400,6 @@ function aplicarIACompletaNoSlide(promptOriginal, imageUrl) {
                 textAlign: 'center'
             });
 
-            // Tópicos estruturados (Placeholder para o aluno preencher)
             const textoTopicos = new fabric.IText("• Digite aqui o seu primeiro tópico principal\n\n• Segundo ponto chave da apresentação\n\n• Conclusão ou dados relevantes", {
                 left: canvas.width / 2,
                 top: canvas.height / 2 + 50,
@@ -413,7 +412,6 @@ function aplicarIACompletaNoSlide(promptOriginal, imageUrl) {
                 textAlign: 'left'
             });
 
-            // Injeta tudo no slide na ordem certa (fundo, título, texto)
             canvas.add(fundoTexto);
             canvas.add(textoTitulo);
             canvas.add(textoTopicos);
@@ -422,13 +420,12 @@ function aplicarIACompletaNoSlide(promptOriginal, imageUrl) {
             salvarNoFirebase();
             precisaAtualizarThumb = true;
             
-            setTimeout(() => { bloqueioSincronizacao = false; }, 500); // LIBERA A TRAVA
+            setTimeout(() => { bloqueioSincronizacao = false; }, 500); 
         });
 
-        // Oculta o menu lateral automaticamente para revelar a mágica ao aluno
         if(document.getElementById('caixa-modelos')) document.getElementById('caixa-modelos').classList.remove('aberto');
         
-    }, { crossOrigin: 'anonymous' });
+    }, { crossOrigin: 'anonymous' }); // AQUI TAMBÉM É CRUCIAL PARA NÃO DAR ERRO AO SALVAR
 }
 
 // ==========================================
