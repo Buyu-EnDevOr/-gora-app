@@ -230,7 +230,6 @@ window.abrirPreviewReal = function(idPub) {
     }
 }
 
-// CORREÇÃO APLICADA: TRAVA DE NUVEM BLINDA O LOOP DE SALVAMENTO AO APLICAR MODELO
 if(document.getElementById('btn-aplicar-modelo-real')) {
     document.getElementById('btn-aplicar-modelo-real').addEventListener('click', () => {
         if(meuCargo === "leitor") return alert("Leitores não podem editar o arquivo.");
@@ -266,10 +265,11 @@ if(document.getElementById('btn-aplicar-modelo-real')) {
 setTimeout(() => gerarGrelhasModelos(), 500);
 
 // ==========================================
-// CÉREBRO DA IA GERADORA DE SLIDES (POLLINATIONS)
+// CÉREBRO DA IA GERADORA DE SLIDES (MOSAICO + TEXTO ESTRUTURADO)
 // ==========================================
 const btnGerarIA = document.querySelector('.btn-ia-gerar');
 const inputIA = document.querySelector('#input-ia-modelos');
+const gridIA = document.getElementById('grid-ia-modelos'); // Vamos usar a grid atual para injetar o mosaico
 
 if(btnGerarIA && inputIA) {
     const novoBtnGerarIA = btnGerarIA.cloneNode(true);
@@ -281,47 +281,151 @@ if(btnGerarIA && inputIA) {
         const prompt = inputIA.value.trim();
         if(!prompt) return alert("Por favor, descreva o design ideal na caixa de texto!");
         
-        novoBtnGerarIA.innerHTML = '<span class="material-symbols-outlined spin-anim">sync</span> Gerando...';
+        novoBtnGerarIA.innerHTML = '<span class="material-symbols-outlined spin-anim">sync</span> Criando Ideias...';
         novoBtnGerarIA.disabled = true;
         
-        gerarFundoComPollinations(prompt, novoBtnGerarIA);
+        gerarMosaicoComPollinations(prompt, novoBtnGerarIA);
     });
 }
 
-function gerarFundoComPollinations(promptTexto, botaoInterface) {
-    const promptOtimizado = encodeURIComponent(promptTexto + ", clean presentation background, high quality, no text");
-    const width = 1920;
-    const height = 1080;
-    const imageUrl = `https://image.pollinations.ai/prompt/${promptOtimizado}?width=${width}&height=${height}&nologo=true`;
+function gerarMosaicoComPollinations(promptTexto, botaoInterface) {
+    // 4 perfis de prompt engineering para garantir imagens incríveis
+    const estilosIA = [
+        { nome: "Moderno", sufixo: ", flat vector design, clean presentation background, beautiful UI, abstract minimal, no text" },
+        { nome: "Aquarela", sufixo: ", soft watercolor painting, elegant presentation background, light pastel colors, no text" },
+        { nome: "Corporativo", sufixo: ", modern geometric shapes, corporate presentation background, highly detailed, no text" },
+        { nome: "Cinemático", sufixo: ", realistic, soft lighting, depth of field, premium presentation background, clean, no text" }
+    ];
 
+    if(gridIA) {
+        // Limpa a lista de modelos genéricos e mostra o título do mosaico
+        gridIA.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; color: #8e44ad; font-weight: bold; font-size: 13px; margin-bottom: 5px;">Selecione seu estilo favorito:</div>`;
+    }
+
+    let imagensCarregadas = 0;
+    
+    // Gerar as 4 variações
+    estilosIA.forEach((estilo) => {
+        const promptOtimizado = encodeURIComponent(promptTexto + estilo.sufixo);
+        // Pede miniatura pra ser rápido, e adiciona um random seed para não vir imagens repetidas
+        const semente = Math.floor(Math.random() * 9999);
+        const urlMiniatura = `https://image.pollinations.ai/prompt/${promptOtimizado}?width=400&height=225&nologo=true&seed=${semente}`;
+        const urlAltaRes = `https://image.pollinations.ai/prompt/${promptOtimizado}?width=1920&height=1080&nologo=true&seed=${semente}`;
+
+        const divCard = document.createElement('div');
+        divCard.className = 'modelo-item-canva';
+        divCard.style.position = 'relative';
+        
+        // Estrutura do card com carregamento (CSS inline para não te obrigar a mexer no slide.css)
+        divCard.innerHTML = `
+            <img src="${urlMiniatura}" style="opacity: 0.3; transition: opacity 0.5s;">
+            <div class="tag-estilo" style="position: absolute; top: 5px; left: 5px; background: rgba(142,68,173,0.8); color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold;">${estilo.nome}</div>
+            <div class="loader-ia" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"><span class="material-symbols-outlined spin-anim" style="color: #8e44ad;">sync</span></div>
+        `;
+
+        // Ao clicar no card, ele baixa a imagem inteira e monta o slide
+        divCard.onclick = () => aplicarIACompletaNoSlide(promptTexto, urlAltaRes);
+        
+        if(gridIA) gridIA.appendChild(divCard);
+
+        // Controlador de carregamento das miniaturas
+        const imgTeste = new Image();
+        imgTeste.onload = () => {
+            divCard.querySelector('img').style.opacity = '1';
+            divCard.querySelector('.loader-ia').style.display = 'none';
+            imagensCarregadas++;
+            verificarConclusaoMosaico(imagensCarregadas, botaoInterface);
+        };
+        imgTeste.onerror = () => {
+            divCard.innerHTML = `<div style="text-align: center; color: #e74c3c; font-size: 11px; padding: 20px;">Erro ao carregar</div>`;
+            imagensCarregadas++;
+            verificarConclusaoMosaico(imagensCarregadas, botaoInterface);
+        }
+        imgTeste.src = urlMiniatura;
+    });
+}
+
+function verificarConclusaoMosaico(contagem, btn) {
+    if(contagem === 4) {
+        btn.innerHTML = '<span class="material-symbols-outlined" style="color:#f1c40f;">auto_awesome</span> Gerar Novamente';
+        btn.disabled = false;
+    }
+}
+
+function aplicarIACompletaNoSlide(promptOriginal, imageUrl) {
     bloqueioSincronizacao = true; // ATIVA A TRAVA
+    const sNuvem = document.getElementById('status-nuvem');
+    if(sNuvem) sNuvem.innerText = "⏳ Montando Slide...";
 
     fabric.Image.fromURL(imageUrl, function(img) {
         if (!img) {
-            alert("Erro ao conectar com a IA. Tente novamente.");
-            botaoInterface.innerHTML = '<span class="material-symbols-outlined" style="color:#f1c40f;">auto_awesome</span> Gerar';
-            botaoInterface.disabled = false;
-            bloqueioSincronizacao = false; // LIBERA A TRAVA EM CASO DE ERRO
+            alert("Erro ao baixar a imagem em alta resolução.");
+            bloqueioSincronizacao = false;
+            if(sNuvem) sNuvem.innerText = "⚠️ Erro";
             return;
         }
 
-        const scaleX = canvas.width / img.width;
-        const scaleY = canvas.height / img.height;
-        const scale = Math.max(scaleX, scaleY);
-
+        // 1. Aplica o Fundo de Tela
+        const scale = Math.max(canvas.width / img.width, canvas.height / img.height);
         img.set({ originX: 'center', originY: 'center', left: canvas.width / 2, top: canvas.height / 2, scaleX: scale, scaleY: scale });
 
         canvas.setBackgroundImage(img, () => {
+            
+            // 2. Cria a Estrutura Inteligente de Texto
+            const tituloCaps = promptOriginal.toUpperCase();
+            
+            // Retângulo escuro translúcido para garantir que o texto dê leitura em qualquer fundo
+            const fundoTexto = new fabric.Rect({
+                left: canvas.width / 2,
+                top: canvas.height / 2,
+                originX: 'center',
+                originY: 'center',
+                width: 800,
+                height: 400,
+                fill: 'rgba(0, 0, 0, 0.5)',
+                rx: 15,
+                ry: 15
+            });
+
+            // Título formatado
+            const textoTitulo = new fabric.IText(tituloCaps, {
+                left: canvas.width / 2,
+                top: canvas.height / 2 - 100,
+                originX: 'center',
+                originY: 'center',
+                fontFamily: 'Arial',
+                fill: '#ffffff',
+                fontSize: 55,
+                fontWeight: 'bold',
+                textAlign: 'center'
+            });
+
+            // Tópicos estruturados (Placeholder para o aluno preencher)
+            const textoTopicos = new fabric.IText("• Digite aqui o seu primeiro tópico principal\n\n• Segundo ponto chave da apresentação\n\n• Conclusão ou dados relevantes", {
+                left: canvas.width / 2,
+                top: canvas.height / 2 + 50,
+                originX: 'center',
+                originY: 'center',
+                fontFamily: 'Arial',
+                fill: '#ecf0f1',
+                fontSize: 24,
+                lineHeight: 1.5,
+                textAlign: 'left'
+            });
+
+            // Injeta tudo no slide na ordem certa (fundo, título, texto)
+            canvas.add(fundoTexto);
+            canvas.add(textoTitulo);
+            canvas.add(textoTopicos);
+            
             canvas.renderAll();
-            salvarNoFirebase(); // Isso agora chama a função e salva a imagem certinho
+            salvarNoFirebase();
             precisaAtualizarThumb = true;
             
-            setTimeout(() => { bloqueioSincronizacao = false; }, 500); // LIBERA A TRAVA APÓS SALVAR
+            setTimeout(() => { bloqueioSincronizacao = false; }, 500); // LIBERA A TRAVA
         });
 
-        botaoInterface.innerHTML = '<span class="material-symbols-outlined" style="color:#f1c40f;">auto_awesome</span> Gerar';
-        botaoInterface.disabled = false;
-        
+        // Oculta o menu lateral automaticamente para revelar a mágica ao aluno
         if(document.getElementById('caixa-modelos')) document.getElementById('caixa-modelos').classList.remove('aberto');
         
     }, { crossOrigin: 'anonymous' });
@@ -413,7 +517,6 @@ setInterval(() => {
     }
 }, 10000);
 
-// CORREÇÃO: ADICIONAR/TROCAR SLIDE AGORA USA O CANVAS.TOJSON()
 document.getElementById('btn-adicionar-slide').addEventListener('click', () => {
     if(meuCargo !== "leitor") { 
         tirarFotoDoSlide(); 
@@ -450,9 +553,8 @@ function carregarSlide() {
 window.isQuadroEscuro = false;
 document.getElementById('btn-tema-quadro').addEventListener('click', () => { isQuadroEscuro = !isQuadroEscuro; canvas.backgroundColor = isQuadroEscuro ? '#1e1e1e' : '#ffffff'; document.getElementById('cor-borda').value = isQuadroEscuro ? '#ffffff' : '#2c3e50'; canvas.renderAll(); salvarNoFirebase(); document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('aberto')); });
 
-// CORREÇÃO APLICADA: SALVAR NO FIREBASE AGORA CONSERVA AS IMAGENS DE FUNDO DA IA, O MODELO COMPLETO E RESPEITA A TRAVA
 window.salvarNoFirebase = function() {
-    if(bloqueioSincronizacao || isAtualizandoPelaNuvem || meuCargo === "leitor" || isHistoryAction) return; // TRAVA VERIFICADA AQUI
+    if(bloqueioSincronizacao || isAtualizandoPelaNuvem || meuCargo === "leitor" || isHistoryAction) return; 
     
     const sNuvem = document.getElementById('status-nuvem');
     if(sNuvem) sNuvem.innerText = "⏳ A Salvar...";
@@ -467,7 +569,6 @@ window.salvarNoFirebase = function() {
 }
 
 canvas.on('object:modified', salvarNoFirebase); 
-// CORREÇÃO APLICADA: EVENTOS VERIFICAM A TRAVA DE SINCRONIZACAO ANTES DE SALVAR
 canvas.on('object:added', (e) => { if(!bloqueioSincronizacao && !isAtualizandoPelaNuvem && !isHistoryAction && !e.target.isGuide) salvarNoFirebase(); }); 
 canvas.on('object:removed', (e) => { if(!bloqueioSincronizacao && !isAtualizandoPelaNuvem && !isHistoryAction && !e.target.isGuide) salvarNoFirebase(); }); 
 canvas.on('text:changed', salvarNoFirebase);
