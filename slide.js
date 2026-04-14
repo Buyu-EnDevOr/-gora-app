@@ -24,6 +24,7 @@ let meuNome = "Anônimo", meuEmail = "", minhaFoto = "", meuCargo = "leitor";
 let arrayDeSlides = [], indiceSlideAtivo = 0;
 let historyStack = [], historyIndex = -1, isHistoryAction = false, isAtualizandoPelaNuvem = false, primeiraCarga = true;
 let precisaAtualizarThumb = false;
+let bloqueioSincronizacao = false; // TRAVA DE SEGURANÇA ADICIONADA
 
 const containerCanvas = document.getElementById('container-canvas');
 const canvas = new fabric.Canvas('canvas-slide', { backgroundColor: 'white', selection: true, preserveObjectStacking: true, width: containerCanvas.clientWidth, height: containerCanvas.clientHeight });
@@ -229,19 +230,30 @@ window.abrirPreviewReal = function(idPub) {
     }
 }
 
-// CORREÇÃO: ADICIONADA TRAVA DE NUVEM PARA EVITAR O LOOP DE SALVAMENTO AO APLICAR MODELO
+// CORREÇÃO APLICADA: TRAVA DE NUVEM BLINDA O LOOP DE SALVAMENTO AO APLICAR MODELO
 if(document.getElementById('btn-aplicar-modelo-real')) {
     document.getElementById('btn-aplicar-modelo-real').addEventListener('click', () => {
         if(meuCargo === "leitor") return alert("Leitores não podem editar o arquivo.");
         if(!modeloSelecionadoParaAplicar) return;
 
         if(confirm("Aplicar este modelo vai substituir todo o conteúdo atual deste slide. Deseja continuar?")) {
-            isAtualizandoPelaNuvem = true; // Impede que o Canvas salve objeto por objeto
+            bloqueioSincronizacao = true; // ATIVA A TRAVA
+            isAtualizandoPelaNuvem = true; 
             
             canvas.loadFromJSON(modeloSelecionadoParaAplicar, () => {
-                isAtualizandoPelaNuvem = false; // Libera o salvamento novamente
                 canvas.renderAll(); 
-                salvarNoFirebase(); // Salva o estado completo uma única vez
+                
+                // Salva o estado completo uma única vez
+                const canvasData = canvas.toJSON();
+                canvasData.objects = canvasData.objects.filter(o => !o.isGuide);
+                arrayDeSlides[indiceSlideAtivo].dadosGraficos = JSON.stringify(canvasData);
+                
+                updateDoc(doc(db, "projetos", idProjeto), { slides: arrayDeSlides }).then(() => {
+                    setTimeout(() => {
+                        bloqueioSincronizacao = false; // LIBERA A TRAVA
+                        isAtualizandoPelaNuvem = false;
+                    }, 500);
+                });
                 
                 document.getElementById('modal-preview-modelo').style.display = 'none';
                 if(caixaModelos) caixaModelos.classList.remove('aberto');
@@ -282,11 +294,14 @@ function gerarFundoComPollinations(promptTexto, botaoInterface) {
     const height = 1080;
     const imageUrl = `https://image.pollinations.ai/prompt/${promptOtimizado}?width=${width}&height=${height}&nologo=true`;
 
+    bloqueioSincronizacao = true; // ATIVA A TRAVA
+
     fabric.Image.fromURL(imageUrl, function(img) {
         if (!img) {
             alert("Erro ao conectar com a IA. Tente novamente.");
             botaoInterface.innerHTML = '<span class="material-symbols-outlined" style="color:#f1c40f;">auto_awesome</span> Gerar';
             botaoInterface.disabled = false;
+            bloqueioSincronizacao = false; // LIBERA A TRAVA EM CASO DE ERRO
             return;
         }
 
@@ -296,9 +311,13 @@ function gerarFundoComPollinations(promptTexto, botaoInterface) {
 
         img.set({ originX: 'center', originY: 'center', left: canvas.width / 2, top: canvas.height / 2, scaleX: scale, scaleY: scale });
 
-        canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
-        salvarNoFirebase();
-        precisaAtualizarThumb = true;
+        canvas.setBackgroundImage(img, () => {
+            canvas.renderAll();
+            salvarNoFirebase(); // Isso agora chama a função e salva a imagem certinho
+            precisaAtualizarThumb = true;
+            
+            setTimeout(() => { bloqueioSincronizacao = false; }, 500); // LIBERA A TRAVA APÓS SALVAR
+        });
 
         botaoInterface.innerHTML = '<span class="material-symbols-outlined" style="color:#f1c40f;">auto_awesome</span> Gerar';
         botaoInterface.disabled = false;
@@ -431,9 +450,10 @@ function carregarSlide() {
 window.isQuadroEscuro = false;
 document.getElementById('btn-tema-quadro').addEventListener('click', () => { isQuadroEscuro = !isQuadroEscuro; canvas.backgroundColor = isQuadroEscuro ? '#1e1e1e' : '#ffffff'; document.getElementById('cor-borda').value = isQuadroEscuro ? '#ffffff' : '#2c3e50'; canvas.renderAll(); salvarNoFirebase(); document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('aberto')); });
 
-// CORREÇÃO: SALVAR NO FIREBASE AGORA CONSERVA AS IMAGENS DE FUNDO DA IA E O MODELO COMPLETO
+// CORREÇÃO APLICADA: SALVAR NO FIREBASE AGORA CONSERVA AS IMAGENS DE FUNDO DA IA, O MODELO COMPLETO E RESPEITA A TRAVA
 window.salvarNoFirebase = function() {
-    if(isAtualizandoPelaNuvem || meuCargo === "leitor" || isHistoryAction) return;
+    if(bloqueioSincronizacao || isAtualizandoPelaNuvem || meuCargo === "leitor" || isHistoryAction) return; // TRAVA VERIFICADA AQUI
+    
     const sNuvem = document.getElementById('status-nuvem');
     if(sNuvem) sNuvem.innerText = "⏳ A Salvar...";
     
@@ -446,7 +466,11 @@ window.salvarNoFirebase = function() {
     updateDoc(doc(db, "projetos", idProjeto), { slides: arrayDeSlides }).then(() => { if(sNuvem) sNuvem.innerText = "☁️ Salvo"; }).catch(err => { if(sNuvem) sNuvem.innerText = "⚠️ Erro"; });
 }
 
-canvas.on('object:modified', salvarNoFirebase); canvas.on('object:added', (e) => { if(!isAtualizandoPelaNuvem && !isHistoryAction && !e.target.isGuide) salvarNoFirebase(); }); canvas.on('object:removed', (e) => { if(!isAtualizandoPelaNuvem && !isHistoryAction && !e.target.isGuide) salvarNoFirebase(); }); canvas.on('text:changed', salvarNoFirebase);
+canvas.on('object:modified', salvarNoFirebase); 
+// CORREÇÃO APLICADA: EVENTOS VERIFICAM A TRAVA DE SINCRONIZACAO ANTES DE SALVAR
+canvas.on('object:added', (e) => { if(!bloqueioSincronizacao && !isAtualizandoPelaNuvem && !isHistoryAction && !e.target.isGuide) salvarNoFirebase(); }); 
+canvas.on('object:removed', (e) => { if(!bloqueioSincronizacao && !isAtualizandoPelaNuvem && !isHistoryAction && !e.target.isGuide) salvarNoFirebase(); }); 
+canvas.on('text:changed', salvarNoFirebase);
 
 window.desativarLapis = () => { canvas.isDrawingMode = false; document.getElementById('ferramenta-desenho').classList.remove('ativo'); document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('aberto')); };
 
