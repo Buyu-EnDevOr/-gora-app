@@ -242,7 +242,8 @@ if(document.getElementById('btn-aplicar-modelo-real')) {
             canvas.loadFromJSON(modeloSelecionadoParaAplicar, () => {
                 canvas.renderAll(); 
                 
-                const canvasData = canvas.toJSON();
+                // CORREÇÃO: Forçando o toJSON a guardar o crossOrigin
+                const canvasData = canvas.toJSON(['crossOrigin']);
                 canvasData.objects = canvasData.objects.filter(o => !o.isGuide);
                 arrayDeSlides[indiceSlideAtivo].dadosGraficos = JSON.stringify(canvasData);
                 
@@ -264,7 +265,7 @@ if(document.getElementById('btn-aplicar-modelo-real')) {
 setTimeout(() => gerarGrelhasModelos(), 500);
 
 // ==========================================
-// CÉREBRO DA IA GERADORA DE SLIDES (SISTEMA ANTI-BLOQUEIO CONTEXTUAL + TEXTO ESTRUTURADO)
+// CÉREBRO DA IA GERADORA DE SLIDES 
 // ==========================================
 const btnGerarIA = document.querySelector('.btn-ia-gerar');
 const inputIA = document.querySelector('#input-ia-modelos');
@@ -301,19 +302,15 @@ function gerarMosaicoComPollinations(promptTexto, botaoInterface) {
 
     let imagensCarregadas = 0;
     
-    // Prepara o termo de busca contextual (Plano B) baseado no prompt do usuário
     const termoBuscaContextual = encodeURIComponent(promptTexto);
 
     estilosIA.forEach((estilo, index) => {
         const promptOtimizado = encodeURIComponent(promptTexto + estilo.sufixo);
         const semente = Math.floor(Math.random() * 9999) + index;
         
-        // URL da IA Oficial (Plano A - Tenta gerar do zero)
         const urlIA_Miniatura = `https://image.pollinations.ai/prompt/${promptOtimizado}?width=400&height=225&nologo=true&seed=${semente}`;
         const urlIA_AltaRes = `https://image.pollinations.ai/prompt/${promptOtimizado}?width=1920&height=1080&nologo=true&seed=${semente}`;
 
-        // URL do Plano B CONTEXTUAL (Busca fotografia real baseada no prompt caso o firewall bloqueie a IA)
-        // Usamos o Unsplash Source que gera uma imagem contextual baseada no termo de busca.
         const urlBusca_Miniatura = `https://source.unsplash.com/featured/400x225/?${termoBuscaContextual},${semente}`;
         const urlBusca_AltaRes = `https://source.unsplash.com/featured/1920x1080/?${termoBuscaContextual},${semente}`;
 
@@ -321,7 +318,6 @@ function gerarMosaicoComPollinations(promptTexto, botaoInterface) {
         divCard.className = 'modelo-item-canva';
         divCard.style.position = 'relative';
         
-        // Sem crossOrigin nas miniaturas para evitar bloqueio agressivo do navegador/firewall
         divCard.innerHTML = `
             <img src="" style="opacity: 0; transition: opacity 0.5s; width: 100%; height: 100%; object-fit: cover;">
             <div class="tag-estilo" style="position: absolute; top: 5px; left: 5px; background: rgba(142,68,173,0.8); color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold;">${estilo.nome}</div>
@@ -333,7 +329,6 @@ function gerarMosaicoComPollinations(promptTexto, botaoInterface) {
         const imgElement = divCard.querySelector('img');
         const imgTeste = new Image();
 
-        // Tenta carregar a IA Oficial
         imgTeste.onload = () => {
             imgElement.src = urlIA_Miniatura;
             imgElement.style.opacity = '1';
@@ -344,27 +339,22 @@ function gerarMosaicoComPollinations(promptTexto, botaoInterface) {
             verificarConclusaoMosaico(imagensCarregadas, botaoInterface);
         };
 
-        // SISTEMA ANTI-BLOQUEIO CONTEXTUAL (Se o firewall barrar a IA, entra o Plano B Contextual)
         imgTeste.onerror = () => {
             console.warn("IA Pollinations bloqueada. Ativando Plano B Contextual (Busca de Imagem). Termo:", promptTexto);
             
-            // Puxa do servidor de busca segura, mantendo a ligação com o texto do usuário
             imgElement.src = urlBusca_Miniatura;
             imgElement.style.opacity = '1';
             divCard.querySelector('.loader-ia').style.display = 'none';
             
-            // Avisa o usuário sutilmente mudando a cor da tag e o nome do estilo
             divCard.querySelector('.tag-estilo').innerText = estilo.nome + " (Foto)";
-            divCard.querySelector('.tag-estilo').style.background = "#3498db"; // Cor azul para indicar busca de foto
+            divCard.querySelector('.tag-estilo').style.background = "#3498db"; 
             
-            // Ao clicar, aplica a imagem de busca em alta resolução e injeta os textos estruturados
             divCard.onclick = () => aplicarIACompletaNoSlide(promptTexto, urlBusca_AltaRes);
             
             imagensCarregadas++;
             verificarConclusaoMosaico(imagensCarregadas, botaoInterface);
         }
         
-        // Dispara a tentativa de carregar a IA oficial
         imgTeste.src = urlIA_Miniatura;
     });
 }
@@ -381,7 +371,6 @@ function aplicarIACompletaNoSlide(promptOriginal, imageUrl) {
     const sNuvem = document.getElementById('status-nuvem');
     if(sNuvem) sNuvem.innerText = "⏳ Montando Slide...";
 
-    // Carrega a imagem final (seja da IA ou da Busca) no Canvas, mantendo crossOrigin para PDF funcionar
     fabric.Image.fromURL(imageUrl, function(img) {
         if (!img) {
             alert("Erro ao baixar a imagem final. O firewall pode ter cortado a conexão.");
@@ -390,17 +379,13 @@ function aplicarIACompletaNoSlide(promptOriginal, imageUrl) {
             return;
         }
 
-        // Ajusta a imagem para cobrir o slide inteiro
         const scale = Math.max(canvas.width / img.width, canvas.height / img.height);
         img.set({ originX: 'center', originY: 'center', left: canvas.width / 2, top: canvas.height / 2, scaleX: scale, scaleY: scale });
 
-        // Define como imagem de fundo
         canvas.setBackgroundImage(img, () => {
             
-            // INJEÇÃO DA ESTRUTURA DE TEXTO INTELIGENTE (Título e Tópicos)
             const tituloCaps = promptOriginal.toUpperCase();
             
-            // Retângulo escuro translúcido para garantir leitura em qualquer fundo
             const fundoTexto = new fabric.Rect({
                 left: canvas.width / 2, top: canvas.height / 2,
                 originX: 'center', originY: 'center',
@@ -409,7 +394,6 @@ function aplicarIACompletaNoSlide(promptOriginal, imageUrl) {
                 rx: 15, ry: 15
             });
 
-            // Título formatado baseado no que o usuário digitou
             const textoTitulo = new fabric.IText(tituloCaps, {
                 left: canvas.width / 2, top: canvas.height / 2 - 100,
                 originX: 'center', originY: 'center',
@@ -417,7 +401,6 @@ function aplicarIACompletaNoSlide(promptOriginal, imageUrl) {
                 fontSize: 55, fontWeight: 'bold', textAlign: 'center'
             });
 
-            // Tópicos estruturados prontos para preenchimento
             const textoTopicos = new fabric.IText("• Digite aqui o seu primeiro tópico principal\n\n• Segundo ponto chave da apresentação\n\n• Conclusão ou dados relevantes", {
                 left: canvas.width / 2, top: canvas.height / 2 + 50,
                 originX: 'center', originY: 'center',
@@ -425,20 +408,18 @@ function aplicarIACompletaNoSlide(promptOriginal, imageUrl) {
                 fontSize: 24, lineHeight: 1.5, textAlign: 'left'
             });
 
-            // Adiciona os elementos ao canvas na ordem certa
             canvas.add(fundoTexto, textoTitulo, textoTopicos);
             canvas.renderAll();
             
-            salvarNoFirebase(); // Salva o novo estado do slide
-            precisaAtualizarThumb = true; // Avisa que a miniatura do dock precisa mudar
+            salvarNoFirebase(); 
+            precisaAtualizarThumb = true; 
             
-            setTimeout(() => { bloqueioSincronizacao = false; }, 500); // Libera a sincronização
+            setTimeout(() => { bloqueioSincronizacao = false; }, 500); 
         });
 
-        // Oculta a gaveta lateral
         if(document.getElementById('caixa-modelos')) document.getElementById('caixa-modelos').classList.remove('aberto');
         
-    }, { crossOrigin: 'anonymous' }); // Crítico para permitir exportação do slide depois
+    }, { crossOrigin: 'anonymous' }); 
 }
 
 // ==========================================
@@ -530,7 +511,8 @@ setInterval(() => {
 document.getElementById('btn-adicionar-slide').addEventListener('click', () => {
     if(meuCargo !== "leitor") { 
         tirarFotoDoSlide(); 
-        const canvasData = canvas.toJSON();
+        // CORREÇÃO: Forçando a salvar o crossOrigin
+        const canvasData = canvas.toJSON(['crossOrigin']);
         canvasData.objects = canvasData.objects.filter(o => !o.isGuide);
         arrayDeSlides[indiceSlideAtivo].dadosGraficos = JSON.stringify(canvasData); 
     }
@@ -541,7 +523,8 @@ document.getElementById('btn-adicionar-slide').addEventListener('click', () => {
 function trocarSlide(idx) { 
     if(meuCargo !== "leitor") { 
         tirarFotoDoSlide(); 
-        const canvasData = canvas.toJSON();
+        // CORREÇÃO: Forçando a salvar o crossOrigin
+        const canvasData = canvas.toJSON(['crossOrigin']);
         canvasData.objects = canvasData.objects.filter(o => !o.isGuide);
         arrayDeSlides[indiceSlideAtivo].dadosGraficos = JSON.stringify(canvasData); 
     }
@@ -569,7 +552,8 @@ window.salvarNoFirebase = function() {
     const sNuvem = document.getElementById('status-nuvem');
     if(sNuvem) sNuvem.innerText = "⏳ A Salvar...";
     
-    const canvasData = canvas.toJSON();
+    // CORREÇÃO: A principal mudança contra a amnésia está aqui:
+    const canvasData = canvas.toJSON(['crossOrigin']);
     canvasData.objects = canvasData.objects.filter(o => !o.isGuide);
     const json = JSON.stringify(canvasData);
     
