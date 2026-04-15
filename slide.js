@@ -24,7 +24,7 @@ let meuNome = "Anônimo", meuEmail = "", minhaFoto = "", meuCargo = "leitor";
 let arrayDeSlides = [], indiceSlideAtivo = 0;
 let historyStack = [], historyIndex = -1, isHistoryAction = false, isAtualizandoPelaNuvem = false, primeiraCarga = true;
 let precisaAtualizarThumb = false;
-let bloqueioSincronizacao = false; // TRAVA DE SEGURANÇA ANTIBUG
+let bloqueioSincronizacao = false; // TRAVA DE SEGURANÇA ADICIONADA
 
 const containerCanvas = document.getElementById('container-canvas');
 const canvas = new fabric.Canvas('canvas-slide', { backgroundColor: 'white', selection: true, preserveObjectStacking: true, width: containerCanvas.clientWidth, height: containerCanvas.clientHeight });
@@ -64,7 +64,7 @@ if(document.getElementById('btn-toggle-elementos')) {
         fecharTodasAsGavetasEsquerdas();
         if(!estavaAberto) {
             caixaElementos.classList.add('aberto');
-            carregarElementosBuscados(""); 
+            carregarElementosBuscados(""); // Carrega os padrão ao abrir
         }
         caixaChat.classList.remove('aberto'); caixaArquivos.classList.remove('aberto');
     });
@@ -312,9 +312,9 @@ function gerarMosaicoComPollinations(promptTexto, botaoInterface) {
         divCard.className = 'modelo-item-canva';
         divCard.style.position = 'relative';
         
-        // CORS na Miniatura
+        // As miniaturas agora carregam normalmente, sem bloqueios de CORS
         divCard.innerHTML = `
-            <img crossorigin="anonymous" src="" style="opacity: 0; transition: opacity 0.5s; width: 100%; height: 100%; object-fit: cover;">
+            <img src="" style="opacity: 0; transition: opacity 0.5s; width: 100%; height: 100%; object-fit: cover;">
             <div class="tag-estilo" style="position: absolute; top: 5px; left: 5px; background: rgba(142,68,173,0.8); color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold;">${estilo.nome}</div>
             <div class="loader-ia" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"><span class="material-symbols-outlined spin-anim" style="color: #8e44ad;">sync</span></div>
         `;
@@ -323,9 +323,6 @@ function gerarMosaicoComPollinations(promptTexto, botaoInterface) {
 
         const imgElement = divCard.querySelector('img');
         const imgTeste = new Image();
-        
-        // CORS RESOLVIDO PARA A REDE DA FACULDADE
-        imgTeste.crossOrigin = "anonymous"; 
 
         imgTeste.onload = () => {
             imgElement.src = urlMiniatura;
@@ -359,7 +356,7 @@ function aplicarIACompletaNoSlide(promptOriginal, imageUrl) {
     const sNuvem = document.getElementById('status-nuvem');
     if(sNuvem) sNuvem.innerText = "⏳ Montando Slide...";
 
-    // A mágica acontece aqui: A imagem alta resolução também com CORS
+    // A mágica de aplicar ao fundo, MANTENDO o crossOrigin para exportação de PDF funcionar!
     fabric.Image.fromURL(imageUrl, function(img) {
         if (!img) {
             alert("Erro ao baixar a imagem em alta resolução.");
@@ -383,7 +380,7 @@ function aplicarIACompletaNoSlide(promptOriginal, imageUrl) {
                 originY: 'center',
                 width: 800,
                 height: 400,
-                fill: 'rgba(0, 0, 0, 0.6)', // Fundo escuro para dar leitura em qualquer imagem
+                fill: 'rgba(0, 0, 0, 0.6)', 
                 rx: 15,
                 ry: 15
             });
@@ -425,7 +422,7 @@ function aplicarIACompletaNoSlide(promptOriginal, imageUrl) {
 
         if(document.getElementById('caixa-modelos')) document.getElementById('caixa-modelos').classList.remove('aberto');
         
-    }, { crossOrigin: 'anonymous' }); // AQUI TAMBÉM É CRUCIAL PARA NÃO DAR ERRO AO SALVAR
+    }, { crossOrigin: 'anonymous' }); 
 }
 
 // ==========================================
