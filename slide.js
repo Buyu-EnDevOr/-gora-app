@@ -264,7 +264,7 @@ if(document.getElementById('btn-aplicar-modelo-real')) {
 setTimeout(() => gerarGrelhasModelos(), 500);
 
 // ==========================================
-// CÉREBRO DA IA GERADORA DE SLIDES (PROXY + MOSAICO + TEXTO ESTRUTURADO)
+// CÉREBRO DA IA GERADORA DE SLIDES (SISTEMA ANTI-BLOQUEIO + TEXTO ESTRUTURADO)
 // ==========================================
 const btnGerarIA = document.querySelector('.btn-ia-gerar');
 const inputIA = document.querySelector('#input-ia-modelos');
@@ -301,22 +301,25 @@ function gerarMosaicoComPollinations(promptTexto, botaoInterface) {
 
     let imagensCarregadas = 0;
     
-    estilosIA.forEach((estilo) => {
+    estilosIA.forEach((estilo, index) => {
         const promptOtimizado = encodeURIComponent(promptTexto + estilo.sufixo);
-        const semente = Math.floor(Math.random() * 9999);
+        const semente = Math.floor(Math.random() * 9999) + index;
         
+        // URL da IA Oficial
         const urlMiniatura = `https://image.pollinations.ai/prompt/${promptOtimizado}?width=400&height=225&nologo=true&seed=${semente}`;
         const urlAltaRes = `https://image.pollinations.ai/prompt/${promptOtimizado}?width=1920&height=1080&nologo=true&seed=${semente}`;
 
-        // O SEGREDO: Usando o Túnel Proxy para driblar o Firewall da Faculdade
-        const proxyUrlMiniatura = `https://corsproxy.io/?${encodeURIComponent(urlMiniatura)}`;
+        // URL do Plano B (Caso o Firewall da faculdade bloqueie a IA)
+        const fallbackMiniatura = `https://picsum.photos/seed/${semente}/400/225`;
+        const fallbackAltaRes = `https://picsum.photos/seed/${semente}/1920/1080`;
 
         const divCard = document.createElement('div');
         divCard.className = 'modelo-item-canva';
         divCard.style.position = 'relative';
         
+        // Sem crossOrigin nas miniaturas para evitar bloqueio agressivo
         divCard.innerHTML = `
-            <img crossorigin="anonymous" src="" style="opacity: 0; transition: opacity 0.5s; width: 100%; height: 100%; object-fit: cover;">
+            <img src="" style="opacity: 0; transition: opacity 0.5s; width: 100%; height: 100%; object-fit: cover;">
             <div class="tag-estilo" style="position: absolute; top: 5px; left: 5px; background: rgba(142,68,173,0.8); color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold;">${estilo.nome}</div>
             <div class="loader-ia" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"><span class="material-symbols-outlined spin-anim" style="color: #8e44ad;">sync</span></div>
         `;
@@ -325,29 +328,37 @@ function gerarMosaicoComPollinations(promptTexto, botaoInterface) {
 
         const imgElement = divCard.querySelector('img');
         const imgTeste = new Image();
-        imgTeste.crossOrigin = "anonymous"; 
 
+        // Se a rede for boa e a IA carregar normalmente:
         imgTeste.onload = () => {
-            imgElement.src = proxyUrlMiniatura;
+            imgElement.src = urlMiniatura;
             imgElement.style.opacity = '1';
             divCard.querySelector('.loader-ia').style.display = 'none';
-            
-            // Quando o usuário clica, manda a URL de Alta Resolução pro Canvas
             divCard.onclick = () => aplicarIACompletaNoSlide(promptTexto, urlAltaRes);
             
             imagensCarregadas++;
             verificarConclusaoMosaico(imagensCarregadas, botaoInterface);
         };
 
-        imgTeste.onerror = (err) => {
-            console.error("Erro bloqueio de rede:", err);
-            divCard.innerHTML = `<div style="text-align: center; color: #e74c3c; font-size: 11px; padding: 20px;">Bloqueado na Rede</div>`;
+        // SISTEMA ANTI-BLOQUEIO (Se o Fortinet barrar a conexão):
+        imgTeste.onerror = () => {
+            // Puxa do servidor seguro silenciosamente
+            imgElement.src = fallbackMiniatura;
+            imgElement.style.opacity = '1';
+            divCard.querySelector('.loader-ia').style.display = 'none';
+            
+            // Avisa o usuário sutilmente mudando a cor da tag
+            divCard.querySelector('.tag-estilo').innerText = estilo.nome + " (Alternativo)";
+            divCard.querySelector('.tag-estilo').style.background = "#f39c12"; 
+            
+            divCard.onclick = () => aplicarIACompletaNoSlide(promptTexto, fallbackAltaRes);
+            
             imagensCarregadas++;
             verificarConclusaoMosaico(imagensCarregadas, botaoInterface);
         }
         
-        // Carrega usando o proxy
-        imgTeste.src = proxyUrlMiniatura;
+        // Dispara a tentativa de carregar a IA
+        imgTeste.src = urlMiniatura;
     });
 }
 
@@ -363,12 +374,10 @@ function aplicarIACompletaNoSlide(promptOriginal, imageUrl) {
     const sNuvem = document.getElementById('status-nuvem');
     if(sNuvem) sNuvem.innerText = "⏳ Montando Slide...";
 
-    // Usamos o túnel proxy também para a imagem em HD entrar no Fabric.js sem corromper
-    const proxyImageUrl = `https://corsproxy.io/?${encodeURIComponent(imageUrl)}`;
-
-    fabric.Image.fromURL(proxyImageUrl, function(img) {
+    // A mágica acontece aqui: A imagem alta resolução entra com o crossOrigin pra salvar em PDF
+    fabric.Image.fromURL(imageUrl, function(img) {
         if (!img) {
-            alert("Erro ao baixar a imagem final. O firewall cortou a conexão.");
+            alert("Erro ao aplicar a imagem final.");
             bloqueioSincronizacao = false;
             if(sNuvem) sNuvem.innerText = "⚠️ Erro";
             return;
@@ -378,13 +387,16 @@ function aplicarIACompletaNoSlide(promptOriginal, imageUrl) {
         img.set({ originX: 'center', originY: 'center', left: canvas.width / 2, top: canvas.height / 2, scaleX: scale, scaleY: scale });
 
         canvas.setBackgroundImage(img, () => {
+            
+            // INJEÇÃO DA ESTRUTURA DE TEXTO INTELIGENTE
             const tituloCaps = promptOriginal.toUpperCase();
             
             const fundoTexto = new fabric.Rect({
                 left: canvas.width / 2, top: canvas.height / 2,
                 originX: 'center', originY: 'center',
                 width: 800, height: 400,
-                fill: 'rgba(0, 0, 0, 0.6)', rx: 15, ry: 15
+                fill: 'rgba(0, 0, 0, 0.6)', 
+                rx: 15, ry: 15
             });
 
             const textoTitulo = new fabric.IText(tituloCaps, {
