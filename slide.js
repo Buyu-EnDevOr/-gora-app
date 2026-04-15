@@ -235,10 +235,14 @@ if(document.getElementById('btn-aplicar-modelo-real')) {
         if(meuCargo === "leitor") return alert("Leitores não podem editar o arquivo.");
         if(!modeloSelecionadoParaAplicar) return;
 
-        if(confirm("Aplicar este modelo vai substituir todo o conteúdo atual deste slide. Deseja continuar?")) {
-            bloqueioSincronizacao = true; 
-            isAtualizandoPelaNuvem = true; 
-            
+        // NOVO: Lógica de Apagar tudo vs Mesclar para Modelos
+        const apagarTudo = confirm("Como deseja aplicar este modelo?\n\n[OK] = APAGAR TUDO e substituir pelo modelo\n[Cancelar] = MANTER tudo e adicionar os elementos do modelo");
+
+        bloqueioSincronizacao = true; 
+        isAtualizandoPelaNuvem = true; 
+        
+        if (apagarTudo) {
+            // Substituição Total (Comportamento antigo)
             canvas.loadFromJSON(modeloSelecionadoParaAplicar, () => {
                 canvas.renderAll(); 
                 
@@ -247,15 +251,37 @@ if(document.getElementById('btn-aplicar-modelo-real')) {
                 arrayDeSlides[indiceSlideAtivo].dadosGraficos = JSON.stringify(canvasData);
                 
                 updateDoc(doc(db, "projetos", idProjeto), { slides: arrayDeSlides }).then(() => {
-                    setTimeout(() => {
-                        bloqueioSincronizacao = false; 
-                        isAtualizandoPelaNuvem = false;
-                    }, 500);
+                    setTimeout(() => { bloqueioSincronizacao = false; isAtualizandoPelaNuvem = false; }, 500);
                 });
                 
                 document.getElementById('modal-preview-modelo').style.display = 'none';
                 if(caixaModelos) caixaModelos.classList.remove('aberto');
-                alert("Modelo aplicado com sucesso!");
+            });
+        } else {
+            // Mesclagem (Apenas adiciona os objetos do JSON ao canvas atual)
+            const dadosModelo = JSON.parse(modeloSelecionadoParaAplicar);
+            fabric.util.enlivenObjects(dadosModelo.objects, function(objetosMesclados) {
+                objetosMesclados.forEach(function(obj) {
+                    canvas.add(obj);
+                });
+                
+                // Se o modelo tem fundo e o canvas atual não, aplica o fundo
+                if(dadosModelo.background && !canvas.backgroundImage) {
+                    canvas.backgroundColor = dadosModelo.background;
+                }
+                
+                canvas.renderAll();
+                
+                const canvasData = canvas.toJSON(['crossOrigin']);
+                canvasData.objects = canvasData.objects.filter(o => !o.isGuide);
+                arrayDeSlides[indiceSlideAtivo].dadosGraficos = JSON.stringify(canvasData);
+                
+                updateDoc(doc(db, "projetos", idProjeto), { slides: arrayDeSlides }).then(() => {
+                    setTimeout(() => { bloqueioSincronizacao = false; isAtualizandoPelaNuvem = false; }, 500);
+                });
+                
+                document.getElementById('modal-preview-modelo').style.display = 'none';
+                if(caixaModelos) caixaModelos.classList.remove('aberto');
             });
         }
     });
@@ -264,7 +290,7 @@ if(document.getElementById('btn-aplicar-modelo-real')) {
 setTimeout(() => gerarGrelhasModelos(), 500);
 
 // ==========================================
-// CÉREBRO DA IA GERADORA DE SLIDES (SISTEMA ANTI-BLOQUEIO LOREMFLICKR)
+// CÉREBRO DA IA GERADORA DE SLIDES (ANTI-BLOQUEIO + CONFIRMAÇÃO)
 // ==========================================
 const btnGerarIA = document.querySelector('.btn-ia-gerar');
 const inputIA = document.querySelector('#input-ia-modelos');
@@ -300,19 +326,15 @@ function gerarMosaicoComPollinations(promptTexto, botaoInterface) {
     }
 
     let imagensCarregadas = 0;
-    
-    // Tratamento do prompt para o LoremFlickr (remove espaços e caracteres estranhos, une por vírgula)
     const termoBuscaSeguro = promptTexto.replace(/[^a-zA-Z0-9\s]/g, '').trim().replace(/\s+/g, ',');
 
     estilosIA.forEach((estilo, index) => {
         const promptOtimizado = encodeURIComponent(promptTexto + estilo.sufixo);
         const semente = Math.floor(Math.random() * 9999) + index;
         
-        // URL da IA Oficial (Plano A)
         const urlIA_Miniatura = `https://image.pollinations.ai/prompt/${promptOtimizado}?width=400&height=225&nologo=true&seed=${semente}`;
         const urlIA_AltaRes = `https://image.pollinations.ai/prompt/${promptOtimizado}?width=1920&height=1080&nologo=true&seed=${semente}`;
 
-        // NOVO PLANO B CONTEXTUAL (LoremFlickr - 100% Funcional e à prova de tela branca)
         const urlBusca_Miniatura = `https://loremflickr.com/400/225/${termoBuscaSeguro}?random=${semente}`;
         const urlBusca_AltaRes = `https://loremflickr.com/1920/1080/${termoBuscaSeguro}?random=${semente}`;
 
@@ -331,7 +353,6 @@ function gerarMosaicoComPollinations(promptTexto, botaoInterface) {
         const imgElement = divCard.querySelector('img');
         const imgTeste = new Image();
 
-        // Se a IA carregar (Plano A Funcionou)
         imgTeste.onload = () => {
             imgElement.src = urlIA_Miniatura;
             imgElement.style.opacity = '1';
@@ -342,14 +363,9 @@ function gerarMosaicoComPollinations(promptTexto, botaoInterface) {
             verificarConclusaoMosaico(imagensCarregadas, botaoInterface);
         };
 
-        // Se a IA for bloqueada pelo firewall (Plano B Entra em Ação Imediatamente)
         imgTeste.onerror = () => {
             console.warn("A IA foi bloqueada pela rede. Carregando imagem contextual alternativa.");
-            
-            // Puxa a fotografia real do LoremFlickr
             imgElement.src = urlBusca_Miniatura;
-            
-            // Corrige o bug da tela branca: Garante que a imagem carregou antes de mudar a opacidade
             imgElement.onload = () => {
                 imgElement.style.opacity = '1';
                 divCard.querySelector('.loader-ia').style.display = 'none';
@@ -357,7 +373,6 @@ function gerarMosaicoComPollinations(promptTexto, botaoInterface) {
             
             divCard.querySelector('.tag-estilo').innerText = estilo.nome + " (Foto)";
             divCard.querySelector('.tag-estilo').style.background = "#3498db"; 
-            
             divCard.onclick = () => aplicarIACompletaNoSlide(promptTexto, urlBusca_AltaRes);
             
             imagensCarregadas++;
@@ -376,6 +391,9 @@ function verificarConclusaoMosaico(contagem, btn) {
 }
 
 function aplicarIACompletaNoSlide(promptOriginal, imageUrl) {
+    // NOVO: Lógica de Apagar tudo vs Mesclar para a IA
+    const apagarTudo = confirm("Como deseja aplicar este design gerado?\n\n[OK] = APAGAR TUDO atual e usar como base do slide\n[Cancelar] = MANTER tudo e apenas inserir por trás do seu texto");
+
     bloqueioSincronizacao = true; 
     const sNuvem = document.getElementById('status-nuvem');
     if(sNuvem) sNuvem.innerText = "⏳ Montando Slide...";
@@ -388,38 +406,48 @@ function aplicarIACompletaNoSlide(promptOriginal, imageUrl) {
             return;
         }
 
+        // Se o usuário clicou OK, nós apagamos tudo que ele já tinha desenhado
+        if (apagarTudo) {
+            canvas.clear();
+            canvas.backgroundColor = isQuadroEscuro ? '#1e1e1e' : '#ffffff';
+        }
+
         const scale = Math.max(canvas.width / img.width, canvas.height / img.height);
         img.set({ originX: 'center', originY: 'center', left: canvas.width / 2, top: canvas.height / 2, scaleX: scale, scaleY: scale });
 
         canvas.setBackgroundImage(img, () => {
             
-            const tituloCaps = promptOriginal.toUpperCase();
+            // Só injetamos o texto automático se ele escolheu APAGAR TUDO (pois é um slide novo)
+            // Se ele escolheu MANTER, ele provavelmente já tem o texto dele, então só colocamos a imagem de fundo.
+            if (apagarTudo) {
+                const tituloCaps = promptOriginal.toUpperCase();
+                
+                const fundoTexto = new fabric.Rect({
+                    left: canvas.width / 2, top: canvas.height / 2,
+                    originX: 'center', originY: 'center',
+                    width: 800, height: 400,
+                    fill: 'rgba(0, 0, 0, 0.6)', 
+                    rx: 15, ry: 15
+                });
+
+                const textoTitulo = new fabric.IText(tituloCaps, {
+                    left: canvas.width / 2, top: canvas.height / 2 - 100,
+                    originX: 'center', originY: 'center',
+                    fontFamily: 'Arial', fill: '#ffffff',
+                    fontSize: 55, fontWeight: 'bold', textAlign: 'center'
+                });
+
+                const textoTopicos = new fabric.IText("• Digite aqui o seu primeiro tópico principal\n\n• Segundo ponto chave da apresentação\n\n• Conclusão ou dados relevantes", {
+                    left: canvas.width / 2, top: canvas.height / 2 + 50,
+                    originX: 'center', originY: 'center',
+                    fontFamily: 'Arial', fill: '#ecf0f1',
+                    fontSize: 24, lineHeight: 1.5, textAlign: 'left'
+                });
+
+                canvas.add(fundoTexto, textoTitulo, textoTopicos);
+            }
             
-            const fundoTexto = new fabric.Rect({
-                left: canvas.width / 2, top: canvas.height / 2,
-                originX: 'center', originY: 'center',
-                width: 800, height: 400,
-                fill: 'rgba(0, 0, 0, 0.6)', 
-                rx: 15, ry: 15
-            });
-
-            const textoTitulo = new fabric.IText(tituloCaps, {
-                left: canvas.width / 2, top: canvas.height / 2 - 100,
-                originX: 'center', originY: 'center',
-                fontFamily: 'Arial', fill: '#ffffff',
-                fontSize: 55, fontWeight: 'bold', textAlign: 'center'
-            });
-
-            const textoTopicos = new fabric.IText("• Digite aqui o seu primeiro tópico principal\n\n• Segundo ponto chave da apresentação\n\n• Conclusão ou dados relevantes", {
-                left: canvas.width / 2, top: canvas.height / 2 + 50,
-                originX: 'center', originY: 'center',
-                fontFamily: 'Arial', fill: '#ecf0f1',
-                fontSize: 24, lineHeight: 1.5, textAlign: 'left'
-            });
-
-            canvas.add(fundoTexto, textoTitulo, textoTopicos);
             canvas.renderAll();
-            
             salvarNoFirebase(); 
             precisaAtualizarThumb = true; 
             
