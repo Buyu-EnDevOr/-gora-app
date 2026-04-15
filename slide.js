@@ -242,7 +242,6 @@ if(document.getElementById('btn-aplicar-modelo-real')) {
             canvas.loadFromJSON(modeloSelecionadoParaAplicar, () => {
                 canvas.renderAll(); 
                 
-                // CORREÇÃO: Forçando o toJSON a guardar o crossOrigin
                 const canvasData = canvas.toJSON(['crossOrigin']);
                 canvasData.objects = canvasData.objects.filter(o => !o.isGuide);
                 arrayDeSlides[indiceSlideAtivo].dadosGraficos = JSON.stringify(canvasData);
@@ -265,7 +264,7 @@ if(document.getElementById('btn-aplicar-modelo-real')) {
 setTimeout(() => gerarGrelhasModelos(), 500);
 
 // ==========================================
-// CÉREBRO DA IA GERADORA DE SLIDES 
+// CÉREBRO DA IA GERADORA DE SLIDES (SISTEMA ANTI-BLOQUEIO LOREMFLICKR)
 // ==========================================
 const btnGerarIA = document.querySelector('.btn-ia-gerar');
 const inputIA = document.querySelector('#input-ia-modelos');
@@ -302,17 +301,20 @@ function gerarMosaicoComPollinations(promptTexto, botaoInterface) {
 
     let imagensCarregadas = 0;
     
-    const termoBuscaContextual = encodeURIComponent(promptTexto);
+    // Tratamento do prompt para o LoremFlickr (remove espaços e caracteres estranhos, une por vírgula)
+    const termoBuscaSeguro = promptTexto.replace(/[^a-zA-Z0-9\s]/g, '').trim().replace(/\s+/g, ',');
 
     estilosIA.forEach((estilo, index) => {
         const promptOtimizado = encodeURIComponent(promptTexto + estilo.sufixo);
         const semente = Math.floor(Math.random() * 9999) + index;
         
+        // URL da IA Oficial (Plano A)
         const urlIA_Miniatura = `https://image.pollinations.ai/prompt/${promptOtimizado}?width=400&height=225&nologo=true&seed=${semente}`;
         const urlIA_AltaRes = `https://image.pollinations.ai/prompt/${promptOtimizado}?width=1920&height=1080&nologo=true&seed=${semente}`;
 
-        const urlBusca_Miniatura = `https://source.unsplash.com/featured/400x225/?${termoBuscaContextual},${semente}`;
-        const urlBusca_AltaRes = `https://source.unsplash.com/featured/1920x1080/?${termoBuscaContextual},${semente}`;
+        // NOVO PLANO B CONTEXTUAL (LoremFlickr - 100% Funcional e à prova de tela branca)
+        const urlBusca_Miniatura = `https://loremflickr.com/400/225/${termoBuscaSeguro}?random=${semente}`;
+        const urlBusca_AltaRes = `https://loremflickr.com/1920/1080/${termoBuscaSeguro}?random=${semente}`;
 
         const divCard = document.createElement('div');
         divCard.className = 'modelo-item-canva';
@@ -329,6 +331,7 @@ function gerarMosaicoComPollinations(promptTexto, botaoInterface) {
         const imgElement = divCard.querySelector('img');
         const imgTeste = new Image();
 
+        // Se a IA carregar (Plano A Funcionou)
         imgTeste.onload = () => {
             imgElement.src = urlIA_Miniatura;
             imgElement.style.opacity = '1';
@@ -339,12 +342,18 @@ function gerarMosaicoComPollinations(promptTexto, botaoInterface) {
             verificarConclusaoMosaico(imagensCarregadas, botaoInterface);
         };
 
+        // Se a IA for bloqueada pelo firewall (Plano B Entra em Ação Imediatamente)
         imgTeste.onerror = () => {
-            console.warn("IA Pollinations bloqueada. Ativando Plano B Contextual (Busca de Imagem). Termo:", promptTexto);
+            console.warn("A IA foi bloqueada pela rede. Carregando imagem contextual alternativa.");
             
+            // Puxa a fotografia real do LoremFlickr
             imgElement.src = urlBusca_Miniatura;
-            imgElement.style.opacity = '1';
-            divCard.querySelector('.loader-ia').style.display = 'none';
+            
+            // Corrige o bug da tela branca: Garante que a imagem carregou antes de mudar a opacidade
+            imgElement.onload = () => {
+                imgElement.style.opacity = '1';
+                divCard.querySelector('.loader-ia').style.display = 'none';
+            };
             
             divCard.querySelector('.tag-estilo').innerText = estilo.nome + " (Foto)";
             divCard.querySelector('.tag-estilo').style.background = "#3498db"; 
@@ -373,7 +382,7 @@ function aplicarIACompletaNoSlide(promptOriginal, imageUrl) {
 
     fabric.Image.fromURL(imageUrl, function(img) {
         if (!img) {
-            alert("Erro ao baixar a imagem final. O firewall pode ter cortado a conexão.");
+            alert("Erro ao aplicar a imagem final. A rede interrompeu a conexão.");
             bloqueioSincronizacao = false;
             if(sNuvem) sNuvem.innerText = "⚠️ Erro";
             return;
@@ -511,7 +520,6 @@ setInterval(() => {
 document.getElementById('btn-adicionar-slide').addEventListener('click', () => {
     if(meuCargo !== "leitor") { 
         tirarFotoDoSlide(); 
-        // CORREÇÃO: Forçando a salvar o crossOrigin
         const canvasData = canvas.toJSON(['crossOrigin']);
         canvasData.objects = canvasData.objects.filter(o => !o.isGuide);
         arrayDeSlides[indiceSlideAtivo].dadosGraficos = JSON.stringify(canvasData); 
@@ -523,7 +531,6 @@ document.getElementById('btn-adicionar-slide').addEventListener('click', () => {
 function trocarSlide(idx) { 
     if(meuCargo !== "leitor") { 
         tirarFotoDoSlide(); 
-        // CORREÇÃO: Forçando a salvar o crossOrigin
         const canvasData = canvas.toJSON(['crossOrigin']);
         canvasData.objects = canvasData.objects.filter(o => !o.isGuide);
         arrayDeSlides[indiceSlideAtivo].dadosGraficos = JSON.stringify(canvasData); 
@@ -552,7 +559,6 @@ window.salvarNoFirebase = function() {
     const sNuvem = document.getElementById('status-nuvem');
     if(sNuvem) sNuvem.innerText = "⏳ A Salvar...";
     
-    // CORREÇÃO: A principal mudança contra a amnésia está aqui:
     const canvasData = canvas.toJSON(['crossOrigin']);
     canvasData.objects = canvasData.objects.filter(o => !o.isGuide);
     const json = JSON.stringify(canvasData);
