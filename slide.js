@@ -24,7 +24,7 @@ let meuNome = "Anônimo", meuEmail = "", minhaFoto = "", meuCargo = "leitor";
 let arrayDeSlides = [], indiceSlideAtivo = 0;
 let historyStack = [], historyIndex = -1, isHistoryAction = false, isAtualizandoPelaNuvem = false, primeiraCarga = true;
 let precisaAtualizarThumb = false;
-let bloqueioSincronizacao = false; // TRAVA DE SEGURANÇA ADICIONADA
+let bloqueioSincronizacao = false; 
 
 const containerCanvas = document.getElementById('container-canvas');
 const canvas = new fabric.Canvas('canvas-slide', { backgroundColor: 'white', selection: true, preserveObjectStacking: true, width: containerCanvas.clientWidth, height: containerCanvas.clientHeight });
@@ -64,7 +64,7 @@ if(document.getElementById('btn-toggle-elementos')) {
         fecharTodasAsGavetasEsquerdas();
         if(!estavaAberto) {
             caixaElementos.classList.add('aberto');
-            carregarElementosBuscados(""); // Carrega os padrão ao abrir
+            carregarElementosBuscados(""); 
         }
         caixaChat.classList.remove('aberto'); caixaArquivos.classList.remove('aberto');
     });
@@ -264,7 +264,7 @@ if(document.getElementById('btn-aplicar-modelo-real')) {
 setTimeout(() => gerarGrelhasModelos(), 500);
 
 // ==========================================
-// CÉREBRO DA IA GERADORA DE SLIDES (MOSAICO + TEXTO ESTRUTURADO)
+// CÉREBRO DA IA GERADORA DE SLIDES (PROXY + MOSAICO + TEXTO ESTRUTURADO)
 // ==========================================
 const btnGerarIA = document.querySelector('.btn-ia-gerar');
 const inputIA = document.querySelector('#input-ia-modelos');
@@ -308,13 +308,15 @@ function gerarMosaicoComPollinations(promptTexto, botaoInterface) {
         const urlMiniatura = `https://image.pollinations.ai/prompt/${promptOtimizado}?width=400&height=225&nologo=true&seed=${semente}`;
         const urlAltaRes = `https://image.pollinations.ai/prompt/${promptOtimizado}?width=1920&height=1080&nologo=true&seed=${semente}`;
 
+        // O SEGREDO: Usando o Túnel Proxy para driblar o Firewall da Faculdade
+        const proxyUrlMiniatura = `https://corsproxy.io/?${encodeURIComponent(urlMiniatura)}`;
+
         const divCard = document.createElement('div');
         divCard.className = 'modelo-item-canva';
         divCard.style.position = 'relative';
         
-        // As miniaturas agora carregam normalmente, sem bloqueios de CORS
         divCard.innerHTML = `
-            <img src="" style="opacity: 0; transition: opacity 0.5s; width: 100%; height: 100%; object-fit: cover;">
+            <img crossorigin="anonymous" src="" style="opacity: 0; transition: opacity 0.5s; width: 100%; height: 100%; object-fit: cover;">
             <div class="tag-estilo" style="position: absolute; top: 5px; left: 5px; background: rgba(142,68,173,0.8); color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold;">${estilo.nome}</div>
             <div class="loader-ia" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"><span class="material-symbols-outlined spin-anim" style="color: #8e44ad;">sync</span></div>
         `;
@@ -323,24 +325,29 @@ function gerarMosaicoComPollinations(promptTexto, botaoInterface) {
 
         const imgElement = divCard.querySelector('img');
         const imgTeste = new Image();
+        imgTeste.crossOrigin = "anonymous"; 
 
         imgTeste.onload = () => {
-            imgElement.src = urlMiniatura;
+            imgElement.src = proxyUrlMiniatura;
             imgElement.style.opacity = '1';
             divCard.querySelector('.loader-ia').style.display = 'none';
+            
+            // Quando o usuário clica, manda a URL de Alta Resolução pro Canvas
             divCard.onclick = () => aplicarIACompletaNoSlide(promptTexto, urlAltaRes);
             
             imagensCarregadas++;
             verificarConclusaoMosaico(imagensCarregadas, botaoInterface);
         };
 
-        imgTeste.onerror = () => {
-            divCard.innerHTML = `<div style="text-align: center; color: #e74c3c; font-size: 11px; padding: 20px;">Erro ao carregar</div>`;
+        imgTeste.onerror = (err) => {
+            console.error("Erro bloqueio de rede:", err);
+            divCard.innerHTML = `<div style="text-align: center; color: #e74c3c; font-size: 11px; padding: 20px;">Bloqueado na Rede</div>`;
             imagensCarregadas++;
             verificarConclusaoMosaico(imagensCarregadas, botaoInterface);
         }
         
-        imgTeste.src = urlMiniatura;
+        // Carrega usando o proxy
+        imgTeste.src = proxyUrlMiniatura;
     });
 }
 
@@ -356,10 +363,12 @@ function aplicarIACompletaNoSlide(promptOriginal, imageUrl) {
     const sNuvem = document.getElementById('status-nuvem');
     if(sNuvem) sNuvem.innerText = "⏳ Montando Slide...";
 
-    // A mágica de aplicar ao fundo, MANTENDO o crossOrigin para exportação de PDF funcionar!
-    fabric.Image.fromURL(imageUrl, function(img) {
+    // Usamos o túnel proxy também para a imagem em HD entrar no Fabric.js sem corromper
+    const proxyImageUrl = `https://corsproxy.io/?${encodeURIComponent(imageUrl)}`;
+
+    fabric.Image.fromURL(proxyImageUrl, function(img) {
         if (!img) {
-            alert("Erro ao baixar a imagem em alta resolução.");
+            alert("Erro ao baixar a imagem final. O firewall cortou a conexão.");
             bloqueioSincronizacao = false;
             if(sNuvem) sNuvem.innerText = "⚠️ Erro";
             return;
@@ -369,50 +378,30 @@ function aplicarIACompletaNoSlide(promptOriginal, imageUrl) {
         img.set({ originX: 'center', originY: 'center', left: canvas.width / 2, top: canvas.height / 2, scaleX: scale, scaleY: scale });
 
         canvas.setBackgroundImage(img, () => {
-            
-            // INJEÇÃO DA ESTRUTURA DE TEXTO INTELIGENTE
             const tituloCaps = promptOriginal.toUpperCase();
             
             const fundoTexto = new fabric.Rect({
-                left: canvas.width / 2,
-                top: canvas.height / 2,
-                originX: 'center',
-                originY: 'center',
-                width: 800,
-                height: 400,
-                fill: 'rgba(0, 0, 0, 0.6)', 
-                rx: 15,
-                ry: 15
+                left: canvas.width / 2, top: canvas.height / 2,
+                originX: 'center', originY: 'center',
+                width: 800, height: 400,
+                fill: 'rgba(0, 0, 0, 0.6)', rx: 15, ry: 15
             });
 
             const textoTitulo = new fabric.IText(tituloCaps, {
-                left: canvas.width / 2,
-                top: canvas.height / 2 - 100,
-                originX: 'center',
-                originY: 'center',
-                fontFamily: 'Arial',
-                fill: '#ffffff',
-                fontSize: 55,
-                fontWeight: 'bold',
-                textAlign: 'center'
+                left: canvas.width / 2, top: canvas.height / 2 - 100,
+                originX: 'center', originY: 'center',
+                fontFamily: 'Arial', fill: '#ffffff',
+                fontSize: 55, fontWeight: 'bold', textAlign: 'center'
             });
 
             const textoTopicos = new fabric.IText("• Digite aqui o seu primeiro tópico principal\n\n• Segundo ponto chave da apresentação\n\n• Conclusão ou dados relevantes", {
-                left: canvas.width / 2,
-                top: canvas.height / 2 + 50,
-                originX: 'center',
-                originY: 'center',
-                fontFamily: 'Arial',
-                fill: '#ecf0f1',
-                fontSize: 24,
-                lineHeight: 1.5,
-                textAlign: 'left'
+                left: canvas.width / 2, top: canvas.height / 2 + 50,
+                originX: 'center', originY: 'center',
+                fontFamily: 'Arial', fill: '#ecf0f1',
+                fontSize: 24, lineHeight: 1.5, textAlign: 'left'
             });
 
-            canvas.add(fundoTexto);
-            canvas.add(textoTitulo);
-            canvas.add(textoTopicos);
-            
+            canvas.add(fundoTexto, textoTitulo, textoTopicos);
             canvas.renderAll();
             salvarNoFirebase();
             precisaAtualizarThumb = true;
