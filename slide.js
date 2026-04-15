@@ -34,6 +34,109 @@ canvas.hoverCursor = 'pointer';
 window.addEventListener('resize', () => { canvas.setWidth(containerCanvas.clientWidth); canvas.setHeight(containerCanvas.clientHeight); canvas.renderAll(); });
 
 // ==========================================
+// NOVO: SISTEMA DE OPACIDADE E CORES RGBA
+// ==========================================
+function hexToRgba(hex, alpha) {
+    let r = parseInt(hex.slice(1, 3), 16);
+    let g = parseInt(hex.slice(3, 5), 16);
+    let b = parseInt(hex.slice(5, 7), 16);
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
+// Injeta o Slider de Opacidade no Menu de Estilos via JS
+window.addEventListener('DOMContentLoaded', () => {
+    const menuEstilos = document.getElementById('menu-estilo').querySelector('.dropdown-content');
+    const divisor = document.createElement('div');
+    divisor.className = 'dropdown-divisor';
+    
+    const sliderContainer = document.createElement('div');
+    sliderContainer.className = 'estilo-linha';
+    sliderContainer.innerHTML = `
+        <span style="display:flex; align-items:center; gap:5px;"><span class="material-symbols-outlined" style="font-size:16px;">opacity</span> Opacidade (Vidro)</span>
+        <input type="range" id="opacidade-forma" min="0.1" max="1" step="0.1" value="1" style="width: 80px; accent-color: #8e44ad;">
+    `;
+    
+    // Insere o slider logo abaixo das cores de preenchimento e borda
+    menuEstilos.insertBefore(sliderContainer, menuEstilos.children[2]);
+    menuEstilos.insertBefore(divisor, menuEstilos.children[3]);
+
+    document.getElementById('opacidade-forma').addEventListener('input', (e) => {
+        const obj = canvas.getActiveObject();
+        if(obj) {
+            const hexCor = document.getElementById('cor-preenchimento').value;
+            obj.set('fill', hexToRgba(hexCor, e.target.value));
+            canvas.renderAll();
+            salvarNoFirebase();
+        }
+    });
+});
+
+// ==========================================
+// NOVO: MENU DE CONTEXTO (BOTÃO DIREITO) & VIP
+// ==========================================
+const ctxMenu = document.createElement('div');
+ctxMenu.id = 'context-menu-agora';
+ctxMenu.style.cssText = 'position:fixed; display:none; background:white; border:1px solid #e2e8f0; box-shadow:0 10px 15px -3px rgba(0,0,0,0.1); border-radius:8px; z-index:9999; min-width:180px; flex-direction:column; overflow:hidden; font-family:Arial; font-size:14px;';
+document.body.appendChild(ctxMenu);
+
+document.getElementById('container-canvas').addEventListener('contextmenu', e => {
+    e.preventDefault(); // Bloqueia o menu feio do Chrome
+});
+
+canvas.on('mouse:down', function(opt) {
+    if (opt.button === 3) { // 3 = Botão Direito
+        if(meuCargo === "leitor") return;
+        
+        const target = opt.target;
+        if(target) { canvas.setActiveObject(target); } // Seleciona o objeto que foi clicado
+
+        // Monta os botões. O botão VIP só aparece se for um texto!
+        ctxMenu.innerHTML = `
+            ${target ? `<div class="ctx-item" onclick="document.getElementById('btn-copy').click();" style="padding:12px 15px; cursor:pointer; border-bottom:1px solid #f1f5f9; display:flex; align-items:center; gap:10px; color:#2c3e50;"><span class="material-symbols-outlined" style="font-size:18px;">content_copy</span> Copiar</div>` : ''}
+            <div class="ctx-item" onclick="document.getElementById('btn-paste').click();" style="padding:12px 15px; cursor:pointer; border-bottom:1px solid #f1f5f9; display:flex; align-items:center; gap:10px; color:#2c3e50;"><span class="material-symbols-outlined" style="font-size:18px;">content_paste</span> Colar</div>
+            ${target && target.type === 'i-text' ? `<div class="ctx-item" onclick="traduzirTextoVIP()" style="padding:12px 15px; cursor:pointer; border-bottom:1px solid #f1f5f9; display:flex; align-items:center; gap:10px; color:#8e44ad; font-weight:bold; background:#fbf5ff;"><span class="material-symbols-outlined" style="font-size:18px;">g_translate</span> Traduzir IA (VIP)</div>` : ''}
+            ${target ? `<div class="ctx-item" onclick="document.getElementById('ferramenta-excluir').click();" style="padding:12px 15px; cursor:pointer; display:flex; align-items:center; gap:10px; color:#e74c3c;"><span class="material-symbols-outlined" style="font-size:18px;">delete</span> Excluir Seleção</div>` : ''}
+        `;
+        
+        ctxMenu.style.left = opt.e.clientX + 'px';
+        ctxMenu.style.top = opt.e.clientY + 'px';
+        ctxMenu.style.display = 'flex';
+        
+        // Efeito visual no hover (Feito no JS para não sujar seu CSS)
+        ctxMenu.querySelectorAll('.ctx-item').forEach(item => {
+            const bgOriginal = item.style.backgroundColor;
+            item.addEventListener('mouseenter', () => item.style.backgroundColor = '#f1f5f9');
+            item.addEventListener('mouseleave', () => item.style.backgroundColor = bgOriginal || 'transparent');
+        });
+    } else {
+        ctxMenu.style.display = 'none'; // Some se clicar com botão normal
+    }
+});
+
+document.addEventListener('click', (e) => { if(!ctxMenu.contains(e.target)) ctxMenu.style.display = 'none'; });
+
+// LIGAÇÃO VIP: Esta é a função que você deve chamar/modificar para abrir a tela de IA do grupo
+window.traduzirTextoVIP = function() {
+    const obj = canvas.getActiveObject();
+    if(obj && obj.type === 'i-text') {
+        const textoOriginal = obj.text;
+        
+        // LÓGICA TEMPORÁRIA: Substitua isso pela chamada do modal de IA que vocês já criaram
+        const idioma = prompt(`👑 TRADUTOR VIP ATIVADO 👑\n\nTexto: "${textoOriginal.substring(0, 30)}..."\n\nPara qual idioma a IA deve traduzir?`);
+        
+        if(idioma) {
+            alert(`Conectando à IA... Preparando para traduzir para ${idioma}.\n(Integre o código da sua outra tela de IA aqui!)`);
+            // Exemplo de como aplicar a tradução no texto:
+            // obj.set('text', textoTraduzidoDaSuaIA);
+            // canvas.renderAll();
+            // salvarNoFirebase();
+        }
+    }
+    ctxMenu.style.display = 'none';
+}
+
+
+// ==========================================
 // CONTROLE DAS GAVETAS LATERAIS
 // ==========================================
 const caixaModelos = document.getElementById('caixa-modelos');
@@ -79,14 +182,39 @@ document.getElementById('btn-abrir-equipe').addEventListener('click', () => { do
 document.getElementById('btn-sair-esc').addEventListener('click', () => { window.location.href = "dashboard.html"; });
 
 // ==========================================
-// ABA: ELEMENTOS (Formas, Stickers, Fotos Reais)
+// ABA: ELEMENTOS (ARSENAL GEOMÉTRICO E BUSCA)
 // ==========================================
 window.carregarElementosBuscados = function(termo = "") {
     const grid = document.getElementById('grid-elementos-conteudo');
     if(!grid) return;
     grid.innerHTML = '';
+    const termoLower = termo.toLowerCase();
     
-    // Banco de Stickers focado em apresentações
+    // Mostra as Formas Geométricas se a busca for vazia ou se pesquisar por "forma", "quadrado", etc.
+    if(termo === "" || "forma quadrado circulo triangulo estrela linha seta poligono losango hexagono".includes(termoLower)) {
+        grid.innerHTML += `
+            <div class="separador-modelos"><span>Formas Principais</span></div>
+            <div class="grid-modelos-canva" style="grid-template-columns: repeat(3, 1fr);">
+                <div class="modelo-item-canva" style="aspect-ratio:1; display:flex; justify-content:center; align-items:center; background:#f8fafc;" onclick="inserirFormaNoSlide('rect')" title="Retângulo / Quadrado"><span class="material-symbols-outlined" style="font-size:30px; color:#2c3e50;">square</span></div>
+                <div class="modelo-item-canva" style="aspect-ratio:1; display:flex; justify-content:center; align-items:center; background:#f8fafc;" onclick="inserirFormaNoSlide('circle')" title="Círculo / Elipse"><span class="material-symbols-outlined" style="font-size:30px; color:#2c3e50;">circle</span></div>
+                <div class="modelo-item-canva" style="aspect-ratio:1; display:flex; justify-content:center; align-items:center; background:#f8fafc;" onclick="inserirFormaNoSlide('triangle')" title="Triângulo"><span class="material-symbols-outlined" style="font-size:30px; color:#2c3e50;">change_history</span></div>
+                <div class="modelo-item-canva" style="aspect-ratio:1; display:flex; justify-content:center; align-items:center; background:#f8fafc;" onclick="inserirFormaNoSlide('star')" title="Estrela (Destaque)"><span class="material-symbols-outlined" style="font-size:30px; color:#2c3e50;">star</span></div>
+                <div class="modelo-item-canva" style="aspect-ratio:1; display:flex; justify-content:center; align-items:center; background:#f8fafc;" onclick="inserirFormaNoSlide('linha')" title="Linha de Divisão"><span class="material-symbols-outlined" style="font-size:30px; color:#2c3e50;">horizontal_rule</span></div>
+                <div class="modelo-item-canva" style="aspect-ratio:1; display:flex; justify-content:center; align-items:center; background:#f8fafc;" onclick="inserirFormaNoSlide('seta')" title="Seta de Fluxo"><span class="material-symbols-outlined" style="font-size:30px; color:#2c3e50;">arrow_right_alt</span></div>
+            </div>
+            
+            <div class="separador-modelos"><span>Geometria Avançada</span></div>
+            <div class="grid-modelos-canva" style="grid-template-columns: repeat(3, 1fr);">
+                <div class="modelo-item-canva" style="aspect-ratio:1; display:flex; justify-content:center; align-items:center; background:#f8fafc;" onclick="inserirFormaNoSlide('pentagon')" title="Pentágono"><span class="material-symbols-outlined" style="font-size:30px; color:#2c3e50;">pentagon</span></div>
+                <div class="modelo-item-canva" style="aspect-ratio:1; display:flex; justify-content:center; align-items:center; background:#f8fafc;" onclick="inserirFormaNoSlide('hexagon')" title="Hexágono"><span class="material-symbols-outlined" style="font-size:30px; color:#2c3e50;">hexagon</span></div>
+                <div class="modelo-item-canva" style="aspect-ratio:1; display:flex; justify-content:center; align-items:center; background:#f8fafc;" onclick="inserirFormaNoSlide('diamond')" title="Losango"><span class="material-symbols-outlined" style="font-size:30px; color:#2c3e50;">diamond</span></div>
+                <div class="modelo-item-canva" style="aspect-ratio:1; display:flex; justify-content:center; align-items:center; background:#f8fafc;" onclick="inserirFormaNoSlide('parallelogram')" title="Paralelogramo"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2c3e50" stroke-width="2"><polygon points="6 4 22 4 18 20 2 20"></polygon></svg></div>
+                <div class="modelo-item-canva" style="aspect-ratio:1; display:flex; justify-content:center; align-items:center; background:#f8fafc;" onclick="inserirFormaNoSlide('plus')" title="Sinal de Mais"><span class="material-symbols-outlined" style="font-size:30px; color:#2c3e50;">add</span></div>
+                <div class="modelo-item-canva" style="aspect-ratio:1; display:flex; justify-content:center; align-items:center; background:#f8fafc;" onclick="inserirFormaNoSlide('minus')" title="Sinal de Menos"><span class="material-symbols-outlined" style="font-size:30px; color:#2c3e50;">remove</span></div>
+            </div>
+        `;
+    }
+
     const bancoEmojis = [
         {tags: "ideia lampada cerebro", emoji: '💡'}, {tags: "livro estudo leitura", emoji: '📚'}, 
         {tags: "computador pc tecnologia", emoji: '💻'}, {tags: "grafico dados chart", emoji: '📈'}, 
@@ -99,43 +227,22 @@ window.carregarElementosBuscados = function(termo = "") {
         {tags: "trofeu premio vitoria", emoji: '🏆'}, {tags: "dinheiro moeda", emoji: '💰'}
     ];
 
-    // Se a busca estiver vazia ou o usuário digitar o nome de uma forma, mostra a grade de formas vetoriais
-    if(termo === "" || "forma quadrado circulo triangulo estrela linha seta".includes(termo.toLowerCase())) {
-        grid.innerHTML += `
-            <div class="separador-modelos"><span>Formas Básicas</span></div>
-            <div class="grid-modelos-canva" style="grid-template-columns: repeat(3, 1fr);">
-                <div class="modelo-item-canva" style="aspect-ratio:1; display:flex; justify-content:center; align-items:center; background:#f8fafc;" onclick="inserirFormaNoSlide('rect')" title="Retângulo"><span class="material-symbols-outlined" style="font-size:30px; color:#2c3e50;">square</span></div>
-                <div class="modelo-item-canva" style="aspect-ratio:1; display:flex; justify-content:center; align-items:center; background:#f8fafc;" onclick="inserirFormaNoSlide('circle')" title="Círculo"><span class="material-symbols-outlined" style="font-size:30px; color:#2c3e50;">circle</span></div>
-                <div class="modelo-item-canva" style="aspect-ratio:1; display:flex; justify-content:center; align-items:center; background:#f8fafc;" onclick="inserirFormaNoSlide('triangle')" title="Triângulo"><span class="material-symbols-outlined" style="font-size:30px; color:#2c3e50;">change_history</span></div>
-                <div class="modelo-item-canva" style="aspect-ratio:1; display:flex; justify-content:center; align-items:center; background:#f8fafc;" onclick="inserirFormaNoSlide('star')" title="Estrela"><span class="material-symbols-outlined" style="font-size:30px; color:#2c3e50;">star</span></div>
-                <div class="modelo-item-canva" style="aspect-ratio:1; display:flex; justify-content:center; align-items:center; background:#f8fafc;" onclick="inserirFormaNoSlide('linha')" title="Linha Reta"><span class="material-symbols-outlined" style="font-size:30px; color:#2c3e50;">horizontal_rule</span></div>
-                <div class="modelo-item-canva" style="aspect-ratio:1; display:flex; justify-content:center; align-items:center; background:#f8fafc;" onclick="inserirFormaNoSlide('seta')" title="Seta"><span class="material-symbols-outlined" style="font-size:30px; color:#2c3e50;">arrow_right_alt</span></div>
-            </div>
-        `;
-    }
-
-    const termoLower = termo.toLowerCase();
     const emojisFiltrados = bancoEmojis.filter(e => termo === "" || e.tags.includes(termoLower));
     
     if(emojisFiltrados.length > 0) {
         let htmlStickers = `<div class="separador-modelos"><span>Stickers & Ícones</span></div><div class="grid-modelos-canva" style="grid-template-columns: repeat(4, 1fr);">`;
         emojisFiltrados.forEach(item => {
-            htmlStickers += `<div class="modelo-item-canva" style="aspect-ratio:1; display:flex; justify-content:center; align-items:center; background:#f8fafc; font-size:30px;" onclick="inserirTextoNoSlide('${item.emoji}')">${item.emoji}</div>`;
+            htmlStickers += `<div class="modelo-item-canva" style="aspect-ratio:1; display:flex; justify-content:center; align-items:center; background:#f8fafc; font-size:30px; cursor:pointer; transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" onclick="inserirTextoNoSlide('${item.emoji}')">${item.emoji}</div>`;
         });
         htmlStickers += `</div>`;
         grid.innerHTML += htmlStickers;
     }
 
-    // Busca de Fotografias Dinâmicas (Integração LoremFlickr)
-    // Se a barra estiver vazia, busca texturas abstratas. Se o usuário digitar algo, busca o que ele digitou.
+    // Busca Dinâmica de Fotos
     let photoTerm = termo === "" ? "abstract,texture,clean" : termo.replace(/\s+/g, ',');
     let htmlFotos = `<div class="separador-modelos"><span>Fotografias em Alta</span></div><div class="grid-modelos-canva">`;
-    
-    // Gerar 6 fotos baseadas na pesquisa
     for(let i=1; i<=6; i++) {
-        // A imagem da miniatura é menor para não pesar a gaveta
         let imgUrlMiniatura = `https://loremflickr.com/400/400/${encodeURIComponent(photoTerm)}?random=${i}`;
-        // Quando o usuário clica, insere no canvas a versão em alta resolução
         let imgUrlAlta = `https://loremflickr.com/1000/1000/${encodeURIComponent(photoTerm)}?random=${i}`;
         
         htmlFotos += `
@@ -151,32 +258,56 @@ window.inserirFormaNoSlide = function(tipo) {
     if(meuCargo === "leitor") return;
     desativarLapis();
     
-    // Pega as cores que o usuário já deixou selecionadas no menu superior
-    const fill = document.getElementById('cor-preenchimento').value;
+    // Captura as cores exatas do painel de controle
+    const hexFundo = document.getElementById('cor-preenchimento').value;
+    const sliderOpacidade = document.getElementById('opacidade-forma');
+    const opacity = sliderOpacidade ? sliderOpacidade.value : 1;
+    const fill = hexToRgba(hexFundo, opacity); // MÁGICA DO VIDRO ESCURO AQUI
+    
     const stroke = document.getElementById('cor-borda').value;
     let obj; 
 
+    // Formas Primitivas
     if(tipo === 'rect') obj = new fabric.Rect({ left: 150, top: 150, fill: fill, stroke: stroke, strokeWidth: 3, width: 100, height: 100, rx: 5, ry: 5 });
     if(tipo === 'circle') obj = new fabric.Circle({ left: 150, top: 150, fill: fill, stroke: stroke, strokeWidth: 3, radius: 50 });
     if(tipo === 'triangle') obj = new fabric.Triangle({ left: 150, top: 150, fill: fill, stroke: stroke, strokeWidth: 3, width: 100, height: 100 });
     if(tipo === 'linha') obj = new fabric.Line([50, 50, 250, 50], { left: 150, top: 150, stroke: stroke, strokeWidth: 5 });
-    if(tipo === 'seta') {
-        obj = new fabric.Path('M 0 0 L 150 0 M 150 0 L 135 -10 M 150 0 L 135 10', { left: 150, top: 150, fill: 'transparent', stroke: stroke, strokeWidth: 5 });
-    }
+    if(tipo === 'seta') obj = new fabric.Path('M 0 0 L 150 0 M 150 0 L 135 -10 M 150 0 L 135 10', { left: 150, top: 150, fill: 'transparent', stroke: stroke, strokeWidth: 5 });
+
+    // Geometria Avançada (Desenhada em Vetor Poligonal para não perder qualidade)
     if(tipo === 'star') {
-        // Coordenadas matemáticas para desenhar uma estrela perfeita de 5 pontas em vetor
-        const starPoints = [
-            {x: 50, y: 0}, {x: 63, y: 38}, {x: 100, y: 38},
-            {x: 69, y: 59}, {x: 82, y: 100}, {x: 50, y: 75},
-            {x: 18, y: 100}, {x: 31, y: 59}, {x: 0, y: 38},
-            {x: 37, y: 38}
-        ];
-        obj = new fabric.Polygon(starPoints, { left: 150, top: 150, fill: fill, stroke: stroke, strokeWidth: 3 });
+        const starPoints = [{x: 50, y: 0}, {x: 63, y: 38}, {x: 100, y: 38}, {x: 69, y: 59}, {x: 82, y: 100}, {x: 50, y: 75}, {x: 18, y: 100}, {x: 31, y: 59}, {x: 0, y: 38}, {x: 37, y: 38}];
+        obj = new fabric.Polygon(starPoints, { left: 150, top: 150, fill: fill, stroke: stroke, strokeWidth: 3, scaleX: 1.5, scaleY: 1.5 });
+    }
+    if(tipo === 'hexagon') {
+        const hexPoints = [{x: 50, y: 0}, {x: 100, y: 25}, {x: 100, y: 75}, {x: 50, y: 100}, {x: 0, y: 75}, {x: 0, y: 25}];
+        obj = new fabric.Polygon(hexPoints, { left: 150, top: 150, fill: fill, stroke: stroke, strokeWidth: 3 });
+    }
+    if(tipo === 'pentagon') {
+        const pentPoints = [{x: 50, y: 0}, {x: 100, y: 38}, {x: 81, y: 100}, {x: 19, y: 100}, {x: 0, y: 38}];
+        obj = new fabric.Polygon(pentPoints, { left: 150, top: 150, fill: fill, stroke: stroke, strokeWidth: 3 });
+    }
+    if(tipo === 'diamond') {
+        const diaPoints = [{x: 50, y: 0}, {x: 100, y: 50}, {x: 50, y: 100}, {x: 0, y: 50}];
+        obj = new fabric.Polygon(diaPoints, { left: 150, top: 150, fill: fill, stroke: stroke, strokeWidth: 3 });
+    }
+    if(tipo === 'parallelogram') {
+        const paraPoints = [{x: 25, y: 0}, {x: 125, y: 0}, {x: 100, y: 100}, {x: 0, y: 100}];
+        obj = new fabric.Polygon(paraPoints, { left: 150, top: 150, fill: fill, stroke: stroke, strokeWidth: 3 });
+    }
+    if(tipo === 'plus') {
+        const plusPoints = [{x:35, y:0}, {x:65, y:0}, {x:65, y:35}, {x:100, y:35}, {x:100, y:65}, {x:65, y:65}, {x:65, y:100}, {x:35, y:100}, {x:35, y:65}, {x:0, y:65}, {x:0, y:35}, {x:35, y:35}];
+        obj = new fabric.Polygon(plusPoints, { left: 150, top: 150, fill: fill, stroke: stroke, strokeWidth: 3 });
+    }
+    if(tipo === 'minus') {
+        obj = new fabric.Rect({ left: 150, top: 150, fill: fill, stroke: stroke, strokeWidth: 3, width: 100, height: 30, rx: 5, ry: 5 });
     }
 
-    canvas.add(obj); 
-    canvas.setActiveObject(obj); 
-    salvarNoFirebase();
+    if(obj) {
+        canvas.add(obj); 
+        canvas.setActiveObject(obj); 
+        salvarNoFirebase();
+    }
 };
 
 window.inserirTextoNoSlide = function(texto) {
@@ -190,23 +321,19 @@ window.inserirImagemExternaNoSlide = function(url) {
     if(meuCargo === "leitor") return;
     desativarLapis();
     
-    // Mostra um aviso rápido na gaveta para não parecer que travou
     const grid = document.getElementById('grid-elementos-conteudo');
     const backupHtml = grid.innerHTML;
-    grid.innerHTML = `<div style="text-align:center; padding:30px; color:#8e44ad;"><span class="material-symbols-outlined spin-anim">sync</span><br>Baixando imagem em alta resolução...</div>`;
+    grid.innerHTML = `<div style="text-align:center; padding:40px; color:#8e44ad;"><span class="material-symbols-outlined spin-anim" style="font-size: 30px;">sync</span><br><br>Baixando imagem em alta resolução...</div>`;
 
-    // CrossOrigin garante que o PDF vai exportar sem bugar
     fabric.Image.fromURL(url, function(img) { 
         if(img) {
-            img.scaleToWidth(400); // Redimensiona para um tamanho decente inicial
+            img.scaleToWidth(300); 
             img.set({ left: 100, top: 100 }); 
             canvas.add(img); 
             canvas.setActiveObject(img); 
             salvarNoFirebase(); 
-        } else {
-            alert("Erro ao adicionar a imagem.");
         }
-        grid.innerHTML = backupHtml; // Restaura a gaveta
+        grid.innerHTML = backupHtml; // Devolve a gaveta ao normal
     }, { crossOrigin: 'anonymous' });
 };
 
@@ -214,7 +341,7 @@ if(document.getElementById('input-busca-elementos')) {
     let timeoutBusca = null;
     document.getElementById('input-busca-elementos').addEventListener('input', (e) => {
         clearTimeout(timeoutBusca);
-        timeoutBusca = setTimeout(() => { carregarElementosBuscados(e.target.value.trim()); }, 600); // Delay maior para não espamar a API de fotos
+        timeoutBusca = setTimeout(() => { carregarElementosBuscados(e.target.value.trim()); }, 600); 
     });
 }
 
@@ -334,7 +461,7 @@ if(document.getElementById('btn-aplicar-modelo-real')) {
 setTimeout(() => gerarGrelhasModelos(), 500);
 
 // ==========================================
-// CÉREBRO DA IA GERADORA DE SLIDES (ANTI-BLOQUEIO + CONFIRMAÇÃO)
+// CÉREBRO DA IA GERADORA DE SLIDES
 // ==========================================
 const btnGerarIA = document.querySelector('.btn-ia-gerar');
 const inputIA = document.querySelector('#input-ia-modelos');
@@ -658,7 +785,15 @@ document.getElementById('input-imagem-pc').addEventListener('change', function(e
 document.getElementById('ferramenta-excluir').addEventListener('click', () => { const ativos = canvas.getActiveObjects(); if (ativos.length) { ativos.forEach(obj => canvas.remove(obj)); canvas.discardActiveObject(); salvarNoFirebase(); document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('aberto')); } });
 document.getElementById('ferramenta-limpar-tudo').addEventListener('click', () => { if(confirm("Apagar todos os itens do slide?")){ canvas.clear(); canvas.backgroundColor = isQuadroEscuro ? '#1e1e1e' : '#ffffff'; salvarNoFirebase(); document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('aberto')); } });
 
-document.getElementById('cor-preenchimento').addEventListener('change', (e) => { const obj = canvas.getActiveObject(); if(obj) { obj.set('fill', e.target.value); } else { canvas.backgroundColor = e.target.value; isQuadroEscuro = false; } canvas.renderAll(); salvarNoFirebase(); });
+document.getElementById('cor-preenchimento').addEventListener('change', (e) => { 
+    const obj = canvas.getActiveObject(); 
+    // Garante que se mudar a cor, mantém a opacidade escolhida no slider
+    const opacidade = document.getElementById('opacidade-forma') ? document.getElementById('opacidade-forma').value : 1;
+    const corRGBA = hexToRgba(e.target.value, opacidade);
+    
+    if(obj) { obj.set('fill', corRGBA); } else { canvas.backgroundColor = corRGBA; isQuadroEscuro = false; } 
+    canvas.renderAll(); salvarNoFirebase(); 
+});
 document.getElementById('cor-borda').addEventListener('change', (e) => { const obj = canvas.getActiveObject(); if(obj) { obj.set('stroke', e.target.value); if(obj.type === 'i-text') obj.set('fill', e.target.value); } if(canvas.isDrawingMode) canvas.freeDrawingBrush.color = e.target.value; canvas.renderAll(); salvarNoFirebase(); });
 document.getElementById('sel-fonte').addEventListener('change', (e) => { const obj = canvas.getActiveObject(); if(obj && obj.type === 'i-text') { obj.set('fontFamily', e.target.value); canvas.renderAll(); salvarNoFirebase(); } });
 function formatarTexto(chave, vAtivo, vInativo) { const obj = canvas.getActiveObject(); if(obj && obj.type === 'i-text') { obj.set(chave, obj.get(chave) === vAtivo ? vInativo : vAtivo); canvas.renderAll(); salvarNoFirebase(); } }
